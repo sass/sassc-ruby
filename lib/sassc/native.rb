@@ -137,6 +137,14 @@ module SassC
     # ADDAPI size_t ADDCALL sass_context_get_error_line (struct Sass_Context* ctx);
     # ADDAPI size_t ADDCALL sass_context_get_error_column (struct Sass_Context* ctx);
     # ADDAPI const char* ADDCALL sass_context_get_source_map_string (struct Sass_Context* ctx);
+    attach_function :sass_context_get_output_string, [SassContext.ptr], :string
+    attach_function :sass_context_get_error_status, [SassContext.ptr], :int
+    attach_function :sass_context_get_error_json, [SassContext.ptr], :string
+    attach_function :sass_context_get_error_message, [SassContext.ptr], :string
+    attach_function :sass_context_get_error_file, [SassContext.ptr], :string
+    attach_function :sass_context_get_error_line, [SassContext.ptr], :size_t
+    attach_function :sass_context_get_error_column, [SassContext.ptr], :size_t
+    attach_function :sass_context_get_source_map_string, [SassContext.ptr], :string
     # ADDAPI char** ADDCALL sass_context_get_included_files (struct Sass_Context* ctx);
   end
 end
