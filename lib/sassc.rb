@@ -1,8 +1,9 @@
-require "sassc/version"
-require "ffi"
-
 module SassC
 end
 
-require "sassc/native"
-require "sassc/engine"
+require_relative "sassc/version"
+require_relative "sassc/native"
+require_relative "sassc/engine"
+
+puts SassC::Native.libsass_version
+
