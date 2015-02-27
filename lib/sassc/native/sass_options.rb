@@ -58,11 +58,16 @@ module SassC
         # Used to create sourceMappingUrl
         :source_map_file, :string,
 
+
+        # TODO: figure out how to properly define these!!
+
         # Custom functions that can be called from sccs code
-        Sass_C_Function_List c_functions;
+        # Sass_C_Function_List c_functions;
+        :c_functions, :pointer,
 
         # Callback to overload imports
-        Sass_C_Import_Callback importer;
+        # Sass_C_Import_Callback importer;
+        :importer, :pointer
       ]
 
       layout *STRUCT_LAYOUT

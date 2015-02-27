@@ -6,4 +6,3 @@ require_relative "sassc/native"
 require_relative "sassc/engine"
 
 puts SassC::Native.version
-

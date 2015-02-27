@@ -9,6 +9,9 @@ module SassC
   end
 end
 
-# require_relative "native/sass_options"
 require_relative "native/sass_input_style"
 require_relative "native/string_list"
+require_relative "native/sass_options"
+require_relative "native/sass_context"
+require_relative "native/sass_file_context"
+require_relative "native/sass_data_context"
