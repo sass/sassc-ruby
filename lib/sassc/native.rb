@@ -5,7 +5,7 @@ module SassC
     extend FFI::Library
     ffi_lib 'ext/libsass/lib/libsass.so'
 
-    attach_function :libsass_version, [], :string
+    attach_function :version, :libsass_version, [], :string
   end
 end
 
