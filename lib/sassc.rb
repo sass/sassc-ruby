@@ -1,5 +1,8 @@
 require "sassc/version"
+require "ffi"
 
 module SassC
-  # Your code goes here...
 end
+
+require "sassc/native"
+require "sassc/engine"
