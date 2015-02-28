@@ -11,10 +11,6 @@ module SassC
     require_relative "native/sass_input_style"
     require_relative "native/sass_output_style"
     require_relative "native/string_list"
-    require_relative "native/sass_options"
-    require_relative "native/sass_context"
-    require_relative "native/sass_file_context"
-    require_relative "native/sass_data_context"
     require_relative "native/sass_c_function_descriptor"
 
     # Remove the redundant "sass_" from the beginning of every method name

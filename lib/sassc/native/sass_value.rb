@@ -1,5 +1,3 @@
-require_relative "sass_context"
-
 module SassC
   module Native
     class SassValue < FFI::Union; end
