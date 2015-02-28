@@ -5,6 +5,9 @@ module SassC
     extend FFI::Library
     ffi_lib 'ext/libsass/lib/libsass.so'
 
+    require_relative "native/sass_value"
+    callback :sass_c_function, [SassValue.ptr, :pointer], SassValue.ptr
+
     require_relative "native/sass_input_style"
     require_relative "native/sass_output_style"
     require_relative "native/string_list"
@@ -12,7 +15,7 @@ module SassC
     require_relative "native/sass_context"
     require_relative "native/sass_file_context"
     require_relative "native/sass_data_context"
-    require_relative "native/sass_value"
+    require_relative "native/sass_c_function_descriptor"
 
     # Remove the redundant "sass_" from the beginning of every method name
     def self.attach_function(*args)
