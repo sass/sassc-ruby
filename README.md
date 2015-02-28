@@ -1,4 +1,4 @@
-# SassC
+# SassC [![Build Status](https://travis-ci.org/bolandrm/sassc.svg?branch=master)](https://travis-ci.org/bolandrm/sassc)
 
 TODO: Write a gem description
 
