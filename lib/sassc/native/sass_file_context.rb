@@ -6,6 +6,10 @@ module SassC
       STRUCT_LAYOUT = SassContext::STRUCT_LAYOUT
 
       layout *STRUCT_LAYOUT
+
+      def self.release(pointer)
+        sass_delete_file_context(pointer) unless pointer.null?
+      end
     end
   end
 end

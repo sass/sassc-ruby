@@ -26,8 +26,8 @@ module SassC
     # Create and initialize a specific context
     # ADDAPI struct Sass_File_Context* ADDCALL sass_make_file_context (const char* input_path);
     # ADDAPI struct Sass_Data_Context* ADDCALL sass_make_data_context (char* source_string);
-    attach_function :sass_make_file_context, [:string], SassFileContext.ptr
-    attach_function :sass_make_data_context, [:string], SassDataContext.ptr
+    attach_function :sass_make_file_context, [:string], SassFileContext.auto_ptr
+    attach_function :sass_make_data_context, [:string], SassDataContext.auto_ptr
 
     # Call the compilation step for the specific context
     # ADDAPI int ADDCALL sass_compile_file_context (struct Sass_File_Context* ctx);

@@ -1,4 +1,4 @@
-require_relative "sass_options"
+require_relative "sass_context"
 
 module SassC
   module Native
@@ -9,6 +9,10 @@ module SassC
       ]
 
       layout *STRUCT_LAYOUT
+
+      def self.release(pointer)
+        sass_delete_data_context(pointer) unless pointer.null?
+      end
     end
   end
 end
