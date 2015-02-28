@@ -12,6 +12,7 @@ module SassC
     require_relative "native/sass_context"
     require_relative "native/sass_file_context"
     require_relative "native/sass_data_context"
+    require_relative "native/sass_value"
 
     # Remove the redundant "sass_" from the beginning of every method name
     def self.attach_function(*args)
