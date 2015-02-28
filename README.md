@@ -1,4 +1,4 @@
-# Sassc
+# SassC
 
 TODO: Write a gem description
 
