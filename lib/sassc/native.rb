@@ -13,9 +13,21 @@ module SassC
     require_relative "native/sass_file_context"
     require_relative "native/sass_data_context"
 
-    # def attach_function(*args)
-    #   super
-    # end
+    # Remove the redundant "sass_" from the beginning of every method name
+    def self.attach_function(*args)
+      super if args.size != 3
+
+      if args[0] =~ /^sass_/
+        args.unshift args[0].to_s.sub(/^sass_/, "")
+      end
+
+      super(*args)
+    end
+
+    # https://github.com/ffi/ffi/wiki/Examples#array-of-strings
+    def self.return_string_array(ptr)
+      ptr.read_pointer.null? ? [] : ptr.get_array_of_string(0).compact
+    end
 
     attach_function :version, :libsass_version, [], :string
 
@@ -137,6 +149,7 @@ module SassC
     # ADDAPI size_t ADDCALL sass_context_get_error_line (struct Sass_Context* ctx);
     # ADDAPI size_t ADDCALL sass_context_get_error_column (struct Sass_Context* ctx);
     # ADDAPI const char* ADDCALL sass_context_get_source_map_string (struct Sass_Context* ctx);
+    # ADDAPI char** ADDCALL sass_context_get_included_files (struct Sass_Context* ctx);
     attach_function :sass_context_get_output_string, [SassContext.ptr], :string
     attach_function :sass_context_get_error_status, [SassContext.ptr], :int
     attach_function :sass_context_get_error_json, [SassContext.ptr], :string
@@ -145,6 +158,10 @@ module SassC
     attach_function :sass_context_get_error_line, [SassContext.ptr], :size_t
     attach_function :sass_context_get_error_column, [SassContext.ptr], :size_t
     attach_function :sass_context_get_source_map_string, [SassContext.ptr], :string
-    # ADDAPI char** ADDCALL sass_context_get_included_files (struct Sass_Context* ctx);
+    attach_function :_context_get_included_files, :sass_context_get_included_files, [SassContext.ptr], :pointer
+
+    def self.context_get_included_files(*args)
+      return_string_array _context_get_included_files(*args)
+    end
   end
 end
