@@ -15,3 +15,7 @@ task test: :prepare do
   $LOAD_PATH.unshift('lib', 'test')
   Dir.glob('./test/**/*_test.rb') { |f| require f }
 end
+
+task :submodule do
+  sh "git submodule update --init"
+end
