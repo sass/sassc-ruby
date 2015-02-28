@@ -68,6 +68,7 @@ module SassC
     # ADDAPI const char* ADDCALL sass_option_get_image_path (struct Sass_Options* options);
     # ADDAPI const char* ADDCALL sass_option_get_include_path (struct Sass_Options* options);
     # ADDAPI const char* ADDCALL sass_option_get_source_map_file (struct Sass_Options* options);
+    # ADDAPI Sass_C_Function_List ADDCALL sass_option_get_c_functions (struct Sass_Options* options);
     attach_function :sass_option_get_precision, [:sass_options_ptr], :int
     attach_function :sass_option_get_output_style, [:sass_options_ptr], SassOutputStyle
     attach_function :sass_option_get_source_comments, [:sass_options_ptr], :bool
@@ -80,7 +81,7 @@ module SassC
     attach_function :sass_option_get_image_path, [:sass_options_ptr], :string
     attach_function :sass_option_get_include_path, [:sass_options_ptr], :string
     attach_function :sass_option_get_source_map_file, [:sass_options_ptr], :string
-    # ADDAPI Sass_C_Function_List ADDCALL sass_option_get_c_functions (struct Sass_Options* options);
+    attach_function :sass_option_get_c_functions, [:sass_options_ptr], :sass_c_function_list_ptr
     # ADDAPI Sass_C_Import_Callback ADDCALL sass_option_get_importer (struct Sass_Options* options);
 
     # Setters for options

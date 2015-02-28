@@ -52,25 +52,41 @@ module SmokeTest
     end
 
     def test_custom_function
+      data_context = SassC::Native.make_data_context("foo { margin: foo(); }")
+      context = SassC::Native.data_context_get_context(data_context)
+      options = SassC::Native.context_get_options(context)
 
-      # data_context = SassC::Native.make_data_context("foo { margin: foo(); }")
-      # context = SassC::Native.data_context_get_context(data_context)
-      # options = SassC::Native.context_get_options(context)
+      random_thing = FFI::MemoryPointer.from_string("hi")
 
-      # callback = SassC::Native.make_function(
-      #   "foo()",
-      #   SassC::Native::Callback,
-      #   nil
-      # )
+      callback = SassC::Native.make_function(
+        "foo()",
+        SassC::Native::Callback,
+        random_thing
+      )
 
-      # list = SassC::Native.make_function_list(1)
-      # SassC::Native::function_set_list_entry(list, 0, callback);
-      # SassC::Native::option_set_c_functions(options, list)
+      list = SassC::Native.make_function_list(1)
+      SassC::Native::function_set_list_entry(list, 0, callback);
+      SassC::Native::option_set_c_functions(options, list)
 
-      # SassC::Native.compile_data_context(data_context)
+      assert_equal SassC::Native.option_get_c_functions(options), list
 
-      # css = SassC::Native.context_get_output_string(context)
-      # assert_equal "foo { margin: 43px }", css
+      first_list_entry = SassC::Native.function_get_list_entry(list, 0)
+      assert_equal SassC::Native.function_get_function(first_list_entry),
+                   SassC::Native::Callback
+      assert_equal SassC::Native.function_get_signature(first_list_entry),
+                   "foo()"
+      assert_equal SassC::Native.function_get_cookie(first_list_entry),
+                   random_thing
+
+      #string = SassC::Native.make_string("hello")
+      string = SassC::Native.make_string("hello")
+      assert_equal :sass_string, SassC::Native.value_get_tag(string)
+      assert_equal "hello", SassC::Native.string_get_value(string)
+
+      SassC::Native.compile_data_context(data_context)
+
+      css = SassC::Native.context_get_output_string(context)
+      assert_equal "foo {\n  margin: 43px; }\n", css
     end
   end
 
