@@ -13,11 +13,15 @@ module SmokeTest
   end
 
   class DataContext < MiniTest::Test
-    def test_compile_status_is_zero_when_successful
-      data_context = SassC::Native.make_data_context(SAMPLE_SASS_STRING)
-      context = SassC::Native.data_context_get_context(data_context)
+    def teardown
+      SassC::Native.delete_data_context(@data_context)
+    end
 
-      status = SassC::Native.compile_data_context(data_context)
+    def test_compile_status_is_zero_when_successful
+      @data_context = SassC::Native.make_data_context(SAMPLE_SASS_STRING)
+      context = SassC::Native.data_context_get_context(@data_context)
+
+      status = SassC::Native.compile_data_context(@data_context)
       assert_equal 0, status
 
       status = SassC::Native.context_get_error_status(context)
@@ -25,19 +29,19 @@ module SmokeTest
     end
 
     def test_compiled_css_is_correct
-      data_context = SassC::Native.make_data_context(SAMPLE_SASS_STRING)
-      context = SassC::Native.data_context_get_context(data_context)
-      SassC::Native.compile_data_context(data_context)
+      @data_context = SassC::Native.make_data_context(SAMPLE_SASS_STRING)
+      context = SassC::Native.data_context_get_context(@data_context)
+      SassC::Native.compile_data_context(@data_context)
 
       css = SassC::Native.context_get_output_string(context)
       assert_equal SAMPLE_CSS_OUTPUT, css
     end
 
     def test_compile_status_is_one_if_failed
-      data_context = SassC::Native.make_data_context(BAD_SASS_STRING)
-      context = SassC::Native.data_context_get_context(data_context)
+      @data_context = SassC::Native.make_data_context(BAD_SASS_STRING)
+      context = SassC::Native.data_context_get_context(@data_context)
 
-      status = SassC::Native.compile_data_context(data_context)
+      status = SassC::Native.compile_data_context(@data_context)
       refute_equal 0, status
 
       status = SassC::Native.context_get_error_status(context)
@@ -45,6 +49,28 @@ module SmokeTest
     end
 
     def test_failed_compile_gives_error_message
+    end
+
+    def test_custom_function
+
+      # data_context = SassC::Native.make_data_context("foo { margin: foo(); }")
+      # context = SassC::Native.data_context_get_context(data_context)
+      # options = SassC::Native.context_get_options(context)
+
+      # callback = SassC::Native.make_function(
+      #   "foo()",
+      #   SassC::Native::Callback,
+      #   nil
+      # )
+
+      # list = SassC::Native.make_function_list(1)
+      # SassC::Native::function_set_list_entry(list, 0, callback);
+      # SassC::Native::option_set_c_functions(options, list)
+
+      # SassC::Native.compile_data_context(data_context)
+
+      # css = SassC::Native.context_get_output_string(context)
+      # assert_equal "foo { margin: 43px }", css
     end
   end
 
@@ -60,13 +86,17 @@ module SmokeTest
       @construct = nil
     end
 
+    def teardown
+      SassC::Native.delete_file_context(@file_context)
+    end
+
     def test_compile_status_is_zero_when_successful
       @construct.file("style.scss", SAMPLE_SASS_STRING)
 
-      file_context = SassC::Native.make_file_context("style.scss")
-      context = SassC::Native.file_context_get_context(file_context)
+      @file_context = SassC::Native.make_file_context("style.scss")
+      context = SassC::Native.file_context_get_context(@file_context)
 
-      status = SassC::Native.compile_file_context(file_context)
+      status = SassC::Native.compile_file_context(@file_context)
       assert_equal 0, status
 
       status = SassC::Native.context_get_error_status(context)
@@ -76,9 +106,9 @@ module SmokeTest
     def test_compiled_css_is_correct
       @construct.file("style.scss", SAMPLE_SASS_STRING)
 
-      file_context = SassC::Native.make_file_context("style.scss")
-      context = SassC::Native.file_context_get_context(file_context)
-      SassC::Native.compile_file_context(file_context)
+      @file_context = SassC::Native.make_file_context("style.scss")
+      context = SassC::Native.file_context_get_context(@file_context)
+      SassC::Native.compile_file_context(@file_context)
 
       css = SassC::Native.context_get_output_string(context)
       assert_equal SAMPLE_CSS_OUTPUT, css
@@ -87,9 +117,9 @@ module SmokeTest
     def test_invalid_file_name
       @construct.file("style.scss", SAMPLE_SASS_STRING)
 
-      file_context = SassC::Native.make_file_context("style.jajaja")
-      context = SassC::Native.file_context_get_context(file_context)
-      status = SassC::Native.compile_file_context(file_context)
+      @file_context = SassC::Native.make_file_context("style.jajaja")
+      context = SassC::Native.file_context_get_context(@file_context)
+      status = SassC::Native.compile_file_context(@file_context)
 
       refute_equal 0, status
 
@@ -105,9 +135,9 @@ module SmokeTest
       @construct.file("import.scss", "@import 'import_parent'; $size: 30px;")
       @construct.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
 
-      file_context = SassC::Native.make_file_context("styles.scss")
-      context = SassC::Native.file_context_get_context(file_context)
-      status = SassC::Native.compile_file_context(file_context)
+      @file_context = SassC::Native.make_file_context("styles.scss")
+      context = SassC::Native.file_context_get_context(@file_context)
+      status = SassC::Native.compile_file_context(@file_context)
 
       assert_equal 0, status
 
