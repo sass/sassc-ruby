@@ -23,6 +23,10 @@ module SassC
     # ADDAPI const char* ADDCALL sass_string_get_value (const union Sass_Value* v);
     attach_function :sass_string_get_value, [:sass_value_ptr], :string
 
+    # ADDAPI size_t ADDCALL sass_list_get_length(const union Sass_Value* v)
+    # ADDAPI union Sass_Value* ADDCALL sass_list_get_value (const union Sass_Value* v, size_t i);
+    attach_function :sass_list_get_length, [:sass_value_ptr], :size_t
+    attach_function :sass_list_get_value, [:sass_value_ptr, :size_t], :sass_value_ptr
 
     # Getters for custom function descriptors
     # ADDAPI const char* ADDCALL sass_function_get_signature (Sass_C_Function_Callback fn);

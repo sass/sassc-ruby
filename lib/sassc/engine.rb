@@ -11,17 +11,25 @@ module SassC
     end
 
     def render
-      data_context = SassC::Native.make_data_context(@template)
-      context = SassC::Native.data_context_get_context(data_context)
-      options = SassC::Native.context_get_options(context)
+      data_context = Native.make_data_context(@template)
+      context = Native.data_context_get_context(data_context)
+      options = Native.context_get_options(context)
 
-      SassC::Native.option_set_is_indented_syntax_src(options, true) if sass?
-      SassC::Native.option_set_input_path(options, filename) if filename
+      Native.option_set_is_indented_syntax_src(options, true) if sass?
+      Native.option_set_input_path(options, filename) if filename
 
-      status = SassC::Native.compile_data_context(data_context)
-      css = SassC::Native.context_get_output_string(context)
+      callbacks = {}
+      Script.setup_custom_functions(options, callbacks)
 
-      SassC::Native.delete_data_context(data_context)
+      status = Native.compile_data_context(data_context)
+      css = Native.context_get_output_string(context)
+      callbacks = {}
+
+      if status != 0
+        puts SassC::Native.context_get_error_message(context)
+      end
+
+      Native.delete_data_context(data_context)
 
       return css unless quiet?
     end
