@@ -6,7 +6,9 @@ module SassC
       end
     end
 
-    def self.setup_custom_functions(options, callbacks)
+    def self.setup_custom_functions(options)
+      callbacks = {}
+
       list = Native.make_function_list(custom_functions.count)
 
       functs = Class.new.extend(Functions)
@@ -32,6 +34,12 @@ module SassC
       end
 
       Native::option_set_c_functions(options, list)
+
+      status = yield
+
+      callbacks
+
+      status
     end
 
     def self.formatted_function_name(function_name)

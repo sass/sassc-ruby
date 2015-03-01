@@ -18,12 +18,11 @@ module SassC
       Native.option_set_is_indented_syntax_src(options, true) if sass?
       Native.option_set_input_path(options, filename) if filename
 
-      callbacks = {}
-      Script.setup_custom_functions(options, callbacks)
+      status = Script.setup_custom_functions(options) do
+        Native.compile_data_context(data_context)
+      end
 
-      status = Native.compile_data_context(data_context)
       css = Native.context_get_output_string(context)
-      callbacks = {}
 
       if status != 0
         puts SassC::Native.context_get_error_message(context)
