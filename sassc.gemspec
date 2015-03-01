@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["bolandryanm@gmail.com"]
   spec.summary       = "Use Libsass with Ruby!"
   spec.description   = "Use Libsass with Ruby!"
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/bolandrm/sassc-ruby"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
