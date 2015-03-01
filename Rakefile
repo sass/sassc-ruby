@@ -1,5 +1,3 @@
-require "bundler/gem_tasks"
-
 task default: :prepare
 
 task prepare: "ext/lib/libsass.so"
