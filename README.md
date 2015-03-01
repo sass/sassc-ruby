@@ -1,4 +1,4 @@
-# SassC [![Build Status](https://travis-ci.org/bolandrm/sassc.svg?branch=master)](https://travis-ci.org/bolandrm/sassc) [![Gem Version](https://badge.fury.io/rb/sassc.svg)](http://badge.fury.io/rb/sassc)
+# SassC [![Build Status](https://travis-ci.org/bolandrm/sassc-ruby.svg?branch=master)](https://travis-ci.org/bolandrm/sassc-ruby) [![Gem Version](https://badge.fury.io/rb/sassc.svg)](http://badge.fury.io/rb/sassc)
 
 TODO: Write a gem description
 
