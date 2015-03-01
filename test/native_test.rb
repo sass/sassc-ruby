@@ -1,18 +1,17 @@
 require_relative "test_helper"
-require "sassc"
 
-module SmokeTest
+module NativeTest
   SAMPLE_SASS_STRING = "$size: 30px; .hi { width: $size; }"
   SAMPLE_CSS_OUTPUT = ".hi {\n  width: 30px; }\n"
   BAD_SASS_STRING = "$size = 30px;"
 
-  class General < MiniTest::Test
+  class General < SassCTest
     def test_it_reports_the_libsass_version
       assert_equal "3.1.0", SassC::Native.version
     end
   end
 
-  class DataContext < MiniTest::Test
+  class DataContext < SassCTest
     def teardown
       SassC::Native.delete_data_context(@data_context)
     end
@@ -90,7 +89,7 @@ module SmokeTest
     end
   end
 
-  class FileContext < MiniTest::Test
+  class FileContext < SassCTest
     include TestConstruct::Helpers
 
     def around
