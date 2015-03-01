@@ -20,6 +20,7 @@ class FunctionsTest < SassCTest
 
     filename = fixture_path('paths.scss')
     assert data = File.read(filename)
+
     engine = ::SassC::Engine.new(data, {
       filename: filename,
       syntax: :scss
