@@ -50,5 +50,10 @@ module SassC
     def sass?
       @options[:syntax] == "sass"
     end
+
+    def load_paths
+      paths = @options[:load_paths]
+      paths.join(":") if paths
+    end
   end
 end

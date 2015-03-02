@@ -74,4 +74,32 @@ SCSS
     engine = SassC::Engine.new("$size: 30px;")
     assert_raises(SassC::Engine::NotRenderedError) { engine.dependencies }
   end
+
+  def test_load_paths
+    within_construct do |c|
+      c.directory("included_1")
+      c.directory("included_2")
+
+      c.file("included_1/import_parent.scss", "$s: 30px;")
+      c.file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
+      c.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+      assert_equal ".hi {\n  width: 30px; }\n", SassC::Engine.new(
+        File.read("styles.scss"),
+        load_paths: [ "included_1", "included_2" ]
+      ).render
+    end
+  end
+
+  def test_load_paths_not_configured
+    within_construct do |c|
+      c.file("included_1/import_parent.scss", "$s: 30px;")
+      c.file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
+      c.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+      assert_raises(SassC::SyntaxError) {
+        SassC::Engine.new(File.read("styles.scss")).render
+      }
+    end
+  end
 end
