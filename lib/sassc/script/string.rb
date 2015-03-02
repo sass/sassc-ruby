@@ -59,18 +59,24 @@ module SassC
         "#{quote}#{contents}#{quote}"
       end
 
-      STRING_REGEX = /^"(.*?)"$/
-
       def self.type(contents)
-        contents =~ STRING_REGEX ? :string : :identifier
+        unquote(contents) == contents ? :identifier : :string
       end
 
       def self.unquote(contents)
-        if contents =~ STRING_REGEX
-          $1.gsub(/\\(.)/, '\1')
-        else
-          contents
+        s = contents.dup
+
+        case contents[0,1]
+        when "'", '"', '`'
+          s[0] = ''
         end
+
+        case contents[-1,1]
+        when "'", '"', '`'
+          s[-1] = ''
+        end
+
+        return s
       end
 
       # Creates a new string.

@@ -6,12 +6,19 @@ module SassC
       end
     end
 
-    def self.setup_custom_functions(options)
+    def self.setup_custom_functions(options, sass_options)
       callbacks = {}
 
       list = Native.make_function_list(custom_functions.count)
 
       functs = Class.new.extend(Functions)
+      def functs.options=(opts)
+        @sass_options = opts
+      end
+      def functs.options
+        @sass_options
+      end
+      functs.options = sass_options
 
       custom_functions.each_with_index do |custom_function, i|
         callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
@@ -21,7 +28,14 @@ module SassC
           v = Native.string_get_value(v).dup
 
           s = String.new(String.unquote(v), String.type(v))
-          functs.send(custom_function, s).to_native
+
+          value = functs.send(custom_function, s)
+
+          if value
+            value.to_native
+          else
+            String.new("").to_native
+          end
         end
 
         callback = Native.make_function(
@@ -30,7 +44,7 @@ module SassC
           nil
         )
 
-        Native::function_set_list_entry(list, i, callback);
+        Native::function_set_list_entry(list, i, callback)
       end
 
       Native::option_set_c_functions(options, list)
