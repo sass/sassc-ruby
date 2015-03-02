@@ -23,7 +23,8 @@ module SassC
       css = Native.context_get_output_string(context)
 
       if status != 0
-        puts SassC::Native.context_get_error_message(context)
+        message = SassC::Native.context_get_error_message(context)
+        raise SyntaxError.new(message)
       end
 
       @dependencies = Native.context_get_included_files(context)
