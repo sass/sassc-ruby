@@ -3,11 +3,6 @@ module SassC
     def initialize(template, options = {})
       @template = template
       @options = options
-
-      # filename: input[:filename],
-      # syntax: self.class.syntax,
-      # cache_store: CacheStore.new(input[:cache], @cache_version),
-      # load_paths: input[:environment].paths
     end
 
     def render
@@ -28,9 +23,16 @@ module SassC
         puts SassC::Native.context_get_error_message(context)
       end
 
+      @dependencies = Native.context_get_included_files(context)
+
       Native.delete_data_context(data_context)
 
       return css unless quiet?
+    end
+
+    def dependencies
+      return [] unless @dependencies
+      Dependency.from_filenames(@dependencies)
     end
 
     private

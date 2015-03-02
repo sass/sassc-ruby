@@ -6,6 +6,8 @@ require "test_construct"
 require "sassc"
 
 class SassCTest < MiniTest::Test
+  include TestConstruct::Helpers
+
   FIXTURE_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "fixtures"))
 
   def self.test(name, &block)

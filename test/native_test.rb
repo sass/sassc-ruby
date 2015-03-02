@@ -90,8 +90,6 @@ module NativeTest
   end
 
   class FileContext < SassCTest
-    include TestConstruct::Helpers
-
     def around
       within_construct do |construct|
         @construct = construct

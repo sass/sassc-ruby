@@ -46,4 +46,20 @@ foo {
   b: $var + $another-var;}
 SCSS
   end
+
+  def test_dependency_filenames_are_reported
+    within_construct do |construct|
+      construct.file("not_included.scss", "$size: 30px;")
+      construct.file("import_parent.scss", "$size: 30px;")
+      construct.file("import.scss", "@import 'import_parent'; $size: 30px;")
+      construct.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+      engine = SassC::Engine.new(File.read("styles.scss"))
+      engine.render
+      deps = engine.dependencies
+      filenames = deps.map { |dep| dep.options[:filename] }.sort
+
+      assert_equal ["import.scss", "import_parent.scss"], filenames
+    end
+  end
 end
