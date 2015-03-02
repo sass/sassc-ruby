@@ -102,4 +102,21 @@ SCSS
       }
     end
   end
+
+  def test_sass_variation
+    sass = <<SASS
+$size: 30px
+.foo
+  width: $size
+SASS
+
+    css = <<CSS
+.foo {
+  width: 30px; }
+CSS
+
+    assert_equal css, SassC::Engine.new(sass, syntax: :sass).render
+    assert_equal css, SassC::Engine.new(sass, syntax: "sass").render
+    assert_raises(SassC::SyntaxError) { SassC::Engine.new(sass).render }
+  end
 end

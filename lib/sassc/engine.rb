@@ -50,7 +50,7 @@ module SassC
     end
 
     def sass?
-      @options[:syntax] == "sass"
+      @options[:syntax] && @options[:syntax].to_sym == :sass
     end
 
     def load_paths
