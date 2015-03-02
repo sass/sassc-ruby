@@ -16,7 +16,7 @@ module SassC
       Native.option_set_input_path(options, filename) if filename
       Native.option_set_include_path(options, load_paths)
 
-      status = Script.setup_custom_functions(options) do
+      status = Script.setup_custom_functions(options, @options) do
         Native.compile_data_context(data_context)
       end
 
