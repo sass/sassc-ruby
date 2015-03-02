@@ -38,7 +38,7 @@ module SassC
 
     # https://github.com/ffi/ffi/wiki/Examples#array-of-strings
     def self.return_string_array(ptr)
-      ptr.read_pointer.null? ? [] : ptr.get_array_of_string(0).compact
+      ptr.null? ? [] : ptr.get_array_of_string(0).compact
     end
 
     require_relative "native/native_context_api"

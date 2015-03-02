@@ -1,5 +1,7 @@
 module SassC
   class Engine
+    class NotRenderedError < StandardError; end
+
     def initialize(template, options = {})
       @template = template
       @options = options
@@ -31,7 +33,7 @@ module SassC
     end
 
     def dependencies
-      return [] unless @dependencies
+      raise NotRenderedError unless @dependencies
       Dependency.from_filenames(@dependencies)
     end
 

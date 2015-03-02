@@ -62,4 +62,16 @@ SCSS
       assert_equal ["import.scss", "import_parent.scss"], filenames
     end
   end
+
+  def test_no_dependencies
+    engine = SassC::Engine.new("$size: 30px;")
+    engine.render
+    deps = engine.dependencies
+    assert_equal [], deps
+  end
+
+  def test_not_rendered_error
+    engine = SassC::Engine.new("$size: 30px;")
+    assert_raises(SassC::Engine::NotRenderedError) { engine.dependencies }
+  end
 end
