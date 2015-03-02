@@ -1,10 +1,12 @@
 # SassC [![Build Status](https://travis-ci.org/bolandrm/sassc-ruby.svg?branch=master)](https://travis-ci.org/bolandrm/sassc-ruby) [![Gem Version](https://badge.fury.io/rb/sassc.svg)](http://badge.fury.io/rb/sassc)
 
-TODO: Write a gem description
+Use libsass with Ruby!
 
-## Usage
+This gem combines the speed of `libsass`, the [Sass C implementation](https://github.com/sass/libsass), with the easy of use of the original [Ruby Sass](https://github.com/sass/sass) library.
 
-TODO: Write usage instructions here
+## Libsass Version
+
+[3.1.0](https://github.com/sass/libsass/releases/tag/3.1.0)
 
 ## Contributing
 

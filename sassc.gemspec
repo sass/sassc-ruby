@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = SassC::VERSION
   spec.authors       = ["Ryan Boland"]
   spec.email         = ["bolandryanm@gmail.com"]
-  spec.summary       = "Use Libsass with Ruby!"
-  spec.description   = "Use Libsass with Ruby!"
+  spec.summary       = "Use libsass with Ruby!"
+  spec.description   = "Use libsass with Ruby!"
   spec.homepage      = "https://github.com/bolandrm/sassc-ruby"
   spec.license       = "MIT"
 
