@@ -32,6 +32,7 @@ module SassC
           value = functs.send(custom_function, s)
 
           if value
+            value = String.new(String.unquote(value.to_s), value.type)
             value.to_native
           else
             String.new("").to_native

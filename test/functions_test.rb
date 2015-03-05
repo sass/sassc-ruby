@@ -1,6 +1,12 @@
 require_relative "test_helper"
 
 class FunctionsTest < SassCTest
+  SassString = Struct.new(:value, :type) do
+    def to_s
+      value
+    end
+  end
+
   module ::SassC::Script::Functions
     def javascript_path(path)
       ::SassC::Script::String.new("/js/#{path.value}", :string)
@@ -8,6 +14,10 @@ class FunctionsTest < SassCTest
 
     def no_return_path(path)
       nil
+    end
+
+    def sass_return_path(path)
+      return SassString.new("'#{path.value}'", :string)
     end
 
     module Compass
@@ -18,9 +28,18 @@ class FunctionsTest < SassCTest
     include Compass
   end
 
+  def test_functions_may_return_sass_string_type
+    engine = ::SassC::Engine.new("div {url: url(sass_return_path('foo.svg'));}")
+
+    assert_equal <<-EOS, engine.render
+div {
+  url: url("foo.svg"); }
+      EOS
+  end
+
   def test_functions_work
     filename = fixture_path('paths.scss')
-    assert data = File.read(filename)
+    data = File.read(filename)
 
     engine = ::SassC::Engine.new(data, {
       filename: filename,
@@ -44,9 +63,6 @@ div {
   end
 
   def test_function_with_no_return_value
-    filename = fixture_path('paths.scss')
-    assert data = File.read(filename)
-
     engine = ::SassC::Engine.new("div {url: url(no-return-path('foo.svg'));}")
 
     assert_equal <<-EOS, engine.render
