@@ -35,11 +35,5 @@ module SassC
     attach_function :sass_function_get_signature, [:sass_c_function_callback_ptr], :string
     attach_function :sass_function_get_function, [:sass_c_function_callback_ptr], :sass_c_function
     attach_function :sass_function_get_cookie, [:sass_c_function_callback_ptr], :pointer
-
-
-    #callback :sass_c_function, [SassValue.ptr, :pointer], SassValue.ptr
-    Callback = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
-      SassC::Native.make_number(43, "px")
-    end
   end
 end

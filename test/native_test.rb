@@ -57,9 +57,13 @@ module NativeTest
 
       random_thing = FFI::MemoryPointer.from_string("hi")
 
+      funct = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
+        SassC::Native.make_number(43, "px")
+      end
+
       callback = SassC::Native.make_function(
         "foo()",
-        SassC::Native::Callback,
+        funct,
         random_thing
       )
 
@@ -71,7 +75,7 @@ module NativeTest
 
       first_list_entry = SassC::Native.function_get_list_entry(list, 0)
       assert_equal SassC::Native.function_get_function(first_list_entry),
-                   SassC::Native::Callback
+                   funct
       assert_equal SassC::Native.function_get_signature(first_list_entry),
                    "foo()"
       assert_equal SassC::Native.function_get_cookie(first_list_entry),
