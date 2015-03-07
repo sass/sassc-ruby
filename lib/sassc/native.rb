@@ -19,7 +19,12 @@ module SassC
     typedef :pointer, :sass_c_function_callback_ptr
     typedef :pointer, :sass_value_ptr
 
+    typedef :pointer, :sass_import_list_ptr
+    typedef :pointer, :sass_importer
+    typedef :pointer, :sass_import_ptr
+
     callback :sass_c_function, [:pointer, :pointer], :pointer
+    callback :sass_c_import_function, [:pointer, :pointer, :pointer], :pointer
 
     require_relative "native/sass_input_style"
     require_relative "native/sass_output_style"

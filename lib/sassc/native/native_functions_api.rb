@@ -35,5 +35,47 @@ module SassC
     attach_function :sass_function_get_signature, [:sass_c_function_callback_ptr], :string
     attach_function :sass_function_get_function, [:sass_c_function_callback_ptr], :sass_c_function
     attach_function :sass_function_get_cookie, [:sass_c_function_callback_ptr], :pointer
+
+    # Creators for custom importer callback (with some additional pointer)
+    # The pointer is mostly used to store the callback into the actual binding
+    # ADDAPI Sass_C_Import_Callback ADDCALL sass_make_importer (Sass_C_Import_Fn, void* cookie);
+    attach_function :sass_make_importer, [:sass_c_import_function, :pointer], :sass_importer
+
+    # Getters for import function descriptors
+    # ADDAPI Sass_C_Import_Fn ADDCALL sass_import_get_function (Sass_C_Import_Callback fn);
+    # ADDAPI void* ADDCALL sass_import_get_cookie (Sass_C_Import_Callback fn);
+
+    # Deallocator for associated memory
+    # ADDAPI void ADDCALL sass_delete_importer (Sass_C_Import_Callback fn);
+
+    # Creator for sass custom importer return argument list
+    # ADDAPI struct Sass_Import** ADDCALL sass_make_import_list (size_t length);
+    attach_function :sass_make_import_list, [:size_t], :sass_import_list_ptr
+
+    # Creator for a single import entry returned by the custom importer inside the list
+    # ADDAPI struct Sass_Import* ADDCALL sass_make_import_entry (const char* path, char* source, char* srcmap);
+    # ADDAPI struct Sass_Import* ADDCALL sass_make_import (const char* path, const char* base, char* source, char* srcmap);
+    attach_function :sass_make_import_entry, [:string, :pointer, :pointer], :sass_import_ptr
+
+    # Setters to insert an entry into the import list (you may also use [] access directly)
+    # Since we are dealing with pointers they should have a guaranteed and fixed size
+    # ADDAPI void ADDCALL sass_import_set_list_entry (struct Sass_Import** list, size_t idx, struct Sass_Import* entry);
+    attach_function :sass_import_set_list_entry, [:sass_import_list_ptr, :size_t, :sass_import_ptr], :void
+    # ADDAPI struct Sass_Import* ADDCALL sass_import_get_list_entry (struct Sass_Import** list, size_t idx);
+
+    # Getters for import entry
+    # ADDAPI const char* ADDCALL sass_import_get_path (struct Sass_Import*);
+    # ADDAPI const char* ADDCALL sass_import_get_base (struct Sass_Import*);
+    # ADDAPI const char* ADDCALL sass_import_get_source (struct Sass_Import*);
+    # ADDAPI const char* ADDCALL sass_import_get_srcmap (struct Sass_Import*);
+    # Explicit functions to take ownership of these items
+    # The property on our struct will be reset to NULL
+    # ADDAPI char* ADDCALL sass_import_take_source (struct Sass_Import*);
+    # ADDAPI char* ADDCALL sass_import_take_srcmap (struct Sass_Import*);
+
+    # Deallocator for associated memory (incl. entries)
+    # ADDAPI void ADDCALL sass_delete_import_list (struct Sass_Import**);
+    # Just in case we have some stray import structs
+    # ADDAPI void ADDCALL sass_delete_import (struct Sass_Import*);
   end
 end

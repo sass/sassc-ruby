@@ -168,5 +168,35 @@ module NativeTest
       assert_match /import_parent.scss/, included_files[1]
       assert_match /styles.scss/, included_files[2]
     end
+
+    def test_custom_importer
+      @construct.file("not_included.scss", "$size: $var + 25;")
+      @construct.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+      @file_context = SassC::Native.make_file_context("styles.scss")
+      context = SassC::Native.file_context_get_context(@file_context)
+      options = SassC::Native.context_get_options(context)
+
+      funct = FFI::Function.new(:pointer, [:pointer, :pointer, :pointer]) do |url, prev, cookie|
+        list = SassC::Native.make_import_list(2)
+
+        random_thing = FFI::MemoryPointer.from_string("$var: 5px;")
+        entry0 = SassC::Native.make_import_entry("fake_includ.scss", random_thing, nil)
+        entry1 = SassC::Native.make_import_entry("not_included.scss", nil, nil)
+        SassC::Native.import_set_list_entry(list, 0, entry0)
+        SassC::Native.import_set_list_entry(list, 1, entry1)
+        list
+      end
+
+      callback = SassC::Native.make_importer(funct, nil)
+
+      SassC::Native.option_set_importer(options, callback)
+
+      status = SassC::Native.compile_file_context(@file_context)
+      assert_equal 0, status
+
+      css = SassC::Native.context_get_output_string(context)
+      assert_equal SAMPLE_CSS_OUTPUT, css
+    end
   end
 end
