@@ -180,8 +180,11 @@ module NativeTest
       funct = FFI::Function.new(:pointer, [:pointer, :pointer, :pointer]) do |url, prev, cookie|
         list = SassC::Native.make_import_list(2)
 
-        random_thing = FFI::MemoryPointer.from_string("$var: 5px;")
-        entry0 = SassC::Native.make_import_entry("fake_includ.scss", random_thing, nil)
+        str = "$var: 5px;\0"
+        data = SassC::Native::LibC.malloc(str.size)
+        data.write_string(str)
+
+        entry0 = SassC::Native.make_import_entry("fake_includ.scss", data, nil)
         entry1 = SassC::Native.make_import_entry("not_included.scss", nil, nil)
         SassC::Native.import_set_list_entry(list, 0, entry0)
         SassC::Native.import_set_list_entry(list, 1, entry1)

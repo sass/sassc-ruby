@@ -67,6 +67,7 @@ module SassC
     # ADDAPI const char* ADDCALL sass_import_get_path (struct Sass_Import*);
     # ADDAPI const char* ADDCALL sass_import_get_base (struct Sass_Import*);
     # ADDAPI const char* ADDCALL sass_import_get_source (struct Sass_Import*);
+    attach_function :sass_import_get_source, [:sass_import_ptr], :string
     # ADDAPI const char* ADDCALL sass_import_get_srcmap (struct Sass_Import*);
     # Explicit functions to take ownership of these items
     # The property on our struct will be reset to NULL
