@@ -58,7 +58,13 @@ module SassC
     end
 
     def importer
-      @options[:importer]
+      @importer ||= begin
+        if @options[:importer]
+          @options[:importer].new
+        else
+          nil
+        end
+      end
     end
 
     def load_paths
