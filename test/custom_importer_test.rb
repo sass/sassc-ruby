@@ -2,7 +2,7 @@ require_relative "test_helper"
 
 class FunctionsTest < SassCTest
   class CustomImporter1 < SassC::Importer
-    def imports
+    def imports(path)
       [
         Import.new("#{path}1"),
         Import.new("#{path}2")
@@ -11,13 +11,13 @@ class FunctionsTest < SassCTest
   end
 
   class CustomImporter2 < SassC::Importer
-    def imports
+    def imports(path)
 
     end
   end
 
   class CustomImporter3 < SassC::Importer
-    def imports
+    def imports(path)
       []
     end
   end
@@ -46,6 +46,9 @@ class FunctionsTest < SassCTest
       importer: CustomImporter3
     })
 
-    #puts engine.render
+    assert_equal "", engine.render
+  end
+
+  def test_dependency_list
   end
 end

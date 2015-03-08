@@ -1,11 +1,9 @@
 module SassC
   class Importer
-    attr_reader :path
-
     def self.setup(native_options)
       @funct = FFI::Function.new(:pointer, [:pointer, :pointer, :pointer]) do |path, prev, cookie|
-        importer = new(path)
-        imports = importer.imports
+        importer = new
+        imports = importer.imports(path)
 
         if imports.empty?
           empty_imports
