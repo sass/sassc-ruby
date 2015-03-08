@@ -22,8 +22,6 @@ module SassC
         Native.compile_data_context(data_context)
       end
 
-      importer
-
       css = Native.context_get_output_string(context)
 
       if status != 0
