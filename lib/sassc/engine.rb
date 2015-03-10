@@ -10,15 +10,15 @@ module SassC
     def render
       data_context = Native.make_data_context(@template)
       context = Native.data_context_get_context(data_context)
-      options = Native.context_get_options(context)
+      native_options = Native.context_get_options(context)
 
-      Native.option_set_is_indented_syntax_src(options, true) if sass?
-      Native.option_set_input_path(options, filename) if filename
-      Native.option_set_include_path(options, load_paths)
+      Native.option_set_is_indented_syntax_src(native_options, true) if sass?
+      Native.option_set_input_path(native_options, filename) if filename
+      Native.option_set_include_path(native_options, load_paths)
 
-      importer.setup(options) if importer
+      importer.setup(native_options) if importer
 
-      status = Script.setup_custom_functions(options, @options) do
+      status = Script.setup_custom_functions(native_options, @options) do
         Native.compile_data_context(data_context)
       end
 
@@ -58,7 +58,7 @@ module SassC
     def importer
       @importer ||= begin
         if @options[:importer]
-          @options[:importer].new
+          @options[:importer].new(@options)
         else
           nil
         end

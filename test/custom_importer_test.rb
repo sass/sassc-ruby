@@ -2,7 +2,7 @@ require_relative "test_helper"
 
 class FunctionsTest < SassCTest
   class CustomImporter < SassC::Importer
-    def imports(path)
+    def imports(path, parent_path)
       if path =~ /styles/
         [
           Import.new("#{path}1.scss", source: "$var1: #000;"),
@@ -15,8 +15,14 @@ class FunctionsTest < SassCTest
   end
 
   class NoFilesImporter < SassC::Importer
-    def imports(path)
+    def imports(path, parent_path)
       []
+    end
+  end
+
+  class OptionsImporter < SassC::Importer
+    def imports(path, parent_path)
+      Import.new("name.scss", source: options[:custom_option_source])
     end
   end
 
@@ -83,5 +89,21 @@ SCSS
     })
 
     assert_equal "", engine.render
+  end
+
+  def test_custom_importer_can_access_sassc_options
+    engine = SassC::Engine.new("@import 'fake.scss';", {
+      importer: OptionsImporter,
+      custom_option_source: ".test { width: 30px; }"
+    })
+
+    assert_equal <<CSS, engine.render
+.test {
+  width: 30px; }
+CSS
+  end
+
+  def test_parent_path_is_accessible
+    skip "TBD"
   end
 end

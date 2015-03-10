@@ -1,18 +1,24 @@
 module SassC
   class Importer
-    def imports(path)
+    attr_reader :options
+
+    def imports(path, parent_path)
       # A custom importer must override this method.
       raise NotImplementedError
     end
 
     def setup(native_options)
-      @function = FFI::Function.new(:pointer, [:string, :pointer, :pointer]) do |path, prev, cookie|
-        imports = [*imports(path)]
+      @function = FFI::Function.new(:pointer, [:string, :string, :pointer]) do |path, parent_path, cookie|
+        imports = [*imports(path, parent_path)]
         self.class.imports_to_native(imports)
       end
 
       callback = SassC::Native.make_importer(@function, nil)
       SassC::Native.option_set_importer(native_options, callback)
+    end
+
+    def initialize(options)
+      @options = options
     end
 
     def self.empty_imports
