@@ -29,7 +29,7 @@ module SassC
       import_list = SassC::Native.make_import_list(imports.size)
 
       imports.each_with_index do |import, i|
-        source = import.source ? native_string(import.source) : nil
+        source = import.source ? Native.native_string(import.source) : nil
         source_map_path = nil
 
         entry = SassC::Native.make_import_entry(import.path, source, source_map_path)
@@ -37,13 +37,6 @@ module SassC
       end
 
       import_list
-    end
-
-    def self.native_string(string)
-      string += "\0"
-      data = SassC::Native::LibC.malloc(string.size)
-      data.write_string(string)
-      data
     end
 
     class Import
