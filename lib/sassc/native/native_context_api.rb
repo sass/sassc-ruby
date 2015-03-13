@@ -10,7 +10,11 @@ module SassC
     # ADDAPI struct Sass_File_Context* ADDCALL sass_make_file_context (const char* input_path);
     # ADDAPI struct Sass_Data_Context* ADDCALL sass_make_data_context (char* source_string);
     attach_function :sass_make_file_context, [:string], :sass_file_context_ptr
-    attach_function :sass_make_data_context, [:string], :sass_data_context_ptr
+    attach_function :_make_data_context, :sass_make_data_context, [:pointer], :sass_data_context_ptr
+
+    def self.make_data_context(data)
+      _make_data_context(Native.native_string(data))
+    end
 
     # Call the compilation step for the specific context
     # ADDAPI int ADDCALL sass_compile_file_context (struct Sass_File_Context* ctx);
@@ -65,7 +69,6 @@ module SassC
     # ADDAPI bool ADDCALL sass_option_get_is_indented_syntax_src (struct Sass_Options* options);
     # ADDAPI const char* ADDCALL sass_option_get_input_path (struct Sass_Options* options);
     # ADDAPI const char* ADDCALL sass_option_get_output_path (struct Sass_Options* options);
-    # ADDAPI const char* ADDCALL sass_option_get_image_path (struct Sass_Options* options);
     # ADDAPI const char* ADDCALL sass_option_get_include_path (struct Sass_Options* options);
     # ADDAPI const char* ADDCALL sass_option_get_source_map_file (struct Sass_Options* options);
     # ADDAPI Sass_C_Function_List ADDCALL sass_option_get_c_functions (struct Sass_Options* options);
@@ -78,7 +81,6 @@ module SassC
     attach_function :sass_option_get_is_indented_syntax_src, [:sass_options_ptr], :bool
     attach_function :sass_option_get_input_path, [:sass_options_ptr], :string
     attach_function :sass_option_get_output_path, [:sass_options_ptr], :string
-    attach_function :sass_option_get_image_path, [:sass_options_ptr], :string
     attach_function :sass_option_get_include_path, [:sass_options_ptr], :string
     attach_function :sass_option_get_source_map_file, [:sass_options_ptr], :string
     attach_function :sass_option_get_c_functions, [:sass_options_ptr], :sass_c_function_list_ptr
@@ -94,7 +96,6 @@ module SassC
     # ADDAPI void ADDCALL sass_option_set_is_indented_syntax_src (struct Sass_Options* options, bool is_indented_syntax_src);
     # ADDAPI void ADDCALL sass_option_set_input_path (struct Sass_Options* options, const char* input_path);
     # ADDAPI void ADDCALL sass_option_set_output_path (struct Sass_Options* options, const char* output_path);
-    # ADDAPI void ADDCALL sass_option_set_image_path (struct Sass_Options* options, const char* image_path);
     # ADDAPI void ADDCALL sass_option_set_include_path (struct Sass_Options* options, const char* include_path);
     # ADDAPI void ADDCALL sass_option_set_source_map_file (struct Sass_Options* options, const char* source_map_file);
     # ADDAPI void ADDCALL sass_option_set_c_functions (struct Sass_Options* options, Sass_C_Function_List c_functions);
@@ -108,7 +109,6 @@ module SassC
     attach_function :sass_option_set_is_indented_syntax_src, [:sass_options_ptr, :bool], :void
     attach_function :sass_option_set_input_path, [:sass_options_ptr, :string], :void
     attach_function :sass_option_set_output_path, [:sass_options_ptr, :string], :void
-    attach_function :sass_option_set_image_path, [:sass_options_ptr, :string], :void
     attach_function :sass_option_set_include_path, [:sass_options_ptr, :string], :void
     attach_function :sass_option_set_source_map_file, [:sass_options_ptr, :string], :void
     attach_function :sass_option_set_c_functions, [:sass_options_ptr, :pointer], :void

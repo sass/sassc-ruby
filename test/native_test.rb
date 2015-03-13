@@ -7,7 +7,7 @@ module NativeTest
 
   class General < SassCTest
     def test_it_reports_the_libsass_version
-      assert_equal "3.1.0", SassC::Native.version
+      assert_equal "3.2.0-beta.1-3-gdea2", SassC::Native.version
     end
   end
 
