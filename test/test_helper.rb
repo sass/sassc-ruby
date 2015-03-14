@@ -6,13 +6,7 @@ require "test_construct"
 require "sassc"
 
 class SassCTest < MiniTest::Test
-  include TestConstruct::Helpers
-
   FIXTURE_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "fixtures"))
-
-  def self.test(name, &block)
-    define_method("test_#{name.inspect}", &block)
-  end
 
   def fixture(path)
     IO.read(fixture_path(path))
@@ -27,3 +21,22 @@ class SassCTest < MiniTest::Test
   end
 end
 
+module TempFileTest
+  include TestConstruct::Helpers
+
+  def around
+    within_construct do |construct|
+      @construct = construct
+      yield
+    end
+    @construct = nil
+  end
+
+  def temp_file(filename, contents)
+    @construct.file(filename, contents)
+  end
+
+  def temp_dir(directory)
+    @construct.directory(directory)
+  end
+end

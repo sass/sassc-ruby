@@ -1,6 +1,8 @@
 require_relative "test_helper"
 
 class EngineTest < SassCTest
+  include TempFileTest
+
   def render(data)
     SassC::Engine.new(data).render
   end
@@ -48,19 +50,17 @@ SCSS
   end
 
   def test_dependency_filenames_are_reported
-    within_construct do |construct|
-      construct.file("not_included.scss", "$size: 30px;")
-      construct.file("import_parent.scss", "$size: 30px;")
-      construct.file("import.scss", "@import 'import_parent'; $size: 30px;")
-      construct.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+    temp_file("not_included.scss", "$size: 30px;")
+    temp_file("import_parent.scss", "$size: 30px;")
+    temp_file("import.scss", "@import 'import_parent'; $size: 30px;")
+    temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
 
-      engine = SassC::Engine.new(File.read("styles.scss"))
-      engine.render
-      deps = engine.dependencies
-      filenames = deps.map { |dep| dep.options[:filename] }.sort
+    engine = SassC::Engine.new(File.read("styles.scss"))
+    engine.render
+    deps = engine.dependencies
+    filenames = deps.map { |dep| dep.options[:filename] }.sort
 
-      assert_equal ["import.scss", "import_parent.scss"], filenames
-    end
+    assert_equal ["import.scss", "import_parent.scss"], filenames
   end
 
   def test_no_dependencies
@@ -76,30 +76,26 @@ SCSS
   end
 
   def test_load_paths
-    within_construct do |c|
-      c.directory("included_1")
-      c.directory("included_2")
+    temp_dir("included_1")
+    temp_dir("included_2")
 
-      c.file("included_1/import_parent.scss", "$s: 30px;")
-      c.file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
-      c.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+    temp_file("included_1/import_parent.scss", "$s: 30px;")
+    temp_file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
+    temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
 
-      assert_equal ".hi {\n  width: 30px; }\n", SassC::Engine.new(
-        File.read("styles.scss"),
-        load_paths: [ "included_1", "included_2" ]
-      ).render
-    end
+    assert_equal ".hi {\n  width: 30px; }\n", SassC::Engine.new(
+      File.read("styles.scss"),
+      load_paths: [ "included_1", "included_2" ]
+    ).render
   end
 
   def test_load_paths_not_configured
-    within_construct do |c|
-      c.file("included_1/import_parent.scss", "$s: 30px;")
-      c.file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
-      c.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+    temp_file("included_1/import_parent.scss", "$s: 30px;")
+    temp_file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
+    temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
 
-      assert_raises(SassC::SyntaxError) {
-        SassC::Engine.new(File.read("styles.scss")).render
-      }
+    assert_raises(SassC::SyntaxError) do
+      SassC::Engine.new(File.read("styles.scss")).render
     end
   end
 

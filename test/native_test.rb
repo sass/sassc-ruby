@@ -81,7 +81,6 @@ module NativeTest
       assert_equal SassC::Native.function_get_cookie(first_list_entry),
                    random_thing
 
-      #string = SassC::Native.make_string("hello")
       string = SassC::Native.make_string("hello")
       assert_equal :sass_string, SassC::Native.value_get_tag(string)
       assert_equal "hello", SassC::Native.string_get_value(string)
@@ -94,21 +93,14 @@ module NativeTest
   end
 
   class FileContext < SassCTest
-    def around
-      within_construct do |construct|
-        @construct = construct
-        yield
-      end
-
-      @construct = nil
-    end
+    include TempFileTest
 
     def teardown
       SassC::Native.delete_file_context(@file_context)
     end
 
     def test_compile_status_is_zero_when_successful
-      @construct.file("style.scss", SAMPLE_SASS_STRING)
+      temp_file("style.scss", SAMPLE_SASS_STRING)
 
       @file_context = SassC::Native.make_file_context("style.scss")
       context = SassC::Native.file_context_get_context(@file_context)
@@ -121,7 +113,7 @@ module NativeTest
     end
 
     def test_compiled_css_is_correct
-      @construct.file("style.scss", SAMPLE_SASS_STRING)
+      temp_file("style.scss", SAMPLE_SASS_STRING)
 
       @file_context = SassC::Native.make_file_context("style.scss")
       context = SassC::Native.file_context_get_context(@file_context)
@@ -132,7 +124,7 @@ module NativeTest
     end
 
     def test_invalid_file_name
-      @construct.file("style.scss", SAMPLE_SASS_STRING)
+      temp_file("style.scss", SAMPLE_SASS_STRING)
 
       @file_context = SassC::Native.make_file_context("style.jajaja")
       context = SassC::Native.file_context_get_context(@file_context)
@@ -147,10 +139,10 @@ module NativeTest
     end
 
     def test_file_import
-      @construct.file("not_included.scss", "$size: 30px;")
-      @construct.file("import_parent.scss", "$size: 30px;")
-      @construct.file("import.scss", "@import 'import_parent'; $size: 30px;")
-      @construct.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+      temp_file("not_included.scss", "$size: 30px;")
+      temp_file("import_parent.scss", "$size: 30px;")
+      temp_file("import.scss", "@import 'import_parent'; $size: 30px;")
+      temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
 
       @file_context = SassC::Native.make_file_context("styles.scss")
       context = SassC::Native.file_context_get_context(@file_context)
@@ -170,8 +162,8 @@ module NativeTest
     end
 
     def test_custom_importer
-      @construct.file("not_included.scss", "$size: $var + 25;")
-      @construct.file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+      temp_file("not_included.scss", "$size: $var + 25;")
+      temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
 
       @file_context = SassC::Native.make_file_context("styles.scss")
       context = SassC::Native.file_context_get_context(@file_context)

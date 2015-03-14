@@ -1,6 +1,8 @@
 require_relative "test_helper"
 
 class FunctionsTest < SassCTest
+  include TempFileTest
+
   class CustomImporter < SassC::Importer
     def imports(path, parent_path)
       if path =~ /styles/
@@ -26,18 +28,9 @@ class FunctionsTest < SassCTest
     end
   end
 
-  def around
-    within_construct do |construct|
-      @construct = construct
-      yield
-    end
-
-    @construct = nil
-  end
-
   def test_custom_importer_works
-    @construct.file("styles2.scss", ".hi { color: $var1; }")
-    @construct.file("fonts.scss", ".font { color: $var1; }")
+    temp_file("styles2.scss", ".hi { color: $var1; }")
+    temp_file("fonts.scss", ".font { color: $var1; }")
 
     data = <<SCSS
 @import "styles";
@@ -58,8 +51,8 @@ CSS
   end
 
   def test_dependency_list
-    @construct.file("styles2.scss", ".hi { color: $var1; }")
-    @construct.file("fonts.scss", ".font { color: $var1; }")
+    temp_file("styles2.scss", ".hi { color: $var1; }")
+    temp_file("fonts.scss", ".font { color: $var1; }")
 
     data = <<SCSS
 @import "styles";
