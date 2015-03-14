@@ -13,27 +13,23 @@ module SassC
         self.class.imports_to_native(imports)
       end
 
-      callback = SassC::Native.make_importer(@function, nil)
-      SassC::Native.option_set_importer(native_options, callback)
+      callback = Native.make_importer(@function, nil)
+      Native.option_set_importer(native_options, callback)
     end
 
     def initialize(options)
       @options = options
     end
 
-    def self.empty_imports
-      SassC::Native.make_import_list(0)
-    end
-
     def self.imports_to_native(imports)
-      import_list = SassC::Native.make_import_list(imports.size)
+      import_list = Native.make_import_list(imports.size)
 
       imports.each_with_index do |import, i|
         source = import.source ? Native.native_string(import.source) : nil
         source_map_path = nil
 
-        entry = SassC::Native.make_import_entry(import.path, source, source_map_path)
-        SassC::Native.import_set_list_entry(import_list, i, entry)
+        entry = Native.make_import_entry(import.path, source, source_map_path)
+        Native.import_set_list_entry(import_list, i, entry)
       end
 
       import_list

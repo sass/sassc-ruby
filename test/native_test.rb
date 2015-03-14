@@ -1,197 +1,199 @@
 require_relative "test_helper"
 
-module NativeTest
-  SAMPLE_SASS_STRING = "$size: 30px; .hi { width: $size; }"
-  SAMPLE_CSS_OUTPUT = ".hi {\n  width: 30px; }\n"
-  BAD_SASS_STRING = "$size = 30px;"
+module SassC
+  module NativeTest
+    SAMPLE_SASS_STRING = "$size: 30px; .hi { width: $size; }"
+    SAMPLE_CSS_OUTPUT = ".hi {\n  width: 30px; }\n"
+    BAD_SASS_STRING = "$size = 30px;"
 
-  class General < MiniTest::Test
-    def test_it_reports_the_libsass_version
-      assert_equal "3.2.0-beta.1", SassC::Native.version
-    end
-  end
-
-  class DataContext < MiniTest::Test
-    def teardown
-      SassC::Native.delete_data_context(@data_context)
+    class General < MiniTest::Test
+      def test_it_reports_the_libsass_version
+        assert_equal "3.2.0-beta.1", Native.version
+      end
     end
 
-    def test_compile_status_is_zero_when_successful
-      @data_context = SassC::Native.make_data_context(SAMPLE_SASS_STRING)
-      context = SassC::Native.data_context_get_context(@data_context)
-
-      status = SassC::Native.compile_data_context(@data_context)
-      assert_equal 0, status
-
-      status = SassC::Native.context_get_error_status(context)
-      assert_equal 0, status
-    end
-
-    def test_compiled_css_is_correct
-      @data_context = SassC::Native.make_data_context(SAMPLE_SASS_STRING)
-      context = SassC::Native.data_context_get_context(@data_context)
-      SassC::Native.compile_data_context(@data_context)
-
-      css = SassC::Native.context_get_output_string(context)
-      assert_equal SAMPLE_CSS_OUTPUT, css
-    end
-
-    def test_compile_status_is_one_if_failed
-      @data_context = SassC::Native.make_data_context(BAD_SASS_STRING)
-      context = SassC::Native.data_context_get_context(@data_context)
-
-      status = SassC::Native.compile_data_context(@data_context)
-      refute_equal 0, status
-
-      status = SassC::Native.context_get_error_status(context)
-      refute_equal 0, status
-    end
-
-    def test_failed_compile_gives_error_message
-    end
-
-    def test_custom_function
-      data_context = SassC::Native.make_data_context("foo { margin: foo(); }")
-      context = SassC::Native.data_context_get_context(data_context)
-      options = SassC::Native.context_get_options(context)
-
-      random_thing = FFI::MemoryPointer.from_string("hi")
-
-      funct = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
-        SassC::Native.make_number(43, "px")
+    class DataContext < MiniTest::Test
+      def teardown
+        Native.delete_data_context(@data_context)
       end
 
-      callback = SassC::Native.make_function(
-        "foo()",
-        funct,
-        random_thing
-      )
+      def test_compile_status_is_zero_when_successful
+        @data_context = Native.make_data_context(SAMPLE_SASS_STRING)
+        context = Native.data_context_get_context(@data_context)
 
-      list = SassC::Native.make_function_list(1)
-      SassC::Native::function_set_list_entry(list, 0, callback);
-      SassC::Native::option_set_c_functions(options, list)
+        status = Native.compile_data_context(@data_context)
+        assert_equal 0, status
 
-      assert_equal SassC::Native.option_get_c_functions(options), list
-
-      first_list_entry = SassC::Native.function_get_list_entry(list, 0)
-      assert_equal SassC::Native.function_get_function(first_list_entry),
-                   funct
-      assert_equal SassC::Native.function_get_signature(first_list_entry),
-                   "foo()"
-      assert_equal SassC::Native.function_get_cookie(first_list_entry),
-                   random_thing
-
-      string = SassC::Native.make_string("hello")
-      assert_equal :sass_string, SassC::Native.value_get_tag(string)
-      assert_equal "hello", SassC::Native.string_get_value(string)
-
-      SassC::Native.compile_data_context(data_context)
-
-      css = SassC::Native.context_get_output_string(context)
-      assert_equal "foo {\n  margin: 43px; }\n", css
-    end
-  end
-
-  class FileContext < MiniTest::Test
-    include TempFileTest
-
-    def teardown
-      SassC::Native.delete_file_context(@file_context)
-    end
-
-    def test_compile_status_is_zero_when_successful
-      temp_file("style.scss", SAMPLE_SASS_STRING)
-
-      @file_context = SassC::Native.make_file_context("style.scss")
-      context = SassC::Native.file_context_get_context(@file_context)
-
-      status = SassC::Native.compile_file_context(@file_context)
-      assert_equal 0, status
-
-      status = SassC::Native.context_get_error_status(context)
-      assert_equal 0, status
-    end
-
-    def test_compiled_css_is_correct
-      temp_file("style.scss", SAMPLE_SASS_STRING)
-
-      @file_context = SassC::Native.make_file_context("style.scss")
-      context = SassC::Native.file_context_get_context(@file_context)
-      SassC::Native.compile_file_context(@file_context)
-
-      css = SassC::Native.context_get_output_string(context)
-      assert_equal SAMPLE_CSS_OUTPUT, css
-    end
-
-    def test_invalid_file_name
-      temp_file("style.scss", SAMPLE_SASS_STRING)
-
-      @file_context = SassC::Native.make_file_context("style.jajaja")
-      context = SassC::Native.file_context_get_context(@file_context)
-      status = SassC::Native.compile_file_context(@file_context)
-
-      refute_equal 0, status
-
-      error = SassC::Native.context_get_error_message(context)
-
-      assert_match "Error: File to read not found or unreadable: style.jajaja",
-                   error
-    end
-
-    def test_file_import
-      temp_file("not_included.scss", "$size: 30px;")
-      temp_file("import_parent.scss", "$size: 30px;")
-      temp_file("import.scss", "@import 'import_parent'; $size: 30px;")
-      temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
-
-      @file_context = SassC::Native.make_file_context("styles.scss")
-      context = SassC::Native.file_context_get_context(@file_context)
-      status = SassC::Native.compile_file_context(@file_context)
-
-      assert_equal 0, status
-
-      css = SassC::Native.context_get_output_string(context)
-      assert_equal SAMPLE_CSS_OUTPUT, css
-
-      included_files = SassC::Native.context_get_included_files(context)
-      included_files.sort!
-
-      assert_match /import.scss/, included_files[0]
-      assert_match /import_parent.scss/, included_files[1]
-      assert_match /styles.scss/, included_files[2]
-    end
-
-    def test_custom_importer
-      temp_file("not_included.scss", "$size: $var + 25;")
-      temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
-
-      @file_context = SassC::Native.make_file_context("styles.scss")
-      context = SassC::Native.file_context_get_context(@file_context)
-      options = SassC::Native.context_get_options(context)
-
-      funct = FFI::Function.new(:pointer, [:pointer, :pointer, :pointer]) do |url, prev, cookie|
-        list = SassC::Native.make_import_list(2)
-
-        str = "$var: 5px;\0"
-        data = SassC::Native::LibC.malloc(str.size)
-        data.write_string(str)
-
-        entry0 = SassC::Native.make_import_entry("fake_includ.scss", data, nil)
-        entry1 = SassC::Native.make_import_entry("not_included.scss", nil, nil)
-        SassC::Native.import_set_list_entry(list, 0, entry0)
-        SassC::Native.import_set_list_entry(list, 1, entry1)
-        list
+        status = Native.context_get_error_status(context)
+        assert_equal 0, status
       end
 
-      callback = SassC::Native.make_importer(funct, nil)
+      def test_compiled_css_is_correct
+        @data_context = Native.make_data_context(SAMPLE_SASS_STRING)
+        context = Native.data_context_get_context(@data_context)
+        Native.compile_data_context(@data_context)
 
-      SassC::Native.option_set_importer(options, callback)
+        css = Native.context_get_output_string(context)
+        assert_equal SAMPLE_CSS_OUTPUT, css
+      end
 
-      status = SassC::Native.compile_file_context(@file_context)
-      assert_equal 0, status
+      def test_compile_status_is_one_if_failed
+        @data_context = Native.make_data_context(BAD_SASS_STRING)
+        context = Native.data_context_get_context(@data_context)
 
-      css = SassC::Native.context_get_output_string(context)
-      assert_equal SAMPLE_CSS_OUTPUT, css
+        status = Native.compile_data_context(@data_context)
+        refute_equal 0, status
+
+        status = Native.context_get_error_status(context)
+        refute_equal 0, status
+      end
+
+      def test_failed_compile_gives_error_message
+      end
+
+      def test_custom_function
+        data_context = Native.make_data_context("foo { margin: foo(); }")
+        context = Native.data_context_get_context(data_context)
+        options = Native.context_get_options(context)
+
+        random_thing = FFI::MemoryPointer.from_string("hi")
+
+        funct = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
+          Native.make_number(43, "px")
+        end
+
+        callback = Native.make_function(
+          "foo()",
+          funct,
+          random_thing
+        )
+
+        list = Native.make_function_list(1)
+        Native::function_set_list_entry(list, 0, callback);
+        Native::option_set_c_functions(options, list)
+
+        assert_equal Native.option_get_c_functions(options), list
+
+        first_list_entry = Native.function_get_list_entry(list, 0)
+        assert_equal Native.function_get_function(first_list_entry),
+                     funct
+        assert_equal Native.function_get_signature(first_list_entry),
+                     "foo()"
+        assert_equal Native.function_get_cookie(first_list_entry),
+                     random_thing
+
+        string = Native.make_string("hello")
+        assert_equal :sass_string, Native.value_get_tag(string)
+        assert_equal "hello", Native.string_get_value(string)
+
+        Native.compile_data_context(data_context)
+
+        css = Native.context_get_output_string(context)
+        assert_equal "foo {\n  margin: 43px; }\n", css
+      end
+    end
+
+    class FileContext < MiniTest::Test
+      include TempFileTest
+
+      def teardown
+        Native.delete_file_context(@file_context)
+      end
+
+      def test_compile_status_is_zero_when_successful
+        temp_file("style.scss", SAMPLE_SASS_STRING)
+
+        @file_context = Native.make_file_context("style.scss")
+        context = Native.file_context_get_context(@file_context)
+
+        status = Native.compile_file_context(@file_context)
+        assert_equal 0, status
+
+        status = Native.context_get_error_status(context)
+        assert_equal 0, status
+      end
+
+      def test_compiled_css_is_correct
+        temp_file("style.scss", SAMPLE_SASS_STRING)
+
+        @file_context = Native.make_file_context("style.scss")
+        context = Native.file_context_get_context(@file_context)
+        Native.compile_file_context(@file_context)
+
+        css = Native.context_get_output_string(context)
+        assert_equal SAMPLE_CSS_OUTPUT, css
+      end
+
+      def test_invalid_file_name
+        temp_file("style.scss", SAMPLE_SASS_STRING)
+
+        @file_context = Native.make_file_context("style.jajaja")
+        context = Native.file_context_get_context(@file_context)
+        status = Native.compile_file_context(@file_context)
+
+        refute_equal 0, status
+
+        error = Native.context_get_error_message(context)
+
+        assert_match "Error: File to read not found or unreadable: style.jajaja",
+                     error
+      end
+
+      def test_file_import
+        temp_file("not_included.scss", "$size: 30px;")
+        temp_file("import_parent.scss", "$size: 30px;")
+        temp_file("import.scss", "@import 'import_parent'; $size: 30px;")
+        temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+        @file_context = Native.make_file_context("styles.scss")
+        context = Native.file_context_get_context(@file_context)
+        status = Native.compile_file_context(@file_context)
+
+        assert_equal 0, status
+
+        css = Native.context_get_output_string(context)
+        assert_equal SAMPLE_CSS_OUTPUT, css
+
+        included_files = Native.context_get_included_files(context)
+        included_files.sort!
+
+        assert_match /import.scss/, included_files[0]
+        assert_match /import_parent.scss/, included_files[1]
+        assert_match /styles.scss/, included_files[2]
+      end
+
+      def test_custom_importer
+        temp_file("not_included.scss", "$size: $var + 25;")
+        temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+        @file_context = Native.make_file_context("styles.scss")
+        context = Native.file_context_get_context(@file_context)
+        options = Native.context_get_options(context)
+
+        funct = FFI::Function.new(:pointer, [:pointer, :pointer, :pointer]) do |url, prev, cookie|
+          list = Native.make_import_list(2)
+
+          str = "$var: 5px;\0"
+          data = Native::LibC.malloc(str.size)
+          data.write_string(str)
+
+          entry0 = Native.make_import_entry("fake_includ.scss", data, nil)
+          entry1 = Native.make_import_entry("not_included.scss", nil, nil)
+          Native.import_set_list_entry(list, 0, entry0)
+          Native.import_set_list_entry(list, 1, entry1)
+          list
+        end
+
+        callback = Native.make_importer(funct, nil)
+
+        Native.option_set_importer(options, callback)
+
+        status = Native.compile_file_context(@file_context)
+        assert_equal 0, status
+
+        css = Native.context_get_output_string(context)
+        assert_equal SAMPLE_CSS_OUTPUT, css
+      end
     end
   end
 end

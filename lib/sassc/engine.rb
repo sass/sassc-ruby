@@ -1,7 +1,7 @@
+require_relative "error"
+
 module SassC
   class Engine
-    class NotRenderedError < StandardError; end
-
     def initialize(template, options = {})
       @template = template
       @options = options
@@ -25,7 +25,7 @@ module SassC
       css = Native.context_get_output_string(context)
 
       if status != 0
-        message = SassC::Native.context_get_error_message(context)
+        message = Native.context_get_error_message(context)
         raise SyntaxError.new(message)
       end
 

@@ -49,7 +49,7 @@ module SassC
 
     def self.native_string(string)
       string += "\0"
-      data = SassC::Native::LibC.malloc(string.size)
+      data = Native::LibC.malloc(string.size)
       data.write_string(string)
       data
     end

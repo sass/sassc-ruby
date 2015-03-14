@@ -1,14 +1,15 @@
 require_relative "test_helper"
 
-class EngineTest < MiniTest::Test
-  include TempFileTest
+module SassC
+  class EngineTest < MiniTest::Test
+    include TempFileTest
 
-  def render(data)
-    SassC::Engine.new(data).render
-  end
+    def render(data)
+      Engine.new(data).render
+    end
 
-  def test_one_line_comments
-    assert_equal <<CSS, render(<<SCSS)
+    def test_one_line_comments
+      assert_equal <<CSS, render(<<SCSS)
 .foo {
   baz: bang; }
 CSS
@@ -16,7 +17,7 @@ CSS
   baz: bang; //}
 }
 SCSS
-    assert_equal <<CSS, render(<<SCSS)
+      assert_equal <<CSS, render(<<SCSS)
 .foo bar[val="//"] {
   baz: bang; }
 CSS
@@ -26,8 +27,8 @@ CSS
 SCSS
   end
 
-  def test_variables
-    assert_equal <<CSS, render(<<SCSS)
+    def test_variables
+      assert_equal <<CSS, render(<<SCSS)
 blat {
   a: foo; }
 CSS
@@ -36,7 +37,7 @@ $var: foo;
 blat {a: $var}
 SCSS
 
-    assert_equal <<CSS, render(<<SCSS)
+      assert_equal <<CSS, render(<<SCSS)
 foo {
   a: 2;
   b: 6; }
@@ -47,60 +48,60 @@ foo {
   a: $var;
   b: $var + $another-var;}
 SCSS
-  end
-
-  def test_dependency_filenames_are_reported
-    temp_file("not_included.scss", "$size: 30px;")
-    temp_file("import_parent.scss", "$size: 30px;")
-    temp_file("import.scss", "@import 'import_parent'; $size: 30px;")
-    temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
-
-    engine = SassC::Engine.new(File.read("styles.scss"))
-    engine.render
-    deps = engine.dependencies
-    filenames = deps.map { |dep| dep.options[:filename] }.sort
-
-    assert_equal ["import.scss", "import_parent.scss"], filenames
-  end
-
-  def test_no_dependencies
-    engine = SassC::Engine.new("$size: 30px;")
-    engine.render
-    deps = engine.dependencies
-    assert_equal [], deps
-  end
-
-  def test_not_rendered_error
-    engine = SassC::Engine.new("$size: 30px;")
-    assert_raises(SassC::Engine::NotRenderedError) { engine.dependencies }
-  end
-
-  def test_load_paths
-    temp_dir("included_1")
-    temp_dir("included_2")
-
-    temp_file("included_1/import_parent.scss", "$s: 30px;")
-    temp_file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
-    temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
-
-    assert_equal ".hi {\n  width: 30px; }\n", SassC::Engine.new(
-      File.read("styles.scss"),
-      load_paths: [ "included_1", "included_2" ]
-    ).render
-  end
-
-  def test_load_paths_not_configured
-    temp_file("included_1/import_parent.scss", "$s: 30px;")
-    temp_file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
-    temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
-
-    assert_raises(SassC::SyntaxError) do
-      SassC::Engine.new(File.read("styles.scss")).render
     end
-  end
 
-  def test_sass_variation
-    sass = <<SASS
+    def test_dependency_filenames_are_reported
+      temp_file("not_included.scss", "$size: 30px;")
+      temp_file("import_parent.scss", "$size: 30px;")
+      temp_file("import.scss", "@import 'import_parent'; $size: 30px;")
+      temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+      engine = Engine.new(File.read("styles.scss"))
+      engine.render
+      deps = engine.dependencies
+      filenames = deps.map { |dep| dep.options[:filename] }.sort
+
+      assert_equal ["import.scss", "import_parent.scss"], filenames
+    end
+
+    def test_no_dependencies
+      engine = Engine.new("$size: 30px;")
+      engine.render
+      deps = engine.dependencies
+      assert_equal [], deps
+    end
+
+    def test_not_rendered_error
+      engine = Engine.new("$size: 30px;")
+      assert_raises(NotRenderedError) { engine.dependencies }
+    end
+
+    def test_load_paths
+      temp_dir("included_1")
+      temp_dir("included_2")
+
+      temp_file("included_1/import_parent.scss", "$s: 30px;")
+      temp_file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
+      temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+      assert_equal ".hi {\n  width: 30px; }\n", Engine.new(
+        File.read("styles.scss"),
+        load_paths: [ "included_1", "included_2" ]
+      ).render
+    end
+
+    def test_load_paths_not_configured
+      temp_file("included_1/import_parent.scss", "$s: 30px;")
+      temp_file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
+      temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+      assert_raises(SyntaxError) do
+        Engine.new(File.read("styles.scss")).render
+      end
+    end
+
+    def test_sass_variation
+      sass = <<SASS
 $size: 30px
 .foo
   width: $size
@@ -111,8 +112,9 @@ SASS
   width: 30px; }
 CSS
 
-    assert_equal css, SassC::Engine.new(sass, syntax: :sass).render
-    assert_equal css, SassC::Engine.new(sass, syntax: "sass").render
-    assert_raises(SassC::SyntaxError) { SassC::Engine.new(sass).render }
+      assert_equal css, Engine.new(sass, syntax: :sass).render
+      assert_equal css, Engine.new(sass, syntax: "sass").render
+      assert_raises(SyntaxError) { Engine.new(sass).render }
+    end
   end
 end
