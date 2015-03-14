@@ -47,6 +47,13 @@ module SassC
       ptr.null? ? [] : ptr.get_array_of_string(0).compact
     end
 
+    def self.native_string(string)
+      string += "\0"
+      data = SassC::Native::LibC.malloc(string.size)
+      data.write_string(string)
+      data
+    end
+
     require_relative "native/native_context_api"
     require_relative "native/native_functions_api"
   end

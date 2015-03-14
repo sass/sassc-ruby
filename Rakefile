@@ -11,7 +11,7 @@ task prepare: "ext/lib/libsass.so"
 file "ext/lib/libsass.so" do
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
   cd "ext/libsass"
-  sh "make lib/libsass.so"
+  sh 'make lib/libsass.so LDFLAGS="-Wall -O2"'
   cd gem_dir
 end
 
