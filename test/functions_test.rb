@@ -1,6 +1,8 @@
 require_relative "test_helper"
 
-class FunctionsTest < SassCTest
+class FunctionsTest < MiniTest::Test
+  include FixtureHelper
+
   SassString = Struct.new(:value, :type) do
     def to_s
       value
@@ -37,7 +39,7 @@ div {
       EOS
   end
 
-  def test_functions_work
+  def test_functions_work_with_varying_quotes_and_string_types
     filename = fixture_path('paths.scss')
     data = File.read(filename)
 
@@ -45,9 +47,6 @@ div {
       filename: filename,
       syntax: :scss
     })
-
-    # test identifier / string types
-    # test varying quotes
 
     assert_equal <<-EOS, engine.render
 div {

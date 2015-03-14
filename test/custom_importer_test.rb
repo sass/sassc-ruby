@@ -1,6 +1,6 @@
 require_relative "test_helper"
 
-class FunctionsTest < SassCTest
+class CustomImporterTest < MiniTest::Test
   include TempFileTest
 
   class CustomImporter < SassC::Importer

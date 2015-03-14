@@ -5,7 +5,7 @@ require "test_construct"
 
 require "sassc"
 
-class SassCTest < MiniTest::Test
+module FixtureHelper
   FIXTURE_ROOT = File.expand_path(File.join(File.dirname(__FILE__), "fixtures"))
 
   def fixture(path)

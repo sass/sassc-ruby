@@ -1,6 +1,6 @@
 require_relative "test_helper"
 
-class EngineTest < SassCTest
+class EngineTest < MiniTest::Test
   include TempFileTest
 
   def render(data)
