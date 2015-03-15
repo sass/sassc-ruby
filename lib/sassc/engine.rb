@@ -16,7 +16,7 @@ module SassC
       Native.option_set_input_path(native_options, filename) if filename
       Native.option_set_include_path(native_options, load_paths)
 
-      importer.setup(native_options) if importer
+      import_handler.setup(native_options)
 
       status = Script.setup_custom_functions(native_options, @options) do
         Native.compile_data_context(data_context)
@@ -55,14 +55,8 @@ module SassC
       @options[:syntax] && @options[:syntax].to_sym == :sass
     end
 
-    def importer
-      @importer ||= begin
-        if @options[:importer]
-          @options[:importer].new(@options)
-        else
-          nil
-        end
-      end
+    def import_handler
+      @import_handler ||= ImportHandler.new(@options)
     end
 
     def load_paths
