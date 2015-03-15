@@ -52,8 +52,14 @@ CSS
     end
 
     def test_dependency_list
+      temp_dir("fonts")
+      temp_dir("fonts/sub")
+      temp_file("fonts/sub/sub_fonts.scss", "$font: arial;")
       temp_file("styles2.scss", ".hi { color: $var1; }")
-      temp_file("fonts.scss", ".font { color: $var1; }")
+      temp_file "fonts/fonts.scss", <<SCSS
+@import "sub/sub_fonts";
+.font { font-familiy: $font; color: $var1; }
+SCSS
 
       data = <<SCSS
 @import "styles";
@@ -61,17 +67,19 @@ CSS
 SCSS
 
       engine = Engine.new(data, {
-        importer: CustomImporter
+        importer: CustomImporter,
+        load_paths: ["fonts"]
       })
       engine.render
 
-      dependencies = engine.dependencies.map(&:options).map { |o| o[:filename] }
+      dependencies = engine.dependencies.map(&:filename)
 
       # TODO: this behavior is kind of weird (styles1.scss is not included)
       # not sure why.
 
       assert_equal [
-        "fonts.scss",
+        "fonts/fonts.scss",
+        "fonts/sub/sub_fonts.scss",
         "styles",
         "styles2.scss"
       ], dependencies

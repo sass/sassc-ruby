@@ -59,9 +59,10 @@ SCSS
       engine = Engine.new(File.read("styles.scss"))
       engine.render
       deps = engine.dependencies
-      filenames = deps.map { |dep| dep.options[:filename] }.sort
 
-      assert_equal ["import.scss", "import_parent.scss"], filenames
+      expected = ["import.scss", "import_parent.scss"]
+      assert_equal expected, deps.map { |dep| dep.options[:filename] }.sort
+      assert_equal expected, deps.map(&:filename).sort
     end
 
     def test_no_dependencies
