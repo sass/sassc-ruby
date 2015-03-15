@@ -9,13 +9,7 @@ module SassC
 
       list = Native.make_function_list(Script.custom_functions.count)
 
-      functs = Class.new.extend(Script::Functions)
-      def functs.options=(opts)
-        @sass_options = opts
-      end
-      def functs.options
-        @sass_options
-      end
+      functs = FunctionWrapper.extend(Script::Functions)
       functs.options = @options
 
       Script.custom_functions.each_with_index do |custom_function, i|
@@ -52,5 +46,11 @@ module SassC
     end
 
     private
+
+    class FunctionWrapper
+      class << self
+        attr_accessor :options
+      end
+    end
   end
 end

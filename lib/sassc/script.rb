@@ -6,9 +6,6 @@ module SassC
       end
     end
 
-    def self.setup_custom_functions(options, sass_options)
-    end
-
     def self.formatted_function_name(function_name)
       params = Functions.instance_method(function_name).parameters
       params = params.select { |param| param[0] == :req }
