@@ -50,11 +50,7 @@ module SassC
 
       Native::option_set_c_functions(options, list)
 
-      status = yield
-
       callbacks
-
-      status
     end
 
     def self.formatted_function_name(function_name)

@@ -17,17 +17,16 @@ module SassC
       Native.option_set_include_path(native_options, load_paths)
 
       import_handler.setup(native_options)
+      functions_handler.setup(native_options)
 
-      status = Script.setup_custom_functions(native_options, @options) do
-        Native.compile_data_context(data_context)
-      end
-
-      css = Native.context_get_output_string(context)
+      status = Native.compile_data_context(data_context)
 
       if status != 0
         message = Native.context_get_error_message(context)
         raise SyntaxError.new(message)
       end
+
+      css = Native.context_get_output_string(context)
 
       @dependencies = Native.context_get_included_files(context)
 
@@ -57,6 +56,10 @@ module SassC
 
     def import_handler
       @import_handler ||= ImportHandler.new(@options)
+    end
+
+    def functions_handler
+      @functions_handler = FunctionsHandler.new(@options)
     end
 
     def load_paths

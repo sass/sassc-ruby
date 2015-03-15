@@ -3,6 +3,7 @@ end
 
 require_relative "sassc/version"
 require_relative "sassc/native"
+require_relative "sassc/functions_handler"
 require_relative "sassc/import_handler"
 require_relative "sassc/importer"
 require_relative "sassc/engine"
