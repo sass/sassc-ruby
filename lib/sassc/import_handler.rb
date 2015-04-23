@@ -11,8 +11,12 @@ module SassC
     def setup(native_options)
       return unless @importer
 
-      callback = Native.make_importer(import_function, nil)
-      Native.option_set_importer(native_options, callback)
+      importer_callback = Native.make_importer(import_function, nil)
+
+      list = Native.make_function_list(1)
+      Native::function_set_list_entry(list, 0, importer_callback)
+
+      Native.option_set_c_importers(native_options, list)
     end
 
     private

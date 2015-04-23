@@ -8,7 +8,7 @@ module SassC
 
     class General < MiniTest::Test
       def test_it_reports_the_libsass_version
-        assert_equal "3.2.0-beta.1", Native.version
+        assert_equal "3.2.0-beta.6", Native.version
       end
     end
 
@@ -185,8 +185,10 @@ module SassC
         end
 
         callback = Native.make_importer(funct, nil)
+        list = Native.make_function_list(1)
+        Native::function_set_list_entry(list, 0, callback)
 
-        Native.option_set_importer(options, callback)
+        Native.option_set_c_importers(options, list)
 
         status = Native.compile_file_context(@file_context)
         assert_equal 0, status

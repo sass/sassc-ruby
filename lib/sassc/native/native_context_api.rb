@@ -99,7 +99,7 @@ module SassC
     # ADDAPI void ADDCALL sass_option_set_include_path (struct Sass_Options* options, const char* include_path);
     # ADDAPI void ADDCALL sass_option_set_source_map_file (struct Sass_Options* options, const char* source_map_file);
     # ADDAPI void ADDCALL sass_option_set_c_functions (struct Sass_Options* options, Sass_C_Function_List c_functions);
-    # ADDAPI void ADDCALL sass_option_set_importer (struct Sass_Options* options, Sass_C_Import_Callback importer);
+    # ADDAPI void ADDCALL sass_option_set_c_importers (struct Sass_Options* options, Sass_Importer_List c_importers);
     attach_function :sass_option_set_precision, [:sass_options_ptr, :int], :void
     attach_function :sass_option_set_output_style, [:sass_options_ptr, SassOutputStyle], :void
     attach_function :sass_option_set_source_comments, [:sass_options_ptr, :bool], :void
@@ -112,7 +112,8 @@ module SassC
     attach_function :sass_option_set_include_path, [:sass_options_ptr, :string], :void
     attach_function :sass_option_set_source_map_file, [:sass_options_ptr, :string], :void
     attach_function :sass_option_set_c_functions, [:sass_options_ptr, :pointer], :void
-    attach_function :sass_option_set_importer, [:sass_options_ptr, :sass_importer], :void
+    attach_function :sass_option_set_c_importers, [:sass_options_ptr, :pointer], :void
+    #attach_function :sass_option_set_c_importers, [:sass_options_ptr, :sass_importer], :void
 
     # Getter for context
     # ADDAPI const char* ADDCALL sass_context_get_output_string (struct Sass_Context* ctx);

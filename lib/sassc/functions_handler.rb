@@ -41,8 +41,6 @@ module SassC
       end
 
       Native::option_set_c_functions(native_options, list)
-
-      callbacks
     end
 
     private
