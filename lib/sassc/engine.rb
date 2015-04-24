@@ -2,6 +2,13 @@ require_relative "error"
 
 module SassC
   class Engine
+    OUTPUT_STYLES = %i[
+      sass_style_nested
+      sass_style_expanded
+      sass_style_compact
+      sass_style_compressed
+    ]
+
     def initialize(template, options = {})
       @template = template
       @options = options
@@ -15,6 +22,7 @@ module SassC
       Native.option_set_is_indented_syntax_src(native_options, true) if sass?
       Native.option_set_input_path(native_options, filename) if filename
       Native.option_set_include_path(native_options, load_paths)
+      Native.option_set_output_style(native_options, output_style_enum)
 
       import_handler.setup(native_options)
       functions_handler.setup(native_options)
@@ -60,6 +68,16 @@ module SassC
 
     def functions_handler
       @functions_handler = FunctionsHandler.new(@options)
+    end
+
+    def output_style_enum
+      @output_style_enum ||= Native::SassOutputStyle[output_style]
+    end
+
+    def output_style
+      style = @options.fetch(:style, :sass_style_nested).to_sym
+      raise InvalidStyleError unless Native::SassOutputStyle.symbols.include?(style)
+      style
     end
 
     def load_paths
