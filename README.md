@@ -11,10 +11,12 @@ This gem combines the speed of `libsass`, the [Sass C implementation](https://gi
 ## Usage
 
 This library utilizes `libsass` to allow you to compile SCSS or SASS syntax
-to CSS.  To compile, use a [`SassC::Engine`](http://github.com/bolandrm/sassc-ruby/blob/master/lib/sassc/engine.rb).
+to CSS.  To compile, use a `SassC::Engine`.
 
 **Note**:  If you want to use this library with Rails/Sprockets, check out
 [sassc-rails](https://github.com/bolandrm/sassc-rails).
+
+Additionally, you can use `SassC::Sass2Scss` to convert Sass syntax to Scss syntax.
 
 ## Contributing
 
