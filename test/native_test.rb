@@ -3,6 +3,7 @@ require_relative "test_helper"
 module SassC
   module NativeTest
     SAMPLE_SASS_STRING = "$size: 30px; .hi { width: $size; }"
+    SPECIAL_SASS_STRING = "$sißßßßßße: 30px; .hßß©i { width: $size; }"
     SAMPLE_CSS_OUTPUT = ".hi {\n  width: 30px; }\n"
     BAD_SASS_STRING = "$size = 30px;"
 
@@ -45,6 +46,14 @@ module SassC
         refute_equal 0, status
 
         status = Native.context_get_error_status(context)
+        refute_equal 0, status
+      end
+
+      def test_multibyte_characters_work
+        @data_context = Native.make_data_context(SPECIAL_SASS_STRING)
+        context = Native.data_context_get_context(@data_context)
+
+        status = Native.compile_data_context(@data_context)
         refute_equal 0, status
       end
 
