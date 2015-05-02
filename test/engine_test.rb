@@ -117,5 +117,12 @@ CSS
       assert_equal css, Engine.new(sass, syntax: "sass").render
       assert_raises(SyntaxError) { Engine.new(sass).render }
     end
+
+    def test_encoding_matches_input
+      input = "$size: 30px;"
+      input.force_encoding("UTF-8")
+      output = Engine.new(input).render
+      assert_equal input.encoding, output.encoding
+    end
   end
 end
