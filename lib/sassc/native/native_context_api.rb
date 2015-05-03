@@ -138,5 +138,8 @@ module SassC
     def self.context_get_included_files(*args)
       return_string_array _context_get_included_files(*args)
     end
+
+    # ADDAPI Sass_Import_Entry ADDCALL sass_compiler_get_last_import(struct Sass_Compiler* compiler);
+    attach_function :sass_compiler_get_last_import, [:pointer], :pointer
   end
 end

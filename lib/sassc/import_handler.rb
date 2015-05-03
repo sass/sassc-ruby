@@ -22,7 +22,10 @@ module SassC
     private
 
     def import_function
-      @import_function ||= FFI::Function.new(:pointer, [:string, :string, :pointer]) do |path, parent_path, cookie|
+      @import_function ||= FFI::Function.new(:pointer, [:string, :pointer, :pointer]) do |path, importer_entry, compiler|
+        last_import = Native::compiler_get_last_import(compiler)
+        parent_path = Native::import_get_path(last_import)
+
         imports = [*@importer.imports(path, parent_path)]
         imports_to_native(imports)
       end

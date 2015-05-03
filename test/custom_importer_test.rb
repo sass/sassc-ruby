@@ -29,6 +29,12 @@ module SassC
       end
     end
 
+    class ParentImporter < Importer
+      def imports(path, parent_path)
+        Import.new("name.scss", source: ".#{parent_path} { color: red; }")
+      end
+    end
+
     def test_custom_importer_works
       temp_file("styles2.scss", ".hi { color: $var1; }")
       temp_file("fonts.scss", ".font { color: $var1; }")
@@ -106,7 +112,15 @@ CSS
     end
 
     def test_parent_path_is_accessible
-      skip "TBD"
+      engine = Engine.new("@import 'parent.scss';", {
+        importer: ParentImporter,
+        filename: "import-parent-filename.scss"
+      })
+
+      assert_equal <<CSS, engine.render
+.import-parent-filename.scss {
+  color: red; }
+CSS
     end
   end
 end

@@ -65,6 +65,7 @@ module SassC
 
     # Getters for import entry
     # ADDAPI const char* ADDCALL sass_import_get_path (struct Sass_Import*);
+    attach_function :sass_import_get_path, [:sass_import_ptr], :string
     # ADDAPI const char* ADDCALL sass_import_get_base (struct Sass_Import*);
     # ADDAPI const char* ADDCALL sass_import_get_source (struct Sass_Import*);
     attach_function :sass_import_get_source, [:sass_import_ptr], :string
