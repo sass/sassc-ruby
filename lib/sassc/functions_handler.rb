@@ -5,7 +5,8 @@ module SassC
     end
 
     def setup(native_options)
-      callbacks = {}
+      @callbacks = {}
+      @function_names = {}
 
       list = Native.make_function_list(Script.custom_functions.count)
 
@@ -13,7 +14,7 @@ module SassC
       functs.options = @options
 
       Script.custom_functions.each_with_index do |custom_function, i|
-        callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
+        @callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
           length = Native.list_get_length(s_args)
 
           v = Native.list_get_value(s_args, 0)
@@ -31,9 +32,11 @@ module SassC
           end
         end
 
+        @function_names[custom_function] = Script.formatted_function_name(custom_function)
+
         callback = Native.make_function(
-          Script.formatted_function_name(custom_function),
-          callbacks[custom_function],
+          @function_names[custom_function],
+          @callbacks[custom_function],
           nil
         )
 
