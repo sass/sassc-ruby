@@ -94,5 +94,12 @@ CSS
 #main{color:#fff;background-color:#000}#main p{width:10em}.huge{font-size:10em;font-weight:bold;text-decoration:underline}
       CSS
     end
+
+    def test_short_output_style_names
+      engine = Engine.new(input_scss, style: :compressed)
+      assert_equal <<-CSS, engine.render
+#main{color:#fff;background-color:#000}#main p{width:10em}.huge{font-size:10em;font-weight:bold;text-decoration:underline}
+      CSS
+    end
   end
 end

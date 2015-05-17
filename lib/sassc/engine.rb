@@ -77,9 +77,13 @@ module SassC
     end
 
     def output_style
-      style = @options.fetch(:style, :sass_style_nested).to_sym
-      raise InvalidStyleError unless Native::SassOutputStyle.symbols.include?(style)
-      style
+      @output_style ||= begin
+        style = @options.fetch(:style, :sass_style_nested).to_s
+        style = "sass_style_#{style}" unless style.include?("sass_style_")
+        style = style.to_sym
+        raise InvalidStyleError unless Native::SassOutputStyle.symbols.include?(style)
+        style
+      end
     end
 
     def load_paths
