@@ -23,6 +23,10 @@ module SassC
         return SassString.new("'#{path.value}'", :string)
       end
 
+      def optional_arguments(path, optional)
+        return SassString.new("#{path}/#{optional}", :string)
+      end
+
       module Compass
         def stylesheet_path(path)
           Script::String.new("/css/#{path.value}", :identifier)
@@ -68,6 +72,16 @@ div {
       assert_equal <<-EOS, engine.render
 div {
   url: url(); }
+      EOS
+    end
+
+    def test_function_with_optional_arguments
+      engine = Engine.new("div {url: optional_arguments('foo', 'baz'); url: optional_arguments('foo', 'qux')}")
+      assert_equal <<-EOS, engine.render
+div {
+  url: "foo/baz";
+  url: "foo/qux";
+}
       EOS
     end
   end
