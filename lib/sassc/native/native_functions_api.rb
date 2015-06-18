@@ -19,6 +19,7 @@ module SassC
 
     # ADDAPI enum Sass_Tag ADDCALL sass_value_get_tag (const union Sass_Value* v);
     attach_function :sass_value_get_tag, [:sass_value_ptr], SassTag
+    attach_function :sass_value_is_null, [:sass_value_ptr], :bool
 
     # ADDAPI const char* ADDCALL sass_string_get_value (const union Sass_Value* v);
     attach_function :sass_string_get_value, [:sass_value_ptr], :string

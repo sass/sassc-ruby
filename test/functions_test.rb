@@ -23,7 +23,7 @@ module SassC
         return SassString.new("'#{path.value}'", :string)
       end
 
-      def optional_arguments(path, optional)
+      def optional_arguments(path, optional = "bar")
         return SassString.new("#{path}/#{optional}", :string)
       end
 
@@ -76,12 +76,11 @@ div {
     end
 
     def test_function_with_optional_arguments
-      engine = Engine.new("div {url: optional_arguments('foo', 'baz'); url: optional_arguments('foo', 'qux')}")
+      engine = Engine.new("div {url: optional_arguments('first'); url: optional_arguments('second', 'qux')}")
       assert_equal <<-EOS, engine.render
 div {
-  url: "foo/baz";
-  url: "foo/qux";
-}
+  url: "first/bar";
+  url: "second/qux"; }
       EOS
     end
   end

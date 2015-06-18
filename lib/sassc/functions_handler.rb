@@ -16,13 +16,18 @@ module SassC
       Script.custom_functions.each_with_index do |custom_function, i|
         @callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
           length = Native.list_get_length(s_args)
+          real_args = []
+          for i in 0..(length - 1)
+            v = Native.list_get_value(s_args, i)
 
-          v = Native.list_get_value(s_args, 0)
-          v = Native.string_get_value(v).dup
+            if !Native.value_is_null(v)
+              v = Native.string_get_value(v).dup
+              s = Script::String.new(Script::String.unquote(v), Script::String.type(v))
+              real_args << s
+            end
+          end
 
-          s = Script::String.new(Script::String.unquote(v), Script::String.type(v))
-
-          value = functs.send(custom_function, s)
+          value = functs.send(custom_function, *real_args)
 
           if value
             value = Script::String.new(Script::String.unquote(value.to_s), value.type)
