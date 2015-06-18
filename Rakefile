@@ -4,7 +4,7 @@ rescue LoadError
   puts 'Cannot load bundler/gem_tasks'
 end
 
-task default: :prepare
+task default: :test
 
 task prepare: "ext/lib/libsass.so"
 
