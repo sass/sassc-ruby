@@ -83,5 +83,14 @@ div {
   url: "second/qux"; }
       EOS
     end
+
+    def test_function_with_color_argument
+      engine = Engine.new("div {url: optional_arguments(red); url: optional_arguments('second', 'qux')}")
+      assert_equal <<-EOS, engine.render
+div {
+  url: "first/bar";
+  url: "second/qux"; }
+      EOS
+    end
   end
 end

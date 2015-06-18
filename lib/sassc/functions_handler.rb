@@ -10,24 +10,34 @@ module SassC
 
       list = Native.make_function_list(Script.custom_functions.count)
 
-      functs = FunctionWrapper.extend(Script::Functions)
-      functs.options = @options
+      functions = FunctionWrapper.extend(Script::Functions)
+      functions.options = @options
 
       Script.custom_functions.each_with_index do |custom_function, i|
-        @callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |s_args, cookie|
-          length = Native.list_get_length(s_args)
-          real_args = []
-          for i in 0..(length - 1)
-            v = Native.list_get_value(s_args, i)
+        @callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |native_argument_list, cookie|
+          native_argument_list_length = Native.list_get_length(native_argument_list)
+          custom_function_arguments = []
 
-            if !Native.value_is_null(v)
-              v = Native.string_get_value(v).dup
-              s = Script::String.new(Script::String.unquote(v), Script::String.type(v))
-              real_args << s
+          (0...native_argument_list_length).each do |i|
+            native_value = Native.list_get_value(native_argument_list, i)
+
+            case Native.value_get_tag(native_value)
+            when :sass_string
+              native_string = Native.string_get_value(native_value)
+              argument = Script::String.new(Script::String.unquote(native_string), Script::String.type(native_string))
+
+              custom_function_arguments << argument
             end
           end
 
-          value = functs.send(custom_function, *real_args)
+          begin
+            value = functions.send(custom_function, *custom_function_arguments)
+          rescue ArgumentError => e
+            # Get the Sass backtrace and put it here
+            STDERR.puts e
+          rescue StandardError => e
+            STDERR.puts e
+          end
 
           if value
             value = Script::String.new(Script::String.unquote(value.to_s), value.type)
