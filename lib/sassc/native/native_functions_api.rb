@@ -29,6 +29,11 @@ module SassC
     attach_function :sass_list_get_length, [:sass_value_ptr], :size_t
     attach_function :sass_list_get_value, [:sass_value_ptr, :size_t], :sass_value_ptr
 
+    # ADDAPI char* ADDCALL sass_error_get_message (const union Sass_Value* v);
+    # ADDAPI void ADDCALL sass_error_set_message (union Sass_Value* v, char* msg);
+    attach_function :sass_error_get_message, [:sass_value_ptr], :string
+    attach_function :sass_error_set_message, [:sass_value_ptr, :pointer], :void
+
     # Getters for custom function descriptors
     # ADDAPI const char* ADDCALL sass_function_get_signature (Sass_C_Function_Callback fn);
     # ADDAPI Sass_C_Function ADDCALL sass_function_get_function (Sass_C_Function_Callback fn);

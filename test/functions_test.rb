@@ -27,6 +27,10 @@ module SassC
         return SassString.new("#{path}/#{optional}", :string)
       end
 
+      def function_that_raises_errors()
+        raise StandardError, "Intentional wrong thing happened somewhere inside the custom function"
+      end
+
       module Compass
         def stylesheet_path(path)
           Script::String.new("/css/#{path.value}", :identifier)
@@ -84,13 +88,21 @@ div {
       EOS
     end
 
-    def test_function_with_color_argument
-      engine = Engine.new("div {url: optional_arguments(red); url: optional_arguments('second', 'qux')}")
-      assert_equal <<-EOS, engine.render
-div {
-  url: "first/bar";
-  url: "second/qux"; }
-      EOS
+    def test_function_with_error
+      engine = Engine.new("div {url: function_that_raises_errors();}")
+      exception = assert_raises(SassC::SyntaxError, "") do
+        engine.render
+      end
+
+      assert_equal "Error: error in C function function_that_raises_errors: Intentional wrong thing happened somewhere inside the custom function
+
+       Backtrace:
+       \tstdin:1, in function `function_that_raises_errors`
+       \tstdin:1
+        on line 1 of stdin
+>> div {url: function_that_raises_errors();}
+   ----------^
+", exception.message
     end
   end
 end

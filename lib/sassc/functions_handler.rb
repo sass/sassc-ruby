@@ -32,18 +32,25 @@ module SassC
 
           begin
             value = functions.send(custom_function, *custom_function_arguments)
-          rescue ArgumentError => e
-            # Get the Sass backtrace and put it here
-            STDERR.puts e
-          rescue StandardError => e
-            STDERR.puts e
-          end
 
-          if value
-            value = Script::String.new(Script::String.unquote(value.to_s), value.type)
-            value.to_native
-          else
-            Script::String.new("").to_native
+            if value
+              value = Script::String.new(Script::String.unquote(value.to_s), value.type)
+              value.to_native
+            else
+              Script::String.new("").to_native
+            end
+          rescue StandardError => exception
+            value = Native::SassValue.new
+            value[:unknown] = Native::SassUnknown.new
+
+            error = Native::SassError.new
+            error[:tag] = :sass_error
+
+            Native.error_set_message(error, Native.native_string(exception))
+
+            value[:unknown][:tag] = :sass_error
+            value[:error] = error
+            value.pointer
           end
         end
 

@@ -71,12 +71,12 @@ module SassC
 
     class SassError < FFI::Struct
       layout :tag, SassTag,
-             :messsage, :string
+             :message, :string
     end
 
     class SassWarning < FFI::Struct
       layout :tag, SassTag,
-             :messsage, :string
+             :message, :string
     end
 
     class SassValue # < FFI::Union
