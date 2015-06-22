@@ -17,18 +17,26 @@ module SassC
         @callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |native_argument_list, cookie|
           native_argument_list_length = Native.list_get_length(native_argument_list)
           custom_function_arguments = []
+          error_tag = nil
 
           (0...native_argument_list_length).each do |i|
             native_value = Native.list_get_value(native_argument_list, i)
 
-            case Native.value_get_tag(native_value)
+            case value_tag = Native.value_get_tag(native_value)
+            when :sass_null
+              # no-op
             when :sass_string
               native_string = Native.string_get_value(native_value)
               argument = Script::String.new(Script::String.unquote(native_string), Script::String.type(native_string))
 
               custom_function_arguments << argument
+            else
+              error_tag = error("Sass argument of type #{value_tag} unsupported")
+              break
             end
           end
+
+          next error_tag if error_tag
 
           begin
             value = functions.send(custom_function, *custom_function_arguments)
@@ -40,17 +48,7 @@ module SassC
               Script::String.new("").to_native
             end
           rescue StandardError => exception
-            value = Native::SassValue.new
-            value[:unknown] = Native::SassUnknown.new
-
-            error = Native::SassError.new
-            error[:tag] = :sass_error
-
-            Native.error_set_message(error, Native.native_string(exception))
-
-            value[:unknown][:tag] = :sass_error
-            value[:error] = error
-            value.pointer
+            error(exception.message)
           end
         end
 
@@ -69,6 +67,21 @@ module SassC
     end
 
     private
+
+    def error(message)
+      value = Native::SassValue.new
+      value[:unknown] = Native::SassUnknown.new
+
+      error = Native::SassError.new
+      error[:tag] = :sass_error
+
+      Native.error_set_message(error, Native.native_string(message))
+      $stderr.puts "[SassC::FunctionsHandler] #{message}"
+
+      value[:unknown][:tag] = :sass_error
+      value[:error] = error
+      value.pointer
+    end
 
     class FunctionWrapper
       class << self
