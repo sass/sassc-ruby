@@ -62,16 +62,24 @@ div {
       EOS
     end
 
+    def test_functions_may_accept_sass_color_type
+      engine = Engine.new("div { color: nice_color_argument(red); }")
+      assert_equal <<-EOS, engine.render
+div {
+  color: "red"; }
+      EOS
+    end
+
     def test_function_with_unsupported_tag
-      engine = Engine.new("div {url: function_with_unsupported_tag(red);}")
+      engine = Engine.new("div {url: function_with_unsupported_tag(1);}")
 
       exception = assert_raises(SassC::SyntaxError) do
         engine.render
       end
 
-      assert_equal "Error: error in C function function_with_unsupported_tag: Sass argument of type sass_color unsupported\n\n       Backtrace:\n       \tstdin:1, in function `function_with_unsupported_tag`\n       \tstdin:1\n        on line 1 of stdin\n>> div {url: function_with_unsupported_tag(red);}\n   ----------^\n", exception.message
+      assert_equal "Error: error in C function function_with_unsupported_tag: Sass argument of type sass_number unsupported\n\n       Backtrace:\n       \tstdin:1, in function `function_with_unsupported_tag`\n       \tstdin:1\n        on line 1 of stdin\n>> div {url: function_with_unsupported_tag(1);}\n   ----------^\n", exception.message
 
-      assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_color unsupported", stderr_output
+      assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_number unsupported", stderr_output
     end
 
     def test_function_with_error
@@ -122,7 +130,11 @@ div {
         raise StandardError, "Intentional wrong thing happened somewhere inside the custom function"
       end
 
-      def function_with_unsupported_tag(color)
+      def function_with_unsupported_tag(number)
+      end
+
+      def nice_color_argument(color)
+        return Script::String.new(color.to_s, :string)
       end
 
       module Compass
