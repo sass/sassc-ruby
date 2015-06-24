@@ -23,14 +23,13 @@ Additionally, you can use `SassC::Sass2Scss` to convert Sass syntax to Scss synt
 ### Project Setup
 
 1. Clone repo
-2. Install dependencies - `bundle install`
-3. Initialize the libsass submodule - `bundle exec rake submodule`
-4. Run the tests - `bundle exec rake test`
+1. Install dependencies - `bundle install`
+1. Run the tests - `bundle exec rake test`
 
 ### Code Changes
 
 1. Fork it ( https://github.com/[my-github-username]/sassc/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`) - try to include tests
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+1. Create your feature branch (`git checkout -b my-new-feature`)
+1. Commit your changes (`git commit -am 'Add some feature'`) - try to include tests
+1. Push to the branch (`git push origin my-new-feature`)
+1. Create a new Pull Request
