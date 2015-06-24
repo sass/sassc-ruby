@@ -4,22 +4,12 @@ rescue LoadError
   puts 'Cannot load bundler/gem_tasks'
 end
 
-task default: :prepare
+require 'tasks/libsass'
 
-task prepare: "ext/lib/libsass.so"
+task default: :test
 
-file "ext/lib/libsass.so" do
-  gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
-  cd "ext/libsass"
-  sh 'make lib/libsass.so LDFLAGS="-Wall -O2"'
-  cd gem_dir
-end
-
-task test: :prepare do
+desc "Run all tests"
+task test: 'libsass:compile' do
   $LOAD_PATH.unshift('lib', 'test')
   Dir.glob('./test/**/*_test.rb') { |f| require f }
-end
-
-task :submodule do
-  sh "git submodule update --init"
 end

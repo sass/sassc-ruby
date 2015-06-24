@@ -48,7 +48,8 @@ module SassC
     end
 
     def self.native_string(string)
-      string += "\0"
+      string = string.to_s
+      string << "\0"
       data = Native::LibC.malloc(string.bytesize)
       data.write_string(string)
       data

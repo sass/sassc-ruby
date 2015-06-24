@@ -66,12 +66,12 @@ module SassC
       def self.unquote(contents)
         s = contents.dup
 
-        case contents[0,1]
+        case contents[0, 1]
         when "'", '"', '`'
           s[0] = ''
         end
 
-        case contents[-1,1]
+        case contents[-1, 1]
         when "'", '"', '`'
           s[-1] = ''
         end

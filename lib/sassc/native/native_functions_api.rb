@@ -19,6 +19,7 @@ module SassC
 
     # ADDAPI enum Sass_Tag ADDCALL sass_value_get_tag (const union Sass_Value* v);
     attach_function :sass_value_get_tag, [:sass_value_ptr], SassTag
+    attach_function :sass_value_is_null, [:sass_value_ptr], :bool
 
     # ADDAPI const char* ADDCALL sass_string_get_value (const union Sass_Value* v);
     attach_function :sass_string_get_value, [:sass_value_ptr], :string
@@ -27,6 +28,11 @@ module SassC
     # ADDAPI union Sass_Value* ADDCALL sass_list_get_value (const union Sass_Value* v, size_t i);
     attach_function :sass_list_get_length, [:sass_value_ptr], :size_t
     attach_function :sass_list_get_value, [:sass_value_ptr, :size_t], :sass_value_ptr
+
+    # ADDAPI char* ADDCALL sass_error_get_message (const union Sass_Value* v);
+    # ADDAPI void ADDCALL sass_error_set_message (union Sass_Value* v, char* msg);
+    attach_function :sass_error_get_message, [:sass_value_ptr], :string
+    attach_function :sass_error_set_message, [:sass_value_ptr, :pointer], :void
 
     # Getters for custom function descriptors
     # ADDAPI const char* ADDCALL sass_function_get_signature (Sass_C_Function_Callback fn);

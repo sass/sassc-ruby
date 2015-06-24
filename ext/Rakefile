@@ -1,0 +1,3 @@
+require_relative '../lib/tasks/libsass'
+
+task default: 'libsass:compile'

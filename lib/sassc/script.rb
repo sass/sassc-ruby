@@ -8,10 +8,9 @@ module SassC
 
     def self.formatted_function_name(function_name)
       params = Functions.instance_method(function_name).parameters
-      params = params.select { |param| param[0] == :req }
-                     .map(&:first)
-                     .map { |p| "$#{p}" }
+      params = params.map { |param_type, name| "$#{name}#{': null' if param_type == :opt}" }
                      .join(", ")
+
       "#{function_name}(#{params})"
     end
   end
