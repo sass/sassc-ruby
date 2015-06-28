@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "bundler"
   spec.add_dependency "ffi", "~> 1.9.6"
-  spec.add_dependency "sass"
+  spec.add_dependency "sass", "~> 3.4.15"
 
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
   `git submodule --quiet foreach pwd`.split($\).each do |submodule_path|
