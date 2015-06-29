@@ -24,6 +24,19 @@ module SassC
     # ADDAPI const char* ADDCALL sass_string_get_value (const union Sass_Value* v);
     attach_function :sass_string_get_value, [:sass_value_ptr], :string
 
+    # ADDAPI double ADDCALL sass_color_get_r (const union Sass_Value* v);
+    # ADDAPI void ADDCALL sass_color_set_r (union Sass_Value* v, double r);
+    # ADDAPI double ADDCALL sass_color_get_g (const union Sass_Value* v);
+    # ADDAPI void ADDCALL sass_color_set_g (union Sass_Value* v, double g);
+    # ADDAPI double ADDCALL sass_color_get_b (const union Sass_Value* v);
+    # ADDAPI void ADDCALL sass_color_set_b (union Sass_Value* v, double b);
+    # ADDAPI double ADDCALL sass_color_get_a (const union Sass_Value* v);
+    # ADDAPI void ADDCALL sass_color_set_a (union Sass_Value* v, double a);
+    ['r', 'g', 'b', 'a'].each do |color_channel|
+      attach_function "sass_color_get_#{color_channel}".to_sym, [:sass_value_ptr], :double
+      attach_function "sass_color_set_#{color_channel}".to_sym, [:sass_value_ptr, :double], :void
+    end
+
     # ADDAPI size_t ADDCALL sass_list_get_length(const union Sass_Value* v)
     # ADDAPI union Sass_Value* ADDCALL sass_list_get_value (const union Sass_Value* v, size_t i);
     attach_function :sass_list_get_length, [:sass_value_ptr], :size_t

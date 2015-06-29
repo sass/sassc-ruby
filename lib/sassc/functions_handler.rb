@@ -30,6 +30,13 @@ module SassC
               argument = Script::String.new(Script::String.unquote(native_string), Script::String.type(native_string))
 
               custom_function_arguments << argument
+            when :sass_color
+              red, green, blue, alpha = Native.color_get_r(native_value), Native.color_get_g(native_value), Native.color_get_b(native_value), Native.color_get_a(native_value)
+
+              argument = Script::Color.new([red, green, blue, alpha])
+              argument.options = @options
+
+              custom_function_arguments << argument
             else
               error_tag = error("Sass argument of type #{value_tag} unsupported")
               break
