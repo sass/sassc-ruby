@@ -23,6 +23,7 @@ module SassC
       Native.option_set_input_path(native_options, filename) if filename
       Native.option_set_include_path(native_options, load_paths)
       Native.option_set_output_style(native_options, output_style_enum)
+      Native.option_set_source_comments(native_options, true) if line_comments?
 
       import_handler.setup(native_options)
       functions_handler.setup(native_options)
@@ -62,6 +63,10 @@ module SassC
 
     def sass?
       @options[:syntax] && @options[:syntax].to_sym == :sass
+    end
+
+    def line_comments?
+      @options[:line_comments]
     end
 
     def import_handler

@@ -8,6 +8,20 @@ module SassC
       Engine.new(data).render
     end
 
+    def test_line_comments
+      template = <<-SCSS
+.foo {
+  baz: bang; }
+      SCSS
+      expected_output = <<-CSS
+/* line 1, stdin */
+.foo {
+  baz: bang; }
+      CSS
+      output = Engine.new(template, line_comments: true).render
+      assert_equal expected_output, output
+    end
+
     def test_one_line_comments
       assert_equal <<CSS, render(<<SCSS)
 .foo {
