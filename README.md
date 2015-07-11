@@ -18,6 +18,17 @@ to CSS.  To compile, use a `SassC::Engine`.
 
 Additionally, you can use `SassC::Sass2Scss` to convert Sass syntax to Scss syntax.
 
+## Changelog
+
+- **1.5.0**
+  - Add support for inline source maps
+- **1.4.0**
+  - Add support for line number comments
+- **1.3.0**
+  - Support Sass color custom function arguments
+  - Adds error handling for exceptions in custom functions
+  - Custom functions may have optional/default arguments
+
 ## Contributing
 
 ### Project Setup
