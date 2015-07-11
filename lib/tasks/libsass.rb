@@ -2,11 +2,11 @@ namespace :libsass do
   desc "Compile libsass"
   task compile: "ext/libsass/lib/libsass.so"
 
-  file "ext/libsass/.git" do
+  file "ext/libsass/Makefile" do
     sh "git submodule update --init"
   end
 
-  file "ext/libsass/lib/libsass.so" => "ext/libsass/.git" do
+  file "ext/libsass/lib/libsass.so" => "ext/libsass/Makefile" do
     libsass_path = ""
     if Dir.pwd.end_with?('/ext')
       libsass_path = "libsass"
