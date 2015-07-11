@@ -138,5 +138,26 @@ CSS
       output = Engine.new(input).render
       assert_equal input.encoding, output.encoding
     end
+
+    def test_inline_source_maps
+      template = <<-SCSS
+.foo {
+  baz: bang; }
+      SCSS
+      expected_output = <<-CSS
+/* line 1, stdin */
+.foo {
+  baz: bang; }
+      CSS
+
+      output = Engine.new(template, {
+        source_map_file: ".",
+        source_map_embed: true,
+        source_map_contents: true
+      }).render
+
+      assert_match /sourceMappingURL/, output
+      assert_match /.foo/, output
+    end
   end
 end

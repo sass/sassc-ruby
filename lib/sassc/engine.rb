@@ -24,6 +24,9 @@ module SassC
       Native.option_set_include_path(native_options, load_paths)
       Native.option_set_output_style(native_options, output_style_enum)
       Native.option_set_source_comments(native_options, true) if line_comments?
+      Native.option_set_source_map_file(native_options, source_map_file) if source_map_file
+      Native.option_set_source_map_embed(native_options, true) if source_map_embed?
+      Native.option_set_source_map_contents(native_options, true) if source_map_contents?
 
       import_handler.setup(native_options)
       functions_handler.setup(native_options)
@@ -67,6 +70,18 @@ module SassC
 
     def line_comments?
       @options[:line_comments]
+    end
+
+    def source_map_embed?
+      @options[:source_map_embed]
+    end
+
+    def source_map_contents?
+      @options[:source_map_contents]
+    end
+
+    def source_map_file
+      @options[:source_map_file]
     end
 
     def import_handler
