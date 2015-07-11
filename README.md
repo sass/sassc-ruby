@@ -22,6 +22,7 @@ Additionally, you can use `SassC::Sass2Scss` to convert Sass syntax to Scss synt
 
 - **1.5.0**
   - Add support for inline source maps
+  - Fix compilation bug (issue #12[](https://github.com/bolandrm/sassc-ruby/issues/12))
 - **1.4.0**
   - Add support for line number comments
 - **1.3.0**
