@@ -20,6 +20,8 @@ Additionally, you can use `SassC::Sass2Scss` to convert Sass syntax to Scss synt
 
 ## Changelog
 
+- **1.5.1**
+  - 2nd attempt at fixing compilation bug (issue #12[](https://github.com/bolandrm/sassc-ruby/issues/12))
 - **1.5.0**
   - Add support for inline source maps
   - Fix compilation bug (issue #12[](https://github.com/bolandrm/sassc-ruby/issues/12))
