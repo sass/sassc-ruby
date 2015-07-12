@@ -1,13 +1,6 @@
 namespace :libsass do
   desc "Compile libsass"
-  task compile: "ext/libsass/lib/libsass.so"
-
-  file "ext/libsass/Makefile" do
-    sh "git submodule update --init"
-  end
-
-  file "ext/libsass/lib/libsass.so" => "ext/libsass/Makefile" do
-    libsass_path = ""
+  task :compile do
     if Dir.pwd.end_with?('/ext')
       libsass_path = "libsass"
     else
@@ -15,7 +8,15 @@ namespace :libsass do
     end
 
     cd libsass_path do
-      sh 'make lib/libsass.so LDFLAGS="-Wall -O2"'
+      Rake::Task["lib/libsass.so"].invoke
     end
+  end
+
+  file "Makefile" do
+    sh "git submodule update --init"
+  end
+
+  file "lib/libsass.so" => "Makefile" do
+    sh 'make lib/libsass.so LDFLAGS="-Wall -O2"'
   end
 end
