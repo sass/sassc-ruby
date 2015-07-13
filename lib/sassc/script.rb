@@ -17,7 +17,6 @@ module SassC
 end
 
 require_relative "script/functions"
-require_relative "script/string"
 
 module Sass
   module Script
@@ -26,4 +25,5 @@ end
 
 require 'sass/util'
 require 'sass/script/value/base'
+require_relative "script/string"
 require_relative "script/color"

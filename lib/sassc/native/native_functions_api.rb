@@ -14,8 +14,12 @@ module SassC
 
     # ADDAPI union Sass_Value* ADDCALL sass_make_number  (double val, const char* unit);
     attach_function :sass_make_number, [:double, :string], :sass_value_ptr
+
+    # ADDAPI union Sass_Value* ADDCALL sass_make_string  (const char* val);
     attach_function :sass_make_string, [:string], :sass_value_ptr
 
+    # ADDAPI union Sass_Value* ADDCALL sass_make_qstring (const char* val);
+    attach_function :sass_make_qstring, [:string], :sass_value_ptr
 
     # ADDAPI enum Sass_Tag ADDCALL sass_value_get_tag (const union Sass_Value* v);
     attach_function :sass_value_get_tag, [:sass_value_ptr], SassTag
@@ -23,6 +27,13 @@ module SassC
 
     # ADDAPI const char* ADDCALL sass_string_get_value (const union Sass_Value* v);
     attach_function :sass_string_get_value, [:sass_value_ptr], :string
+
+    # ADDAPI bool ADDCALL sass_string_is_quoted(const union Sass_Value* v);
+    attach_function :sass_string_is_quoted, [:sass_value_ptr], :bool
+
+    def self.string_get_type(native_value)
+      string_is_quoted(native_value) ? :string : :identifier
+    end
 
     # ADDAPI double ADDCALL sass_color_get_r (const union Sass_Value* v);
     # ADDAPI void ADDCALL sass_color_set_r (union Sass_Value* v, double r);

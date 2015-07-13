@@ -14,12 +14,15 @@ module SassC
     end
 
     def test_functions_may_return_sass_string_type
-      engine = Engine.new("div {url: url(sass_return_path('foo.svg'));}")
+      engine = Engine.new(<<-SCSS)
+div {
+  url: url(sass_return_path("foo.svg")); }
+      SCSS
 
-      assert_equal <<-EOS, engine.render
+      assert_equal <<-EXPECTED_SCSS, engine.render
 div {
   url: url("foo.svg"); }
-      EOS
+      EXPECTED_SCSS
     end
 
     def test_functions_work_with_varying_quotes_and_string_types
@@ -54,12 +57,17 @@ div {
     end
 
     def test_function_with_optional_arguments
-      engine = Engine.new("div {url: optional_arguments('first'); url: optional_arguments('second', 'qux')}")
-      assert_equal <<-EOS, engine.render
+      engine = Engine.new(<<-SCSS)
+div {
+  url: optional_arguments('first');
+  url: optional_arguments('second', 'qux'); }
+SCSS
+
+      assert_equal <<-EXPECTED_SCSS, engine.render
 div {
   url: "first/bar";
   url: "second/qux"; }
-      EOS
+      EXPECTED_SCSS
     end
 
     def test_functions_may_accept_sass_color_type
@@ -103,12 +111,6 @@ div {
 
     private
 
-    SassString = Struct.new(:value, :type) do
-      def to_s
-        value
-      end
-    end
-
     module Script::Functions
       def javascript_path(path)
         Script::String.new("/js/#{path.value}", :string)
@@ -119,11 +121,11 @@ div {
       end
 
       def sass_return_path(path)
-        return SassString.new("'#{path.value}'", :string)
+        Script::String.new("#{path.value}", :string)
       end
 
       def optional_arguments(path, optional = "bar")
-        return SassString.new("#{path}/#{optional}", :string)
+        Script::String.new("#{path.value}/#{optional}", :string)
       end
 
       def function_that_raises_errors()

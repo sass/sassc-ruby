@@ -1,102 +1,14 @@
+require 'sass/script/value/string'
+
 module SassC
   module Script
-    class String
-      # The Ruby value of the string.
-      #
-      # @return [String]
-      attr_reader :value
-
-      # Whether this is a CSS string or a CSS identifier.
-      # The difference is that strings are written with double-quotes,
-      # while identifiers aren't.
-      #
-      # @return [Symbol] `:string` or `:identifier`
-      attr_reader :type
-
-      def self.value(contents)
-        contents.gsub("\\\n", "").gsub(/\\(?:([0-9a-fA-F]{1,6})\s?|(.))/) do
-          next $2 if $2
-          # Handle unicode escapes as per CSS Syntax Level 3 section 4.3.8.
-          code_point = $1.to_i(16)
-          if code_point == 0 || code_point > 0x10FFFF ||
-              (code_point >= 0xD800 && code_point <= 0xDFFF)
-            '�'
-          else
-            [code_point].pack("U")
-          end
-        end
-      end
-
-      def self.quote(contents, quote = nil)
-        # Short-circuit if there are no characters that need quoting.
-        unless contents =~ /[\n\\"']/
-          quote ||= '"'
-          return "#{quote}#{contents}#{quote}"
-        end
-
-        if quote.nil?
-          if contents.include?('"')
-            if contents.include?("'")
-              quote = '"'
-            else
-              quote = "'"
-            end
-          else
-            quote = '"'
-          end
-        end
-
-        # Replace single backslashes with multiples.
-        contents = contents.gsub("\\", "\\\\\\\\")
-
-        if quote == '"'
-          contents = contents.gsub('"', "\\\"")
+    class String < ::Sass::Script::Value::String
+      def to_native(opts = {})
+        if opts[:quote] == :none || type == :identifier
+          Native::make_string(to_s)
         else
-          contents = contents.gsub("'", "\\'")
+          Native::make_qstring(to_s)
         end
-
-        contents = contents.gsub(/\n(?![a-fA-F0-9\s])/, "\\a").gsub("\n", "\\a ")
-        "#{quote}#{contents}#{quote}"
-      end
-
-      def self.type(contents)
-        unquote(contents) == contents ? :identifier : :string
-      end
-
-      def self.unquote(contents)
-        s = contents.dup
-
-        case contents[0, 1]
-        when "'", '"', '`'
-          s[0] = ''
-        end
-
-        case contents[-1, 1]
-        when "'", '"', '`'
-          s[-1] = ''
-        end
-
-        return s
-      end
-
-      # Creates a new string.
-      #
-      # @param value [String] See \{#value}
-      # @param type [Symbol] See \{#type}
-      def initialize(value, type = :identifier)
-        value.freeze unless value.nil? || value == true || value == false
-        @value = value
-        @type = type
-      end
-
-      def to_native
-        Native::make_string(to_s)
-      end
-
-      # @see Value#to_s
-      def to_s(opts = {})
-        return @value.gsub(/\n\s*/, ' ') if opts[:quote] == :none || @type == :identifier
-        SassC::Script::String.quote(value, opts[:quote])
       end
     end
   end
