@@ -21,6 +21,9 @@ module SassC
     # ADDAPI union Sass_Value* ADDCALL sass_make_qstring (const char* val);
     attach_function :sass_make_qstring, [:string], :sass_value_ptr
 
+    # ADDAPI union Sass_Value* ADDCALL sass_make_error   (const char* msg);
+    attach_function :sass_make_error, [:string], :sass_value_ptr
+
     # ADDAPI enum Sass_Tag ADDCALL sass_value_get_tag (const union Sass_Value* v);
     attach_function :sass_value_get_tag, [:sass_value_ptr], SassTag
     attach_function :sass_value_is_null, [:sass_value_ptr], :bool

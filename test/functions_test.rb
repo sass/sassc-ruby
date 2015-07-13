@@ -148,7 +148,7 @@ div {
     end
 
     def stderr_output
-      $stderr.string.gsub("\u0000\n", '')
+      $stderr.string.gsub("\u0000\n", '').chomp
     end
   end
 end

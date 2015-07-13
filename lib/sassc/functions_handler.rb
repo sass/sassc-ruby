@@ -77,18 +77,8 @@ module SassC
     private
 
     def error(message)
-      value = Native::SassValue.new
-      value[:unknown] = Native::SassUnknown.new
-
-      error = Native::SassError.new
-      error[:tag] = :sass_error
-
-      Native.error_set_message(error, Native.native_string(message))
       $stderr.puts "[SassC::FunctionsHandler] #{message}"
-
-      value[:unknown][:tag] = :sass_error
-      value[:error] = error
-      value.pointer
+      Native.make_error(message)
     end
 
     class FunctionWrapper
