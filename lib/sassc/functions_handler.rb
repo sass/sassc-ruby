@@ -26,8 +26,9 @@ module SassC
             when :sass_null
               # no-op
             when :sass_string
-              native_string = Native.string_get_value(native_value)
-              argument = Script::String.new(Script::String.unquote(native_string), Script::String.type(native_string))
+              value = Native.string_get_value(native_value)
+              type = Native.string_get_type(native_value)
+              argument = Script::String.new(value, type)
 
               custom_function_arguments << argument
             when :sass_color
@@ -46,11 +47,11 @@ module SassC
           next error_tag if error_tag
 
           begin
-            value = functions.send(custom_function, *custom_function_arguments)
+            script_value = functions.send(custom_function, *custom_function_arguments)
 
-            if value
-              value = Script::String.new(Script::String.unquote(value.to_s), value.type)
-              value.to_native
+            if script_value
+              script_value.options = @options
+              script_value.to_native
             else
               Script::String.new("").to_native
             end
