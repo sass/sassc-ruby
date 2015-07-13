@@ -4,7 +4,7 @@ module SassC
   module Script
     class Color < ::Sass::Script::Value::Color
       def to_native
-        Native::make_string(to_s)
+        Native::make_color(red, green, blue, alpha)
       end
     end
   end

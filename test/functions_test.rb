@@ -56,6 +56,18 @@ div {
       EOS
     end
 
+    def test_function_that_returns_a_color
+      engine = Engine.new(<<-SCSS)
+div {
+  background: returns-a-color(); }
+      SCSS
+
+      assert_equal <<-EXPECTED_SCSS, engine.render
+div {
+  background: black; }
+      EXPECTED_SCSS
+    end
+
     def test_function_with_optional_arguments
       engine = Engine.new(<<-SCSS)
 div {
@@ -137,6 +149,10 @@ div {
 
       def nice_color_argument(color)
         return Script::String.new(color.to_s, :string)
+      end
+
+      def returns_a_color()
+        return Script::Color.new(red: 0, green: 0, blue: 0)
       end
 
       module Compass

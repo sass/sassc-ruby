@@ -21,6 +21,9 @@ module SassC
     # ADDAPI union Sass_Value* ADDCALL sass_make_qstring (const char* val);
     attach_function :sass_make_qstring, [:string], :sass_value_ptr
 
+    # ADDAPI union Sass_Value* ADDCALL sass_make_color   (double r, double g, double b, double a);
+    attach_function :sass_make_color, [:double, :double, :double, :double], :sass_value_ptr
+
     # ADDAPI union Sass_Value* ADDCALL sass_make_error   (const char* msg);
     attach_function :sass_make_error, [:string], :sass_value_ptr
 
