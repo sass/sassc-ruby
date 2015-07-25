@@ -48,13 +48,9 @@ module SassC
 
           begin
             script_value = functions.send(custom_function, *custom_function_arguments)
-
-            if script_value
-              script_value.options = @options
-              script_value.to_native
-            else
-              Script::String.new("").to_native
-            end
+            script_value ||= Script::String.new("") # null response
+            script_value.options = @options
+            Native::ValueConversion::Base.to_native(script_value)
           rescue StandardError => exception
             error(exception.message)
           end

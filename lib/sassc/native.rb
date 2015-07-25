@@ -58,5 +58,6 @@ module SassC
     require_relative "native/native_context_api"
     require_relative "native/native_functions_api"
     require_relative "native/sass2scss_api"
+    require_relative "native/value_conversion"
   end
 end

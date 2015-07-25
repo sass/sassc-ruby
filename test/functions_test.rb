@@ -97,8 +97,7 @@ div {
         engine.render
       end
 
-      assert_equal "Error: error in C function function_with_unsupported_tag: Sass argument of type sass_number unsupported\n\n       Backtrace:\n       \tstdin:1, in function `function_with_unsupported_tag`\n       \tstdin:1\n        on line 1 of stdin\n>> div {url: function_with_unsupported_tag(1);}\n   ----------^\n", exception.message
-
+      assert_match /Sass argument of type sass_number unsupported/, exception.message
       assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_number unsupported", stderr_output
     end
 
@@ -121,6 +120,18 @@ div {
       assert_equal "[SassC::FunctionsHandler] Intentional wrong thing happened somewhere inside the custom function", stderr_output
     end
 
+    def test_function_that_returns_a_sass_value
+      engine = Engine.new(<<-SCSS)
+div {
+  background: returns-sass-value(); }
+      SCSS
+
+      assert_equal <<-EXPECTED_SCSS, engine.render
+div {
+  background: black; }
+      EXPECTED_SCSS
+    end
+
     private
 
     module Script::Functions
@@ -140,7 +151,7 @@ div {
         Script::String.new("#{path.value}/#{optional}", :string)
       end
 
-      def function_that_raises_errors()
+      def function_that_raises_errors
         raise StandardError, "Intentional wrong thing happened somewhere inside the custom function"
       end
 
@@ -151,8 +162,12 @@ div {
         return Script::String.new(color.to_s, :string)
       end
 
-      def returns_a_color()
+      def returns_a_color
         return Script::Color.new(red: 0, green: 0, blue: 0)
+      end
+
+      def returns_sass_value
+        return Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
       end
 
       module Compass

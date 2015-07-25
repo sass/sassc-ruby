@@ -13,6 +13,9 @@ module SassC
 
       "#{function_name}(#{params})"
     end
+
+    module Value
+    end
   end
 end
 
@@ -25,5 +28,11 @@ end
 
 require 'sass/util'
 require 'sass/script/value/base'
-require_relative "script/string"
-require_relative "script/color"
+require 'sass/script/value/string'
+require 'sass/script/value/color'
+
+SassC::Script::String = Sass::Script::Value::String
+SassC::Script::Value::String = Sass::Script::Value::String
+
+SassC::Script::Color = Sass::Script::Value::Color
+SassC::Script::Value::Color = Sass::Script::Value::Color
