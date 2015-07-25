@@ -42,16 +42,11 @@ module SassC
 
     def arguments_from_native_list(native_argument_list)
       native_argument_list_length = Native.list_get_length(native_argument_list)
-      arguments = []
 
-      (0...native_argument_list_length).each do |i|
+      (0...native_argument_list_length).map do |i|
         native_value = Native.list_get_value(native_argument_list, i)
-
-        argument = Native::ValueConversion.from_native(native_value, @options)
-        arguments << argument if argument
-      end
-
-      arguments
+        Native::ValueConversion.from_native(native_value, @options)
+      end.compact
     end
 
     def to_native_value(sass_value)
