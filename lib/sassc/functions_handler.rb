@@ -45,14 +45,14 @@ module SassC
 
       (0...native_argument_list_length).map do |i|
         native_value = Native.list_get_value(native_argument_list, i)
-        Native::ValueConversion.from_native(native_value, @options)
+        Script::ValueConversion.from_native(native_value, @options)
       end.compact
     end
 
     def to_native_value(sass_value)
       sass_value ||= Script::String.new("") # null response
       sass_value.options = @options
-      Native::ValueConversion.to_native(sass_value)
+      Script::ValueConversion.to_native(sass_value)
     end
 
     def error(message)

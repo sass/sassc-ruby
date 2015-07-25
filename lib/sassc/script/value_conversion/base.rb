@@ -1,5 +1,5 @@
 module SassC
-  module Native
+  module Script
     module ValueConversion
       class Base
         def initialize(value)

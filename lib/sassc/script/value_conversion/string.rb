@@ -1,5 +1,5 @@
 module SassC
-  module Native
+  module Script
     module ValueConversion
       class String < Base
         def to_native(opts = {})

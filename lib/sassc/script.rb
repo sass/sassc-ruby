@@ -20,6 +20,7 @@ module SassC
 end
 
 require_relative "script/functions"
+require_relative "script/value_conversion"
 
 module Sass
   module Script

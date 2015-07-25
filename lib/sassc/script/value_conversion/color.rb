@@ -1,5 +1,5 @@
 module SassC
-  module Native
+  module Script
     module ValueConversion
       class Color < Base
         def to_native
