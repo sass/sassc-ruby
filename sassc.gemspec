@@ -7,10 +7,10 @@ Gem::Specification.new do |spec|
   spec.name          = "sassc"
   spec.version       = SassC::VERSION
   spec.authors       = ["Ryan Boland"]
-  spec.email         = ["bolandryanm@gmail.com"]
+  spec.email         = ["ryan@tanookilabs.com"]
   spec.summary       = "Use libsass with Ruby!"
   spec.description   = "Use libsass with Ruby!"
-  spec.homepage      = "https://github.com/bolandrm/sassc-ruby"
+  spec.homepage      = "https://github.com/sass/sassc-ruby"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
