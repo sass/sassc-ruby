@@ -14,80 +14,75 @@ module SassC
     end
 
     def test_functions_may_return_sass_string_type
-      engine = Engine.new(<<-SCSS)
-div {
-  url: url(sass_return_path("foo.svg")); }
+      assert_sass <<-SCSS, <<-CSS
+        div { url: url(sass_return_path("foo.svg")); }
       SCSS
-
-      assert_equal <<-EXPECTED_SCSS, engine.render
-div {
-  url: url("foo.svg"); }
-      EXPECTED_SCSS
+        div { url: url("foo.svg"); }
+      CSS
     end
 
     def test_functions_work_with_varying_quotes_and_string_types
-      filename = fixture_path('paths.scss')
-      data = File.read(filename)
-
-      engine = Engine.new(data, {
-        filename: filename,
-        syntax: :scss
-      })
-
-      assert_equal <<-EOS, engine.render
-div {
-  url: url(asset-path("foo.svg"));
-  url: url(image-path("foo.png"));
-  url: url(video-path("foo.mov"));
-  url: url(audio-path("foo.mp3"));
-  url: url(font-path("foo.woff"));
-  url: url("/js/foo.js");
-  url: url("/js/foo.js");
-  url: url(/css/foo.css); }
-      EOS
+      assert_sass <<-SCSS, <<-CSS
+        div {
+           url: url(asset-path("foo.svg"));
+           url: url(image-path("foo.png"));
+           url: url(video-path("foo.mov"));
+           url: url(audio-path("foo.mp3"));
+           url: url(font-path("foo.woff"));
+           url: url(javascript-path('foo.js'));
+           url: url(javascript-path("foo.js"));
+           url: url(stylesheet-path("foo.css"));
+        }
+      SCSS
+        div {
+          url: url(asset-path("foo.svg"));
+          url: url(image-path("foo.png"));
+          url: url(video-path("foo.mov"));
+          url: url(audio-path("foo.mp3"));
+          url: url(font-path("foo.woff"));
+          url: url("/js/foo.js");
+          url: url("/js/foo.js");
+          url: url(/css/foo.css);
+        }
+      CSS
     end
 
     def test_function_with_no_return_value
-      engine = Engine.new("div {url: url(no-return-path('foo.svg'));}")
-
-      assert_equal <<-EOS, engine.render
-div {
-  url: url(); }
-      EOS
+      assert_sass <<-SCSS, <<-CSS
+        div {url: url(no-return-path('foo.svg'));}
+      SCSS
+        div { url: url(); }
+      CSS
     end
 
     def test_function_that_returns_a_color
-      engine = Engine.new(<<-SCSS)
-div {
-  background: returns-a-color(); }
+      assert_sass <<-SCSS, <<-CSS
+        div { background: returns-a-color(); }
       SCSS
-
-      assert_equal <<-EXPECTED_SCSS, engine.render
-div {
-  background: black; }
-      EXPECTED_SCSS
+        div { background: black; }
+      CSS
     end
 
     def test_function_with_optional_arguments
-      engine = Engine.new(<<-SCSS)
-div {
-  url: optional_arguments('first');
-  url: optional_arguments('second', 'qux'); }
-SCSS
-
-      assert_equal <<-EXPECTED_SCSS, engine.render
-div {
-  url: "first/bar";
-  url: "second/qux"; }
-      EXPECTED_SCSS
+      assert_sass <<-SCSS, <<-EXPECTED_CSS
+        div {
+          url: optional_arguments('first');
+          url: optional_arguments('second', 'qux');
+        }
+      SCSS
+        div {
+          url: "first/bar";
+          url: "second/qux";
+        }
+      EXPECTED_CSS
     end
 
     def test_functions_may_accept_sass_color_type
-      engine = Engine.new("div { color: nice_color_argument(red); }")
-      assert_equal <<-EOS, engine.render
-div {
-  color: "red"; }
-      EOS
+      assert_sass <<-SCSS, <<-EXPECTED_CSS
+        div { color: nice_color_argument(red); }
+      SCSS
+        div { color: "red"; }
+      EXPECTED_CSS
     end
 
     def test_function_with_unsupported_tag
@@ -97,31 +92,41 @@ div {
         engine.render
       end
 
-      assert_equal "Error: error in C function function_with_unsupported_tag: Sass argument of type sass_number unsupported\n\n       Backtrace:\n       \tstdin:1, in function `function_with_unsupported_tag`\n       \tstdin:1\n        on line 1 of stdin\n>> div {url: function_with_unsupported_tag(1);}\n   ----------^\n", exception.message
-
+      assert_match /Sass argument of type sass_number unsupported/, exception.message
       assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_number unsupported", stderr_output
     end
 
     def test_function_with_error
       engine = Engine.new("div {url: function_that_raises_errors();}")
+
       exception = assert_raises(SassC::SyntaxError) do
         engine.render
       end
 
-      assert_equal "Error: error in C function function_that_raises_errors: Intentional wrong thing happened somewhere inside the custom function
-
-       Backtrace:
-       \tstdin:1, in function `function_that_raises_errors`
-       \tstdin:1
-        on line 1 of stdin
->> div {url: function_that_raises_errors();}
-   ----------^
-", exception.message
-
+      assert_match /Error: error in C function function_that_raises_errors/, exception.message
+      assert_match /Intentional wrong thing happened somewhere inside the custom function/, exception.message
       assert_equal "[SassC::FunctionsHandler] Intentional wrong thing happened somewhere inside the custom function", stderr_output
     end
 
+    def test_function_that_returns_a_sass_value
+      assert_sass <<-SCSS, <<-CSS
+        div { background: returns-sass-value(); }
+      SCSS
+        div { background: black; }
+      CSS
+    end
+
     private
+
+    def assert_sass(sass, expected_css)
+      engine = Engine.new(sass)
+      assert_equal expected_css.strip.gsub!(/\s+/, " "), # poor man's String#squish
+                   engine.render.strip.gsub!(/\s+/, " ")
+    end
+
+    def stderr_output
+      $stderr.string.gsub("\u0000\n", '').chomp
+    end
 
     module Script::Functions
       def javascript_path(path)
@@ -140,7 +145,7 @@ div {
         Script::String.new("#{path.value}/#{optional}", :string)
       end
 
-      def function_that_raises_errors()
+      def function_that_raises_errors
         raise StandardError, "Intentional wrong thing happened somewhere inside the custom function"
       end
 
@@ -151,8 +156,12 @@ div {
         return Script::String.new(color.to_s, :string)
       end
 
-      def returns_a_color()
+      def returns_a_color
         return Script::Color.new(red: 0, green: 0, blue: 0)
+      end
+
+      def returns_sass_value
+        return Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
       end
 
       module Compass
@@ -161,10 +170,6 @@ div {
         end
       end
       include Compass
-    end
-
-    def stderr_output
-      $stderr.string.gsub("\u0000\n", '').chomp
     end
   end
 end

@@ -15,47 +15,13 @@ module SassC
 
       Script.custom_functions.each_with_index do |custom_function, i|
         @callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |native_argument_list, cookie|
-          native_argument_list_length = Native.list_get_length(native_argument_list)
-          custom_function_arguments = []
-          error_tag = nil
-
-          (0...native_argument_list_length).each do |i|
-            native_value = Native.list_get_value(native_argument_list, i)
-
-            case value_tag = Native.value_get_tag(native_value)
-            when :sass_null
-              # no-op
-            when :sass_string
-              value = Native.string_get_value(native_value)
-              type = Native.string_get_type(native_value)
-              argument = Script::String.new(value, type)
-
-              custom_function_arguments << argument
-            when :sass_color
-              red, green, blue, alpha = Native.color_get_r(native_value), Native.color_get_g(native_value), Native.color_get_b(native_value), Native.color_get_a(native_value)
-
-              argument = Script::Color.new([red, green, blue, alpha])
-              argument.options = @options
-
-              custom_function_arguments << argument
-            else
-              error_tag = error("Sass argument of type #{value_tag} unsupported")
-              break
-            end
-          end
-
-          next error_tag if error_tag
-
           begin
-            script_value = functions.send(custom_function, *custom_function_arguments)
-
-            if script_value
-              script_value.options = @options
-              script_value.to_native
-            else
-              Script::String.new("").to_native
-            end
+            function_arguments = arguments_from_native_list(native_argument_list)
+            result = functions.send(custom_function, *function_arguments)
+            to_native_value(result)
           rescue StandardError => exception
+            # This rescues any exceptions that occur either in value conversion
+            # or during the execution of a custom function.
             error(exception.message)
           end
         end
@@ -75,6 +41,24 @@ module SassC
     end
 
     private
+
+    def arguments_from_native_list(native_argument_list)
+      native_argument_list_length = Native.list_get_length(native_argument_list)
+
+      (0...native_argument_list_length).map do |i|
+        native_value = Native.list_get_value(native_argument_list, i)
+        Script::ValueConversion.from_native(native_value, @options)
+      end.compact
+    end
+
+    def to_native_value(sass_value)
+      # if the custom function returns nil, we provide a "default" return
+      # value of an empty string
+      sass_value ||= Script::String.new("")
+
+      sass_value.options = @options
+      Script::ValueConversion.to_native(sass_value)
+    end
 
     def error(message)
       $stderr.puts "[SassC::FunctionsHandler] #{message}"
