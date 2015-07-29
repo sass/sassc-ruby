@@ -18,8 +18,17 @@ to CSS.  To compile, use a `SassC::Engine`.
 
 Additionally, you can use `SassC::Sass2Scss` to convert Sass syntax to Scss syntax.
 
+## Credits
+
+This gem is maintained by [Ryan Boland](https://ryanboland.com)
+and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contributors).
+
 ## Changelog
 
+- **1.6.0**
+  - [Support Sass Color types](https://github.com/bolandrm/sassc-ruby/pull/14)
+  - [Support quoted strings](https://github.com/bolandrm/sassc-ruby/pull/13)
+  - [Improve custom function error handling](https://github.com/bolandrm/sassc-ruby/pull/15)
 - **1.5.1**
   - 2nd attempt at fixing compilation bug (issue [#12](https://github.com/bolandrm/sassc-ruby/issues/12))
 - **1.5.0**
