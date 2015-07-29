@@ -20,6 +20,8 @@ module SassC
             result = functions.send(custom_function, *function_arguments)
             to_native_value(result)
           rescue StandardError => exception
+            # This rescues any exceptions that occur either in value conversion
+            # or during the execution of a custom function.
             error(exception.message)
           end
         end
@@ -50,7 +52,10 @@ module SassC
     end
 
     def to_native_value(sass_value)
-      sass_value ||= Script::String.new("") # null response
+      # if the custom function returns nil, we provide a "default" return
+      # value of an empty string
+      sass_value ||= Script::String.new("")
+
       sass_value.options = @options
       Script::ValueConversion.to_native(sass_value)
     end

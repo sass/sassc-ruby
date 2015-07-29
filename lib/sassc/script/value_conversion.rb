@@ -1,8 +1,6 @@
 module SassC
   module Script
     module ValueConversion
-      class Unsupported < StandardError; end
-
       def self.from_native(native_value, options)
         case value_tag = Native.value_get_tag(native_value)
         when :sass_null
@@ -21,7 +19,7 @@ module SassC
 
           argument
         else
-          raise Unsupported.new("Sass argument of type #{value_tag} unsupported")
+          raise UnsupportedValue.new("Sass argument of type #{value_tag} unsupported")
         end
       end
 
@@ -32,7 +30,7 @@ module SassC
         when "Color"
           Color.new(value).to_native
         else
-          raise Unsupported.new("Sass return type #{value_name} unsupported")
+          raise UnsupportedValue.new("Sass return type #{value_name} unsupported")
         end
       end
     end

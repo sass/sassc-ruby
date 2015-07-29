@@ -1,7 +1,9 @@
 require 'sass/error'
 
 module SassC
-  class SyntaxError < StandardError; end
-  class NotRenderedError < StandardError; end
-  class InvalidStyleError < StandardError; end
+  class BaseError < StandardError; end
+  class SyntaxError < BaseError; end
+  class NotRenderedError < BaseError; end
+  class InvalidStyleError < BaseError; end
+  class UnsupportedValue < BaseError; end
 end
