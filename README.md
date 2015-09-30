@@ -25,6 +25,8 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
+- **1.7.0**
+  - [Support Precision](https://github.com/sass/sassc-ruby/pull/19)
 - **1.6.0**
   - [Support Sass Color types](https://github.com/bolandrm/sassc-ruby/pull/14)
   - [Support quoted strings](https://github.com/bolandrm/sassc-ruby/pull/13)
