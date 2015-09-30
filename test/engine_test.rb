@@ -64,6 +64,34 @@ foo {
 SCSS
     end
 
+    def test_precision
+      template = <<-SCSS
+$var: 1;
+.foo {
+  baz: $var / 3; }
+SCSS
+      expected_output = <<-CSS
+.foo {
+  baz: 0.33333333; }
+CSS
+      output = Engine.new(template, precision: 8).render
+      assert_equal expected_output, output
+    end
+
+    def test_precision_not_specified
+      template = <<-SCSS
+$var: 1;
+.foo {
+  baz: $var / 3; }
+SCSS
+      expected_output = <<-CSS
+.foo {
+  baz: 0.33333; }
+CSS
+      output = Engine.new(template).render
+      assert_equal expected_output, output
+    end
+
     def test_dependency_filenames_are_reported
       temp_file("not_included.scss", "$size: 30px;")
       temp_file("import_parent.scss", "$size: 30px;")
