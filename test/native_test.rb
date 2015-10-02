@@ -9,13 +9,13 @@ module SassC
 
     class General < MiniTest::Test
       def test_it_reports_the_libsass_version
-        assert_equal "3.2.5", Native.version
+        assert_equal "3.3.0-beta2", Native.version
       end
     end
 
     class DataContext < MiniTest::Test
       def teardown
-        Native.delete_data_context(@data_context)
+        Native.delete_data_context(@data_context) if @data_context
       end
 
       def test_compile_status_is_zero_when_successful
@@ -58,6 +58,7 @@ module SassC
       end
 
       def test_failed_compile_gives_error_message
+        skip
       end
 
       def test_custom_function
@@ -106,7 +107,7 @@ module SassC
       include TempFileTest
 
       def teardown
-        Native.delete_file_context(@file_context)
+        Native.delete_file_context(@file_context) if @file_context
       end
 
       def test_compile_status_is_zero_when_successful

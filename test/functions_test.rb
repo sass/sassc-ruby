@@ -141,8 +141,9 @@ module SassC
         Script::String.new("#{path.value}", :string)
       end
 
-      def optional_arguments(path, optional = "bar")
-        Script::String.new("#{path.value}/#{optional}", :string)
+      def optional_arguments(path, optional = nil)
+        optional ||= Script::String.new("bar")
+        Script::String.new("#{path.value}/#{optional.value}", :string)
       end
 
       def function_that_raises_errors

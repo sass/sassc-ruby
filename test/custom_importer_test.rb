@@ -80,13 +80,10 @@ SCSS
 
       dependencies = engine.dependencies.map(&:filename)
 
-      # TODO: this behavior is kind of weird (styles1.scss is not included)
-      # not sure why.
-
       assert_equal [
         "fonts/fonts.scss",
         "fonts/sub/sub_fonts.scss",
-        "styles",
+        "styles1.scss",
         "styles2.scss"
       ], dependencies
     end
