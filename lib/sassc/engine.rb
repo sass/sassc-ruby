@@ -9,6 +9,8 @@ module SassC
       sass_style_compressed
     ]
 
+    attr_reader :template, :options
+
     def initialize(template, options = {})
       @template = template
       @options = options
@@ -55,14 +57,14 @@ module SassC
       Dependency.from_filenames(@dependencies)
     end
 
+    def filename
+      @options[:filename]
+    end
+
     private
 
     def quiet?
       @options[:quiet]
-    end
-
-    def filename
-      @options[:filename]
     end
 
     def precision
