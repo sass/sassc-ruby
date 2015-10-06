@@ -25,6 +25,8 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
+- **1.7.1**
+  - Some updates to `Engine` API.
 - **1.7.0**
   - [Support Precision](https://github.com/sass/sassc-ruby/pull/19)
 - **1.6.0**
