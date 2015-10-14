@@ -4,7 +4,7 @@ module SassC
   module Native
     extend FFI::Library
 
-    spec = Gem::Specification.find_by_name("sassc")
+    spec = Gem.loaded_specs["sassc"]
     gem_root = spec.gem_dir
     ffi_lib "#{gem_root}/ext/libsass/lib/libsass.so"
 
