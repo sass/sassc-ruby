@@ -6,7 +6,7 @@ This gem combines the speed of `libsass`, the [Sass C implementation](https://gi
 
 ### libsass Version
 
-[3.2.5](https://github.com/sass/libsass/releases/tag/3.2.5)
+[3.3.0-beta3](https://github.com/sass/libsass/releases/tag/3.3.0-beta3)
 
 ## Usage
 
@@ -25,6 +25,8 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
+- **1.8.0-beta1**
+  - [Update to Libsass 3.3.0-beta3](https://github.com/sass/sassc-ruby/pull/20)
 - **1.7.1**
   - Some updates to `Engine` API.
 - **1.7.0**
