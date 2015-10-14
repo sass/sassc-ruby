@@ -25,7 +25,9 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
-- **1.8.0-beta1**
+- **1.8.0.pre2**
+  - Fix bug with looking up gem_path
+- **1.8.0.pre1**
   - [Update to Libsass 3.3.0-beta3](https://github.com/sass/sassc-ruby/pull/20)
 - **1.7.1**
   - Some updates to `Engine` API.
