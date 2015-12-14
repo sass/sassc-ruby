@@ -93,6 +93,8 @@ CSS
     end
 
     def test_dependency_filenames_are_reported
+      base = temp_dir("").to_s
+
       temp_file("not_included.scss", "$size: 30px;")
       temp_file("import_parent.scss", "$size: 30px;")
       temp_file("import.scss", "@import 'import_parent'; $size: 30px;")
@@ -102,9 +104,9 @@ CSS
       engine.render
       deps = engine.dependencies
 
-      expected = ["import.scss", "import_parent.scss"]
-      assert_equal expected, deps.map { |dep| dep.options[:filename] }.sort
-      assert_equal expected, deps.map(&:filename).sort
+      expected = ["/import.scss", "/import_parent.scss"]
+      assert_equal expected, deps.map { |dep| dep.options[:filename].gsub(base, "") }.sort
+      assert_equal expected, deps.map { |dep| dep.filename.gsub(base, "") }.sort
     end
 
     def test_no_dependencies

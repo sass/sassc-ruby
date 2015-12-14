@@ -58,6 +58,8 @@ CSS
     end
 
     def test_dependency_list
+      base = temp_dir("").to_s
+
       temp_dir("fonts")
       temp_dir("fonts/sub")
       temp_file("fonts/sub/sub_fonts.scss", "$font: arial;")
@@ -78,13 +80,13 @@ SCSS
       })
       engine.render
 
-      dependencies = engine.dependencies.map(&:filename)
+      dependencies = engine.dependencies.map(&:filename).map { |f| f.gsub(base, "") }
 
       assert_equal [
+        "/fonts/sub/sub_fonts.scss",
+        "/styles2.scss",
         "fonts/fonts.scss",
-        "fonts/sub/sub_fonts.scss",
-        "styles1.scss",
-        "styles2.scss"
+        "styles1.scss"
       ], dependencies
     end
 

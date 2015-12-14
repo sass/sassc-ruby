@@ -17,6 +17,6 @@ namespace :libsass do
   end
 
   file "lib/libsass.so" => "Makefile" do
-    sh 'make lib/libsass.so LDFLAGS="-Wall -O2"'
+    sh 'make lib/libsass.so'
   end
 end
