@@ -11,6 +11,12 @@ module SassC
           argument = Script::String.new(value, type)
 
           argument
+        when :sass_number
+          value = Native.number_get_value(native_value)
+          unit = Native.number_get_unit(native_value)
+          argument = Sass::Script::Value::Number.new(value, unit)
+
+          argument
         when :sass_color
           red, green, blue, alpha = Native.color_get_r(native_value), Native.color_get_g(native_value), Native.color_get_b(native_value), Native.color_get_a(native_value)
 
@@ -29,6 +35,8 @@ module SassC
           String.new(value).to_native
         when "Color"
           Color.new(value).to_native
+        when "Number"
+          Number.new(value).to_native
         else
           raise UnsupportedValue.new("Sass return type #{value_name} unsupported")
         end
@@ -39,4 +47,5 @@ end
 
 require_relative "value_conversion/base"
 require_relative "value_conversion/string"
+require_relative "value_conversion/number"
 require_relative "value_conversion/color"

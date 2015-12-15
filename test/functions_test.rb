@@ -64,6 +64,22 @@ module SassC
       CSS
     end
 
+    def test_function_that_returns_a_number
+      assert_sass <<-SCSS, <<-CSS
+        div { width: returns-a-number(); }
+      SCSS
+        div { width: -312rem; }
+      CSS
+    end
+
+    def test_function_that_takes_a_number
+      assert_sass <<-SCSS, <<-CSS
+        div { display: returns-arg(42.1px); }
+      SCSS
+        div { display: 42.1px; }
+      CSS
+    end
+
     def test_function_with_optional_arguments
       assert_sass <<-SCSS, <<-EXPECTED_CSS
         div {
@@ -87,14 +103,14 @@ module SassC
     end
 
     def test_function_with_unsupported_tag
-      engine = Engine.new("div {url: function_with_unsupported_tag(1);}")
+      engine = Engine.new("div {url: function_with_unsupported_tag(());}")
 
       exception = assert_raises(SassC::SyntaxError) do
         engine.render
       end
 
-      assert_match /Sass argument of type sass_number unsupported/, exception.message
-      assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_number unsupported", stderr_output
+      assert_match /Sass argument of type sass_list unsupported/, exception.message
+      assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_list unsupported", stderr_output
     end
 
     def test_function_with_error
@@ -151,7 +167,7 @@ module SassC
         raise StandardError, "Intentional wrong thing happened somewhere inside the custom function"
       end
 
-      def function_with_unsupported_tag(number)
+      def function_with_unsupported_tag(value)
       end
 
       def nice_color_argument(color)
@@ -160,6 +176,14 @@ module SassC
 
       def returns_a_color
         return Script::Color.new(red: 0, green: 0, blue: 0)
+      end
+
+      def returns_a_number
+        return Sass::Script::Value::Number.new(-312,'rem')
+      end
+
+      def returns_arg ( arg )
+        return arg
       end
 
       def returns_sass_value

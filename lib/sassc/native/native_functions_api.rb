@@ -37,6 +37,12 @@ module SassC
     # ADDAPI bool ADDCALL sass_string_is_quoted(const union Sass_Value* v);
     attach_function :sass_string_is_quoted, [:sass_value_ptr], :bool
 
+    # ADDAPI const char* ADDCALL sass_number_get_value (const union Sass_Value* v);
+    attach_function :sass_number_get_value, [:sass_value_ptr], :double
+
+    # ADDAPI const char* ADDCALL sass_number_get_unit (const union Sass_Value* v);
+    attach_function :sass_number_get_unit, [:sass_value_ptr], :string
+
     def self.string_get_type(native_value)
       string_is_quoted(native_value) ? :string : :identifier
     end
