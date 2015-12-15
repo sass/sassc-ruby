@@ -24,7 +24,7 @@ module SassC
     def import_function
       @import_function ||= FFI::Function.new(:pointer, [:string, :pointer, :pointer]) do |path, importer_entry, compiler|
         last_import = Native::compiler_get_last_import(compiler)
-        parent_path = Native::import_get_imp_path(last_import)
+        parent_path = Native::import_get_abs_path(last_import)
 
         imports = [*@importer.imports(path, parent_path)]
         imports_to_native(imports)
