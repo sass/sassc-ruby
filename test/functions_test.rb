@@ -133,6 +133,23 @@ module SassC
       CSS
     end
 
+    def test_function_that_returns_a_sass_map
+      assert_sass <<-SCSS, <<-CSS
+        $my-map: returns-sass-map();
+        div { background: map-get( $my-map, color ); }
+      SCSS
+        div { background: black; }
+      CSS
+    end
+
+    def test_function_that_takes_a_sass_map
+      assert_sass <<-SCSS, <<-CSS
+        div { background-color: map-get( returns-arg(( dark: black, light: white )), dark ); }
+      SCSS
+        div { background-color: black; }
+      CSS
+    end
+
     private
 
     def assert_sass(sass, expected_css)
@@ -188,6 +205,15 @@ module SassC
 
       def returns_sass_value
         return Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
+      end
+
+      def returns_sass_map
+        key = Script::String.new("color", "string")
+        value = Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
+        values = {}
+        values[key] = value
+        map = Sass::Script::Value::Map.new values
+        return map
       end
 
       module Compass

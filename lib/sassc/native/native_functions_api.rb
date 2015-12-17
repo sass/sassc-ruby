@@ -24,6 +24,24 @@ module SassC
     # ADDAPI union Sass_Value* ADDCALL sass_make_color   (double r, double g, double b, double a);
     attach_function :sass_make_color, [:double, :double, :double, :double], :sass_value_ptr
 
+    # ADDAPI union Sass_Value* ADDCALL sass_make_map     (size_t len);
+    attach_function :sass_make_map, [:size_t], :sass_value_ptr
+
+    # ADDAPI void ADDCALL sass_map_set_key (union Sass_Value* v, size_t i, union Sass_Value*);
+    attach_function :sass_map_set_key, [:sass_value_ptr, :size_t, :sass_value_ptr], :void
+
+    # ADDAPI union Sass_Value* ADDCALL sass_map_get_key (const union Sass_Value* v, size_t i);
+    attach_function :sass_map_get_key, [:sass_value_ptr, :size_t], :sass_value_ptr
+
+    # ADDAPI void ADDCALL sass_map_set_value (union Sass_Value* v, size_t i, union Sass_Value*);
+    attach_function :sass_map_set_value, [:sass_value_ptr, :size_t, :sass_value_ptr], :void
+
+    # ADDAPI union Sass_Value* ADDCALL sass_map_get_value (const union Sass_Value* v, size_t i);
+    attach_function :sass_map_get_value, [:sass_value_ptr, :size_t], :sass_value_ptr
+
+    # ADDAPI size_t ADDCALL sass_map_get_length (const union Sass_Value* v);
+    attach_function :sass_map_get_length, [:sass_value_ptr], :size_t
+
     # ADDAPI union Sass_Value* ADDCALL sass_make_error   (const char* msg);
     attach_function :sass_make_error, [:string], :sass_value_ptr
 
