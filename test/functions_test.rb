@@ -74,7 +74,7 @@ module SassC
 
     def test_function_that_takes_a_number
       assert_sass <<-SCSS, <<-CSS
-        div { display: returns-arg(42.1px); }
+        div { display: inspect-number(42.1px); }
       SCSS
         div { display: 42.1px; }
       CSS
@@ -144,7 +144,7 @@ module SassC
 
     def test_function_that_takes_a_sass_map
       assert_sass <<-SCSS, <<-CSS
-        div { background-color: map-get( returns-arg(( dark: black, light: white )), dark ); }
+        div { background-color: map-get( inspect-map(( color: black, number: 1.23px, string: "abc", map: ( x: 'y' ))), color ); }
       SCSS
         div { background-color: black; }
       CSS
@@ -199,8 +199,30 @@ module SassC
         return Sass::Script::Value::Number.new(-312,'rem')
       end
 
-      def returns_arg ( arg )
-        return arg
+      def inspect_number ( argument )
+        raise StandardError.new "passed value is not a Sass::Script::Value::Number" unless argument.is_a? Sass::Script::Value::Number
+        return argument
+      end
+
+      def inspect_map ( argument )
+        argument.to_h.each_pair do |key, value|
+          raise StandardError.new "key #{key.inspect} is not a string" unless key.is_a? Sass::Script::Value::String
+
+          valueClass = case key.value
+                         when 'string'
+                           Sass::Script::Value::String
+                         when 'number'
+                           Sass::Script::Value::Number
+                         when 'color'
+                           Sass::Script::Value::Color
+                         when 'map'
+                           Sass::Script::Value::Map
+                       end
+
+          raise StandardError.new "unknown key #{key.inspect}" unless valueClass
+          raise StandardError.new "value for #{key.inspect} is not a #{valueClass}" unless value.is_a? valueClass
+        end
+        return argument
       end
 
       def returns_sass_value
