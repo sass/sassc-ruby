@@ -103,6 +103,7 @@ module SassC
     # ADDAPI const char* ADDCALL sass_import_get_imp_path (struct Sass_Import*);
     attach_function :sass_import_get_imp_path, [:sass_import_ptr], :string
     # ADDAPI const char* ADDCALL sass_import_get_abs_path (struct Sass_Import*);
+    attach_function :sass_import_get_abs_path, [:sass_import_ptr], :string
     # ADDAPI const char* ADDCALL sass_import_get_source (struct Sass_Import*);
     attach_function :sass_import_get_source, [:sass_import_ptr], :string
     # ADDAPI const char* ADDCALL sass_import_get_srcmap (struct Sass_Import*);
