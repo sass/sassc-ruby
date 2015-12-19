@@ -11,12 +11,30 @@ module SassC
           argument = Script::String.new(value, type)
 
           argument
+        when :sass_number
+          value = Native.number_get_value(native_value)
+          unit = Native.number_get_unit(native_value)
+          argument = Sass::Script::Value::Number.new(value, unit)
+
+          argument
         when :sass_color
           red, green, blue, alpha = Native.color_get_r(native_value), Native.color_get_g(native_value), Native.color_get_b(native_value), Native.color_get_a(native_value)
 
           argument = Script::Color.new([red, green, blue, alpha])
           argument.options = options
 
+          argument
+        when :sass_map
+          values = {}
+          length = Native::map_get_length native_value
+
+          (0..length-1).each do |index|
+            key = Native::map_get_key(native_value, index)
+            value = Native::map_get_value(native_value, index)
+            values[from_native(key, options)] = from_native(value, options)
+          end
+
+          argument = Sass::Script::Value::Map.new values
           argument
         else
           raise UnsupportedValue.new("Sass argument of type #{value_tag} unsupported")
@@ -29,6 +47,10 @@ module SassC
           String.new(value).to_native
         when "Color"
           Color.new(value).to_native
+        when "Number"
+          Number.new(value).to_native
+        when "Map"
+          Map.new(value).to_native
         else
           raise UnsupportedValue.new("Sass return type #{value_name} unsupported")
         end
@@ -39,4 +61,6 @@ end
 
 require_relative "value_conversion/base"
 require_relative "value_conversion/string"
+require_relative "value_conversion/number"
 require_relative "value_conversion/color"
+require_relative "value_conversion/map"

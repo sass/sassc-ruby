@@ -1,5 +1,6 @@
 /.bundle/
 /.yardoc
+/.rvmrc
 /Gemfile.lock
 /_yardoc/
 /coverage/

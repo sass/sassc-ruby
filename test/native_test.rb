@@ -96,6 +96,10 @@ module SassC
         assert_equal :sass_string, Native.value_get_tag(string)
         assert_equal "hello", Native.string_get_value(string)
 
+        number = Native.make_number(123.4, "rem")
+        assert_equal 123.4, Native.number_get_value(number)
+        assert_equal "rem", Native.number_get_unit(number)
+
         Native.compile_data_context(data_context)
 
         css = Native.context_get_output_string(context)

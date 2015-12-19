@@ -64,6 +64,22 @@ module SassC
       CSS
     end
 
+    def test_function_that_returns_a_number
+      assert_sass <<-SCSS, <<-CSS
+        div { width: returns-a-number(); }
+      SCSS
+        div { width: -312rem; }
+      CSS
+    end
+
+    def test_function_that_takes_a_number
+      assert_sass <<-SCSS, <<-CSS
+        div { display: inspect-number(42.1px); }
+      SCSS
+        div { display: 42.1px; }
+      CSS
+    end
+
     def test_function_with_optional_arguments
       assert_sass <<-SCSS, <<-EXPECTED_CSS
         div {
@@ -87,14 +103,14 @@ module SassC
     end
 
     def test_function_with_unsupported_tag
-      engine = Engine.new("div {url: function_with_unsupported_tag(1);}")
+      engine = Engine.new("div {url: function_with_unsupported_tag(());}")
 
       exception = assert_raises(SassC::SyntaxError) do
         engine.render
       end
 
-      assert_match /Sass argument of type sass_number unsupported/, exception.message
-      assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_number unsupported", stderr_output
+      assert_match /Sass argument of type sass_list unsupported/, exception.message
+      assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_list unsupported", stderr_output
     end
 
     def test_function_with_error
@@ -114,6 +130,23 @@ module SassC
         div { background: returns-sass-value(); }
       SCSS
         div { background: black; }
+      CSS
+    end
+
+    def test_function_that_returns_a_sass_map
+      assert_sass <<-SCSS, <<-CSS
+        $my-map: returns-sass-map();
+        div { background: map-get( $my-map, color ); }
+      SCSS
+        div { background: black; }
+      CSS
+    end
+
+    def test_function_that_takes_a_sass_map
+      assert_sass <<-SCSS, <<-CSS
+        div { background-color: map-get( inspect-map(( color: black, number: 1.23px, string: "abc", map: ( x: 'y' ))), color ); }
+      SCSS
+        div { background-color: black; }
       CSS
     end
 
@@ -151,7 +184,7 @@ module SassC
         raise StandardError, "Intentional wrong thing happened somewhere inside the custom function"
       end
 
-      def function_with_unsupported_tag(number)
+      def function_with_unsupported_tag(value)
       end
 
       def nice_color_argument(color)
@@ -162,8 +195,47 @@ module SassC
         return Script::Color.new(red: 0, green: 0, blue: 0)
       end
 
+      def returns_a_number
+        return Sass::Script::Value::Number.new(-312,'rem')
+      end
+
+      def inspect_number ( argument )
+        raise StandardError.new "passed value is not a Sass::Script::Value::Number" unless argument.is_a? Sass::Script::Value::Number
+        return argument
+      end
+
+      def inspect_map ( argument )
+        argument.to_h.each_pair do |key, value|
+          raise StandardError.new "key #{key.inspect} is not a string" unless key.is_a? Sass::Script::Value::String
+
+          valueClass = case key.value
+                         when 'string'
+                           Sass::Script::Value::String
+                         when 'number'
+                           Sass::Script::Value::Number
+                         when 'color'
+                           Sass::Script::Value::Color
+                         when 'map'
+                           Sass::Script::Value::Map
+                       end
+
+          raise StandardError.new "unknown key #{key.inspect}" unless valueClass
+          raise StandardError.new "value for #{key.inspect} is not a #{valueClass}" unless value.is_a? valueClass
+        end
+        return argument
+      end
+
       def returns_sass_value
         return Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
+      end
+
+      def returns_sass_map
+        key = Script::String.new("color", "string")
+        value = Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
+        values = {}
+        values[key] = value
+        map = Sass::Script::Value::Map.new values
+        return map
       end
 
       module Compass
