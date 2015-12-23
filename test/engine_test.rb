@@ -189,5 +189,10 @@ CSS
       assert_match /sourceMappingURL/, output
       assert_match /.foo/, output
     end
+
+    def test_empty_template
+      output = Engine.new('').render
+      assert_equal '', output
+    end
   end
 end
