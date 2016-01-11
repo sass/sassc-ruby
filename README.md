@@ -25,6 +25,8 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
+- **1.8.3**
+  - [Passing empty string into engine does not raise error](https://github.com/sass/sassc-ruby/pull/31)
 - **1.8.2**
   - Update to Libsass 3.3.2
 - **1.8.1**
