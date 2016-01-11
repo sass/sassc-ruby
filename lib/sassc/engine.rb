@@ -17,6 +17,8 @@ module SassC
     end
 
     def render
+      return @template if @template.empty?
+
       data_context = Native.make_data_context(@template)
       context = Native.data_context_get_context(data_context)
       native_options = Native.context_get_options(context)
