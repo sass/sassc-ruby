@@ -17,7 +17,7 @@ module SassC
     end
 
     def render
-      return @template if @template.empty?
+      return @template.dup if @template.empty?
 
       data_context = Native.make_data_context(@template)
       context = Native.data_context_get_context(data_context)
