@@ -194,5 +194,17 @@ CSS
       output = Engine.new('').render
       assert_equal '', output
     end
+
+    def test_empty_template_returns_a_new_object
+      input = ''
+      output = Engine.new(input).render
+      assert input.object_id != output.object_id, 'empty template must return a new object'
+    end
+
+    def test_empty_template_encoding_matches_input
+      input = ''.force_encoding("ISO-8859-1")
+      output = Engine.new(input).render
+      assert_equal input.encoding, output.encoding
+    end
   end
 end
