@@ -6,7 +6,7 @@ This gem combines the speed of `libsass`, the [Sass C implementation](https://gi
 
 ### libsass Version
 
-[3.3.2](https://github.com/sass/libsass/releases/tag/3.3.2)
+[3.3.3](https://github.com/sass/libsass/releases/tag/3.3.3)
 
 ## Usage
 
@@ -25,6 +25,8 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
+- **1.8.4**
+  - Update to Libsass 3.3.3
 - **1.8.3**
   - [Passing empty string into engine does not raise error](https://github.com/sass/sassc-ruby/pull/31)
 - **1.8.2**
