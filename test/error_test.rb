@@ -17,6 +17,21 @@ Error: property "padding" must be followed by a ':'
         expected = "#{Pathname.getwd.join(filename)}:#{line}"
         assert_equal expected, err.backtrace.first
       end
+
+      begin
+        raise SassC::SyntaxError.new(<<-ERROR)
+Error: no mixin named border-radius
+
+       Backtrace:
+       \t#{filename}:#{line}
+        on line #{line} of #{filename}
+>>     @include border-radius(5px);
+   -------------^
+        ERROR
+      rescue SassC::SyntaxError => err
+        expected = "#{Pathname.getwd.join(filename)}:#{line}"
+        assert_equal expected, err.backtrace.first
+      end
     end
   end
 end
