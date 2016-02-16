@@ -26,6 +26,9 @@ module SassC
 
     # ADDAPI union Sass_Value* ADDCALL sass_make_map     (size_t len);
     attach_function :sass_make_map, [:size_t], :sass_value_ptr
+    
+    # ADDAPI union Sass_Value* ADDCALL sass_make_boolean (boolean val);
+    attach_function :sass_make_boolean, [:bool], :sass_value_ptr
 
     # ADDAPI void ADDCALL sass_map_set_key (union Sass_Value* v, size_t i, union Sass_Value*);
     attach_function :sass_map_set_key, [:sass_value_ptr, :size_t, :sass_value_ptr], :void
@@ -60,6 +63,9 @@ module SassC
 
     # ADDAPI const char* ADDCALL sass_number_get_unit (const union Sass_Value* v);
     attach_function :sass_number_get_unit, [:sass_value_ptr], :string
+    
+    # ADDAPI const char* ADDCALL sass_boolean_get_value (const union Sass_Value* v);
+    attach_function :sass_boolean_get_value, [:sass_value_ptr], :bool
 
     def self.string_get_type(native_value)
       string_is_quoted(native_value) ? :string : :identifier
