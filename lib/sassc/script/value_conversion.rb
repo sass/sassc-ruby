@@ -11,6 +11,11 @@ module SassC
           argument = Script::String.new(value, type)
 
           argument
+        when :sass_boolean
+          value = Native.boolean_get_value(native_value)
+          argument = Script::Boolean.new(value)
+          
+          argument
         when :sass_number
           value = Native.number_get_value(native_value)
           unit = Native.number_get_unit(native_value)
@@ -64,3 +69,4 @@ require_relative "value_conversion/string"
 require_relative "value_conversion/number"
 require_relative "value_conversion/color"
 require_relative "value_conversion/map"
+require_relative "value_conversion/boolean"
