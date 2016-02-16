@@ -31,7 +31,7 @@ require 'sass/util'
 require 'sass/script/value/base'
 require 'sass/script/value/string'
 require 'sass/script/value/color'
-require 'sass/script/value/boolean'
+require 'sass/script/value/bool'
 
 SassC::Script::String = Sass::Script::Value::String
 SassC::Script::Value::String = Sass::Script::Value::String
