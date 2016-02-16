@@ -13,7 +13,7 @@ module SassC
           argument
         when :sass_boolean
           value = Native.boolean_get_value(native_value)
-          argument = Script::Boolean.new(value)
+          argument = Script::Bool.new(value)
           
           argument
         when :sass_number

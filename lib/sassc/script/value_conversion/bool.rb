@@ -1,7 +1,7 @@
 module SassC
   module Script
     module ValueConversion
-      class Boolean < Base
+      class Bool < Base
         def to_native
           Native::make_boolean(@value.value)
         end

@@ -39,5 +39,5 @@ SassC::Script::Value::String = Sass::Script::Value::String
 SassC::Script::Color = Sass::Script::Value::Color
 SassC::Script::Value::Color = Sass::Script::Value::Color
 
-SassC::Script::Boolean = Sass::Script::Value::Boolean
-SassC::Script::Value::Boolean = Sass::Script::Value::Boolean
+SassC::Script::Bool = Sass::Script::Value::Bool
+SassC::Script::Value::Bool = Sass::Script::Value::Bool
