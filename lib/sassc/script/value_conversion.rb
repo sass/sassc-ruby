@@ -56,6 +56,8 @@ module SassC
           Number.new(value).to_native
         when "Map"
           Map.new(value).to_native
+        when "Bool"
+          Bool.new(value).to_native
         else
           raise UnsupportedValue.new("Sass return type #{value_name} unsupported")
         end
