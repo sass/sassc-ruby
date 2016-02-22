@@ -17,6 +17,15 @@ namespace :libsass do
   end
 
   file "lib/libsass.so" => "Makefile" do
-    sh 'make lib/libsass.so'
+    make_program = ENV['MAKE']
+    make_program ||= case RUBY_PLATFORM
+                     when /mswin/
+                       'nmake'
+                     when /(bsd|solaris)/
+                       'gmake'
+                     else
+                       'make'
+                     end
+    sh "#{make_program} lib/libsass.so"
   end
 end
