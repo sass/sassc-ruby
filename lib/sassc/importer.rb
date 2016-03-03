@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SassC
   class Importer
     attr_reader :options

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SassC
   module Native
     # Creators for sass function list and function descriptors

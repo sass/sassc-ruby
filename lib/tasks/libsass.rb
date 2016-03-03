@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :libsass do
   desc "Compile libsass"
   task :compile do

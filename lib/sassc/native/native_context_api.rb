@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SassC
   module Native
     attach_function :version, :libsass_version, [], :string
