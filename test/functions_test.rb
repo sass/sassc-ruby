@@ -80,6 +80,22 @@ module SassC
       CSS
     end
 
+    def test_function_that_returns_a_bool
+      assert_sass <<-SCSS, <<-CSS
+        div { width: returns-a-bool(); }
+      SCSS
+        div { width: true; }
+      CSS
+    end
+
+    def test_function_that_takes_a_bool
+      assert_sass <<-SCSS, <<-CSS
+        div { display: inspect-bool(true)}
+      SCSS
+        div { display: true; }
+      CSS
+    end
+
     def test_function_with_optional_arguments
       assert_sass <<-SCSS, <<-EXPECTED_CSS
         div {
@@ -197,6 +213,15 @@ module SassC
 
       def returns_a_number
         return Sass::Script::Value::Number.new(-312,'rem')
+      end
+
+      def returns_a_bool
+        return Sass::Script::Value::Bool.new(true)
+      end
+
+      def inspect_bool ( argument )
+        raise StandardError.new "passed value is not a Sass::Script::Value::Bool" unless argument.is_a? Sass::Script::Value::Bool
+        return argument
       end
 
       def inspect_number ( argument )
