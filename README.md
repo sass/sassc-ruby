@@ -26,7 +26,7 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 ## Changelog
 
 - **1.9.0**
-    Support boolean script support
+  - Support boolean script support
 - **1.8.5**
   - Update to Libsass 3.3.4
 - **1.8.4**
