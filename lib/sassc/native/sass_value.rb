@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SassC
   module Native
     class SassValue < FFI::Union; end

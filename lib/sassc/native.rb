@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "ffi"
 
 module SassC
@@ -49,9 +50,15 @@ module SassC
 
     def self.native_string(string)
       string = string.to_s
-      string << "\0"
-      data = Native::LibC.malloc(string.bytesize)
+      string_size = string.bytesize
+
+      terminator = String.new.force_encoding(string.encoding) << "\0"
+
+      data = Native::LibC.malloc(string_size + terminator.bytesize)
+
       data.write_string(string)
+      (data+string_size).write_string(terminator)
+
       data
     end
 
