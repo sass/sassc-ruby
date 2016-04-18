@@ -8,10 +8,34 @@ This gem combines the speed of `libsass`, the [Sass C implementation](https://gi
 
 [3.3.4](https://github.com/sass/libsass/releases/tag/3.3.4)
 
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'sassc'
+```
+
+And then execute:
+
+```bash
+bundle
+```
+
+Or install it yourself as:
+
+```bash
+gem install sassc
+```
+
 ## Usage
 
 This library utilizes `libsass` to allow you to compile SCSS or SASS syntax
-to CSS.  To compile, use a `SassC::Engine`.
+to CSS.  To compile, use a `SassC::Engine`, e.g.:
+
+```ruby
+SassC::Engine.new(sass, style: :compressed).render
+```
 
 **Note**:  If you want to use this library with Rails/Sprockets, check out
 [sassc-rails](https://github.com/bolandrm/sassc-rails).
