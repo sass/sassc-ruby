@@ -6,7 +6,7 @@ This gem combines the speed of `libsass`, the [Sass C implementation](https://gi
 
 ### libsass Version
 
-[3.3.4](https://github.com/sass/libsass/releases/tag/3.3.4)
+[3.3.6](https://github.com/sass/libsass/releases/tag/3.3.6)
 
 ## Installation
 
@@ -49,6 +49,9 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
+- **1.10.0**
+  - [Improved error messages](https://github.com/sass/sassc-ruby/pull/34)
+  - Update to Libsass 3.3.6
 - **1.9.0**
   - Support boolean script support
 - **1.8.5**
