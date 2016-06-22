@@ -2,34 +2,24 @@ require_relative "test_helper"
 
 module SassC
   class ErrorTest < MiniTest::Test
+    def render(data, opts={})
+      Engine.new(data, opts).render
+    end
+
     def test_first_backtrace_is_sass
-      line     = 2
       filename = "app/assets/stylesheets/application.scss"
 
       begin
-        raise SassC::SyntaxError.new(<<-ERROR)
-Error: property "padding" must be followed by a ':'
-        on line #{line} of #{filename}
->>   padding top: 10px;
-   --^
-        ERROR
-      rescue SassC::SyntaxError => err
-        expected = "#{Pathname.getwd.join(filename)}:#{line}"
-        assert_equal expected, err.backtrace.first
-      end
+        template = <<-SCSS
+.foo {
+  baz: bang;
+  padding top: 10px;
+}
+      SCSS
 
-      begin
-        raise SassC::SyntaxError.new(<<-ERROR)
-Error: no mixin named border-radius
-
-       Backtrace:
-       \t#{filename}:#{line}
-        on line #{line} of #{filename}
->>     @include border-radius(5px);
-   -------------^
-        ERROR
+        render(template, filename: filename)
       rescue SassC::SyntaxError => err
-        expected = "#{Pathname.getwd.join(filename)}:#{line}"
+        expected = "#{filename}:3"
         assert_equal expected, err.backtrace.first
       end
     end

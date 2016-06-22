@@ -11,7 +11,11 @@ module SassC
   # it's important to provide filename and line number information.
   # This will be used in various error reports to users, including backtraces;
   class SyntaxError < BaseError
-    LINE_INFO_REGEX = /on line (\d+) of (.+)/
+    def initialize(message, filename: nil, line: nil)
+      @filename = filename
+      @line = line
+      super(message)
+    end
 
     def backtrace
       return nil if super.nil?
@@ -20,11 +24,8 @@ module SassC
 
     # The backtrace of the error within Sass files.
     def sass_backtrace
-      line_info = message.split("\n").find { |line| line.match(LINE_INFO_REGEX) }
-      return [] unless line_info
-
-      _, line, filename = line_info.match(LINE_INFO_REGEX).to_a
-      ["#{Pathname.getwd.join(filename)}:#{line}"]
+      return [] unless @filename && @line
+      ["#{@filename}:#{@line}"]
     end
   end
 end

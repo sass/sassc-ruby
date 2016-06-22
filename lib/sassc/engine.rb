@@ -40,7 +40,10 @@ module SassC
 
       if status != 0
         message = Native.context_get_error_message(context)
-        raise SyntaxError.new(message)
+        filename = Native.context_get_error_file(context)
+        line = Native.context_get_error_line(context)
+
+        raise SyntaxError.new(message, filename: filename, line: line)
       end
 
       css = Native.context_get_output_string(context)
