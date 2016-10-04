@@ -49,6 +49,8 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
+- **1.10.1**
+  - [Add sourcemap getter](https://github.com/sass/sassc-ruby/pull/48)
 - **1.10.0**
   - [Improved error messages](https://github.com/sass/sassc-ruby/pull/34)
   - Update to Libsass 3.3.6
