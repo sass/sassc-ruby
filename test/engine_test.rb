@@ -121,6 +121,51 @@ CSS
       assert_raises(NotRenderedError) { engine.dependencies }
     end
 
+    def test_source_map
+      temp_dir('admin')
+
+      temp_file('admin/text-color.scss', <<SCSS)
+p {
+  color: red;
+}
+SCSS
+      temp_file('style.scss', <<SCSS)
+@import 'admin/text-color';
+
+p {
+  padding: 20px;
+}
+SCSS
+      engine = Engine.new(File.read('style.scss'), {
+        source_map_file: "style.scss.map",
+        source_map_contents: true
+      })
+      engine.render
+
+      assert_equal <<MAP.strip, engine.source_map
+{
+\t"version": 3,
+\t"file": "stdin.css",
+\t"sources": [
+\t\t"stdin",
+\t\t"admin/text-color.scss"
+\t],
+\t"sourcesContent": [
+\t\t"@import 'admin/text-color';\\n\\np {\\n  padding: 20px;\\n}\\n",
+\t\t"p {\\n  color: red;\\n}\\n"
+\t],
+\t"mappings": "ACAA,AAAA,CAAC,CAAC;EACA,KAAK,EAAE,GAAI,GACZ;;ADAD,AAAA,CAAC,CAAC;EACA,OAAO,EAAE,IAAK,GACf",
+\t"names": []
+}
+MAP
+    end
+
+    def test_no_source_map
+      engine = Engine.new("$size: 30px;")
+      engine.render
+      assert_raises(NotRenderedError) { engine.source_map }
+    end
+
     def test_load_paths
       temp_dir("included_1")
       temp_dir("included_2")
