@@ -49,6 +49,7 @@ module SassC
       css = Native.context_get_output_string(context)
 
       @dependencies = Native.context_get_included_files(context)
+      @source_map   = Native.context_get_source_map_string(context)
 
       Native.delete_data_context(data_context)
 
@@ -60,6 +61,11 @@ module SassC
     def dependencies
       raise NotRenderedError unless @dependencies
       Dependency.from_filenames(@dependencies)
+    end
+
+    def source_map
+      raise NotRenderedError unless @source_map
+      @source_map
     end
 
     def filename
