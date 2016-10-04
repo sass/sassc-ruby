@@ -32,6 +32,7 @@ module SassC
       Native.option_set_source_map_file(native_options, source_map_file) if source_map_file
       Native.option_set_source_map_embed(native_options, true) if source_map_embed?
       Native.option_set_source_map_contents(native_options, true) if source_map_contents?
+      Native.option_set_omit_source_map_url(native_options, true) if omit_source_map_url?
 
       import_handler.setup(native_options)
       functions_handler.setup(native_options)
@@ -96,6 +97,10 @@ module SassC
 
     def source_map_contents?
       @options[:source_map_contents]
+    end
+
+    def omit_source_map_url?
+      @options[:omit_source_map_url]
     end
 
     def source_map_file

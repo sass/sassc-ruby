@@ -166,6 +166,22 @@ MAP
       assert_raises(NotRenderedError) { engine.source_map }
     end
 
+    def test_omit_source_map_url
+      temp_file('style.scss', <<SCSS)
+p {
+  padding: 20px;
+}
+SCSS
+      engine = Engine.new(File.read('style.scss'), {
+        source_map_file: "style.scss.map",
+        source_map_contents: true,
+        omit_source_map_url: true
+      })
+      output = engine.render
+
+      refute_match /sourceMappingURL/, output
+    end
+
     def test_load_paths
       temp_dir("included_1")
       temp_dir("included_2")
