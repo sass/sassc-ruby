@@ -1,6 +1,9 @@
 language: ruby
-
-bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
+sudo: false
+cache:
+  - bundler
+before_install: gem update bundler
+bundler_args: "--binstubs --standalone --without documentation"
 script: "bundle exec rake test"
 rvm:
   - 2.0.0
