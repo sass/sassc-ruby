@@ -26,7 +26,10 @@ module SassC
 
     # ADDAPI union Sass_Value* ADDCALL sass_make_map     (size_t len);
     attach_function :sass_make_map, [:size_t], :sass_value_ptr
-    
+
+    # ADDAPI union Sass_Value* ADDCALL sass_make_list     (size_t len, enum Sass_Separator sep)
+    attach_function :sass_make_list, [:size_t, SassSeparator], :sass_value_ptr
+
     # ADDAPI union Sass_Value* ADDCALL sass_make_boolean (boolean val);
     attach_function :sass_make_boolean, [:bool], :sass_value_ptr
 
@@ -44,6 +47,15 @@ module SassC
 
     # ADDAPI size_t ADDCALL sass_map_get_length (const union Sass_Value* v);
     attach_function :sass_map_get_length, [:sass_value_ptr], :size_t
+
+    # ADDAPI union Sass_Value* ADDCALL sass_list_get_value (const union Sass_Value* v, size_t i);
+    attach_function :sass_list_get_value, [:sass_value_ptr, :size_t], :sass_value_ptr
+
+    # ADDAPI void ADDCALL sass_list_set_value (union Sass_Value* v, size_t i, union Sass_Value* value);
+    attach_function :sass_list_set_value, [:sass_value_ptr, :size_t, :sass_value_ptr], :void
+
+    # ADDAPI size_t ADDCALL sass_list_get_length (const union Sass_Value* v);
+    attach_function :sass_list_get_length, [:sass_value_ptr], :size_t
 
     # ADDAPI union Sass_Value* ADDCALL sass_make_error   (const char* msg);
     attach_function :sass_make_error, [:string], :sass_value_ptr

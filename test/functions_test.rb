@@ -119,6 +119,7 @@ module SassC
     end
 
     def test_function_with_unsupported_tag
+      skip('What are other unsupported tags?')
       engine = Engine.new("div {url: function_with_unsupported_tag(());}")
 
       exception = assert_raises(SassC::SyntaxError) do
@@ -163,6 +164,23 @@ module SassC
         div { background-color: map-get( inspect-map(( color: black, number: 1.23px, string: "abc", map: ( x: 'y' ))), color ); }
       SCSS
         div { background-color: black; }
+      CSS
+    end
+
+    def test_function_that_returns_a_sass_list
+      assert_sass <<-SCSS, <<-CSS
+        $my-list: returns-sass-list();
+        div { width: nth( $my-list, 2 ); }
+      SCSS
+        div { width: 20; }
+      CSS
+    end
+
+    def test_function_that_takes_a_sass_list
+      assert_sass <<-SCSS, <<-CSS
+        div { width: nth(inspect-list((10 20 30)), 2); }
+      SCSS
+        div { width: 20; }
       CSS
     end
 
@@ -250,6 +268,11 @@ module SassC
         return argument
       end
 
+      def inspect_list(argument)
+        raise StandardError.new "passed value is not a Sass::Script::Value::List" unless argument.is_a? Sass::Script::Value::List
+        return argument
+      end
+
       def returns_sass_value
         return Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
       end
@@ -261,6 +284,13 @@ module SassC
         values[key] = value
         map = Sass::Script::Value::Map.new values
         return map
+      end
+
+      def returns_sass_list
+        numbers = [10, 20, 30].map do |n|
+          Sass::Script::Value::Number.new(n, '')
+        end
+        Sass::Script::Value::List.new(numbers, :space)
       end
 
       module Compass
