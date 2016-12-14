@@ -1,9 +1,4 @@
-begin
-  require 'bundler/gem_tasks'
-rescue LoadError
-  puts 'Cannot load bundler/gem_tasks'
-end
-
+require 'bundler/gem_tasks'
 require 'tasks/libsass'
 
 task default: :test
