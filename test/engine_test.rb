@@ -154,8 +154,8 @@ SCSS
 \t\t"@import 'admin/text-color';\\n\\np {\\n  padding: 20px;\\n}\\n",
 \t\t"p {\\n  color: red;\\n}\\n"
 \t],
-\t"mappings": "ACAA,AAAA,CAAC,CAAC;EACA,KAAK,EAAE,GAAI,GACZ;;ADAD,AAAA,CAAC,CAAC;EACA,OAAO,EAAE,IAAK,GACf",
-\t"names": []
+\t"names": [],
+\t"mappings": "ACAA,AAAA,CAAC,CAAC;EACA,KAAK,EAAE,GAAG,GACX;;ADAD,AAAA,CAAC,CAAC;EACA,OAAO,EAAE,IAAI,GACd"
 }
 MAP
     end
