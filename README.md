@@ -102,7 +102,7 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ### Code Changes
 
-1. Fork it ( https://github.com/[my-github-username]/sassc/fork )
+1. Fork it ( https://github.com/sass/sassc-ruby/fork )
 1. Create your feature branch (`git checkout -b my-new-feature`)
 1. Commit your changes (`git commit -am 'Add some feature'`) - try to include tests
 1. Push to the branch (`git push origin my-new-feature`)
