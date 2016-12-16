@@ -41,6 +41,13 @@ module SassC
 
           argument = Sass::Script::Value::Map.new values
           argument
+        when :sass_list
+          length = Native::list_get_length(native_value)
+          items = (0...length).map do |index|
+            native_item = Native::list_get_value(native_value, index)
+            from_native(native_item, options)
+          end
+          Sass::Script::Value::List.new(items, :space)
         else
           raise UnsupportedValue.new("Sass argument of type #{value_tag} unsupported")
         end
@@ -56,6 +63,8 @@ module SassC
           Number.new(value).to_native
         when "Map"
           Map.new(value).to_native
+        when "List"
+          List.new(value).to_native
         when "Bool"
           Bool.new(value).to_native
         else
@@ -71,4 +80,5 @@ require_relative "value_conversion/string"
 require_relative "value_conversion/number"
 require_relative "value_conversion/color"
 require_relative "value_conversion/map"
+require_relative "value_conversion/list"
 require_relative "value_conversion/bool"
