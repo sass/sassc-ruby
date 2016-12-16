@@ -49,48 +49,7 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
-- **1.10.1**
-  - [Add sourcemap getter](https://github.com/sass/sassc-ruby/pull/48)
-- **1.10.0**
-  - [Improved error messages](https://github.com/sass/sassc-ruby/pull/34)
-  - Update to Libsass 3.3.6
-- **1.9.0**
-  - Support boolean script support
-- **1.8.5**
-  - Update to Libsass 3.3.4
-- **1.8.4**
-  - Update to Libsass 3.3.3
-- **1.8.3**
-  - [Passing empty string into engine does not raise error](https://github.com/sass/sassc-ruby/pull/31)
-- **1.8.2**
-  - Update to Libsass 3.3.2
-- **1.8.1**
-  - Update to Libsass 3.3.1
-- **1.8.0**
-  - Update to Libsass 3.3.0
-- **1.8.0.pre2**
-  - Fix bug with looking up gem_path
-- **1.8.0.pre1**
-  - [Update to Libsass 3.3.0-beta3](https://github.com/sass/sassc-ruby/pull/20)
-- **1.7.1**
-  - Some updates to `Engine` API.
-- **1.7.0**
-  - [Support Precision](https://github.com/sass/sassc-ruby/pull/19)
-- **1.6.0**
-  - [Support Sass Color types](https://github.com/bolandrm/sassc-ruby/pull/14)
-  - [Support quoted strings](https://github.com/bolandrm/sassc-ruby/pull/13)
-  - [Improve custom function error handling](https://github.com/bolandrm/sassc-ruby/pull/15)
-- **1.5.1**
-  - 2nd attempt at fixing compilation bug (issue [#12](https://github.com/bolandrm/sassc-ruby/issues/12))
-- **1.5.0**
-  - Add support for inline source maps
-  - Fix compilation bug (issue [#12](https://github.com/bolandrm/sassc-ruby/issues/12))
-- **1.4.0**
-  - Add support for line number comments
-- **1.3.0**
-  - Support Sass color custom function arguments
-  - Adds error handling for exceptions in custom functions
-  - Custom functions may have optional/default arguments
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Contributing
 
