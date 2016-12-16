@@ -6,7 +6,7 @@ This gem combines the speed of `libsass`, the [Sass C implementation](https://gi
 
 ### libsass Version
 
-[3.3.6](https://github.com/sass/libsass/releases/tag/3.3.6)
+[3.4.0](https://github.com/sass/libsass/releases/tag/3.4.0)
 
 ## Installation
 
@@ -49,6 +49,9 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 
+- **1.11.0**
+  - [Add support for lists in functions](https://github.com/sass/sassc-ruby/pull/55)
+  - [Update to libsass 3.4.0](https://github.com/sass/sassc-ruby/pull/57)
 - **1.10.1**
   - [Add sourcemap getter](https://github.com/sass/sassc-ruby/pull/48)
 - **1.10.0**
