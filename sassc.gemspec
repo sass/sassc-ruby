@@ -21,12 +21,12 @@ Gem::Specification.new do |spec|
 
   spec.extensions    = ["ext/Rakefile"]
 
-  spec.add_development_dependency "rake"
   spec.add_development_dependency "minitest", "~> 5.5.1"
   spec.add_development_dependency "minitest-around"
   spec.add_development_dependency "test_construct"
   spec.add_development_dependency "pry"
 
+  spec.add_dependency "rake"
   spec.add_dependency "bundler"
   spec.add_dependency "ffi", "~> 1.9.6"
   spec.add_dependency "sass", ">= 3.3.0"
