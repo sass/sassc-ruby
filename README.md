@@ -48,7 +48,7 @@ This gem is maintained by [Ryan Boland](https://ryanboland.com)
 and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contributors).
 
 ## Changelog
-- **master**
+- **1.11.2**
   - [Update to libsass 3.4.3](https://github.com/sass/sassc-ruby/pull/65)
 - **1.11.1**
   - [Update to libsass 3.4.1](https://github.com/sass/sassc-ruby/pull/61)
