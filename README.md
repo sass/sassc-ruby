@@ -6,7 +6,7 @@ This gem combines the speed of `libsass`, the [Sass C implementation](https://gi
 
 ### libsass Version
 
-[3.4.1](https://github.com/sass/libsass/releases/tag/3.4.1)
+[3.4.3](https://github.com/sass/libsass/releases/tag/3.4.3)
 
 ## Installation
 
@@ -48,7 +48,8 @@ This gem is maintained by [Ryan Boland](https://ryanboland.com)
 and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contributors).
 
 ## Changelog
-
+- **master**
+  - [Update to libsass 3.4.3](https://github.com/sass/sassc-ruby/pull/65)
 - **1.11.1**
   - [Update to libsass 3.4.1](https://github.com/sass/sassc-ruby/pull/61)
 - **1.11.0**
