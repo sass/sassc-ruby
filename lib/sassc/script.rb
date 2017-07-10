@@ -28,6 +28,7 @@ module Sass
 end
 
 require 'sass/util'
+require 'sass/deprecation'
 require 'sass/script/value/base'
 require 'sass/script/value/string'
 require 'sass/script/value/color'
