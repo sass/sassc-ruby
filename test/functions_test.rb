@@ -290,7 +290,12 @@ module SassC
         numbers = [10, 20, 30].map do |n|
           Sass::Script::Value::Number.new(n, '')
         end
-        Sass::Script::Value::List.new(numbers, :space)
+
+        if Gem.loaded_specs['sass'].version < Gem::Version.create('3.5')
+          Sass::Script::Value::List.new(numbers, :space)
+        else
+          Sass::Script::Value::List.new(numbers, separator: :space)
+        end
       end
 
       module Compass
