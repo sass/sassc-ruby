@@ -28,7 +28,12 @@ module Sass
 end
 
 require 'sass/util'
-require 'sass/deprecation'
+
+begin
+  require 'sass/deprecation'
+rescue LoadError
+end
+
 require 'sass/script/value/base'
 require 'sass/script/value/string'
 require 'sass/script/value/color'
