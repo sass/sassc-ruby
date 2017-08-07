@@ -50,6 +50,10 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 ## Changelog
 - **master**
   - [Update to libsass 3.4.5](https://github.com/sass/sassc-ruby/pull/66)
+- **1.11.4**
+  - Fix `Value::List` related issue with sass 3.5.0
+- **1.11.3**
+  - [Require Sass::Deprecation module](https://github.com/sass/sassc-ruby/pull/68)
 - **1.11.2**
   - [Update to libsass 3.4.3](https://github.com/sass/sassc-ruby/pull/65)
 - **1.11.1**

@@ -1,3 +1,3 @@
 module SassC
-  VERSION = "1.11.2"
+  VERSION = "1.11.4"
 end
