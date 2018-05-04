@@ -38,6 +38,7 @@ require 'sass/script/value/base'
 require 'sass/script/value/string'
 require 'sass/script/value/color'
 require 'sass/script/value/bool'
+require 'sass/script/value/map'
 
 SassC::Script::String = Sass::Script::Value::String
 SassC::Script::Value::String = Sass::Script::Value::String
@@ -47,3 +48,6 @@ SassC::Script::Value::Color = Sass::Script::Value::Color
 
 SassC::Script::Bool = Sass::Script::Value::Bool
 SassC::Script::Value::Bool = Sass::Script::Value::Bool
+
+SassC::Script::Map = Sass::Script::Value::Map
+SassC::Script::Value::Map = Sass::Script::Value::Map
