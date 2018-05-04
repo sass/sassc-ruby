@@ -48,6 +48,8 @@ This gem is maintained by [Ryan Boland](https://ryanboland.com)
 and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contributors).
 
 ## Changelog
+- **1.11.5**
+  - Add `Value::Map`
 - **1.11.4**
   - Fix `Value::List` related issue with sass 3.5.0
 - **1.11.3**
