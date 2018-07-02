@@ -49,7 +49,8 @@ and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contrib
 
 ## Changelog
 - **1.12.0**
-  - Update Libsass to 3.5.4
+  - [Update Libsass to 3.5.4](https://github.com/sass/sassc-ruby/pull/78)
+  - [bundler is a development dependency](https://github.com/sass/sassc-ruby/pull/51)
 - **1.11.4**
   - Fix `Value::List` related issue with sass 3.5.0
 - **1.11.3**
