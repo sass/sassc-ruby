@@ -9,7 +9,7 @@ module SassC
 
     class General < MiniTest::Test
       def test_it_reports_the_libsass_version
-        assert_equal "3.4.3", Native.version
+        assert_equal "3.5.4", Native.version
       end
     end
 
