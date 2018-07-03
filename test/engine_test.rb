@@ -267,5 +267,16 @@ CSS
       output = Engine.new(input).render
       assert_equal input.encoding, output.encoding
     end
+
+    def test_import_plain_css
+      temp_file("test.css", ".something{color: red}")
+      expected_output = <<-CSS
+.something {
+  color: red; }
+      CSS
+
+      output = Engine.new("@import 'test'").render
+      assert_equal expected_output, output
+    end
   end
 end
