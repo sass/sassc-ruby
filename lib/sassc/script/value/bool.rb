@@ -6,11 +6,11 @@ class SassC::Script::Value::Bool < SassC::Script::Value
 
   # The true value in SassScript.
   # This is assigned before new is overridden below so that we use the default implementation.
-  TRUE = new(true).freeze
+  TRUE = new(true)
 
   # The false value in SassScript.
   # This is assigned before new is overridden below so that we use the default implementation.
-  FALSE = new(false).freeze
+  FALSE = new(false)
 
   # We override object creation so that users of the core API
   # will not need to know that booleans are specific constants.
