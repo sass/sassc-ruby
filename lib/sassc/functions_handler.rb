@@ -54,8 +54,7 @@ module SassC
     def to_native_value(sass_value)
       # if the custom function returns nil, we provide a "default" return
       # value of an empty string
-      sass_value ||= Script::String.new("")
-
+      sass_value ||= SassC::Script::Value::String.new("")
       sass_value.options = @options
       Script::ValueConversion.to_native(sass_value)
     end

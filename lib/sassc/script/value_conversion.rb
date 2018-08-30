@@ -8,24 +8,24 @@ module SassC
         when :sass_string
           value = Native.string_get_value(native_value)
           type = Native.string_get_type(native_value)
-          argument = Script::String.new(value, type)
+          argument = SassC::Script::Value::String.new(value, type)
 
           argument
         when :sass_boolean
           value = Native.boolean_get_value(native_value)
-          argument = Script::Bool.new(value)
-          
+          argument = SassC::Script::Value::Bool.new(value)
+
           argument
         when :sass_number
           value = Native.number_get_value(native_value)
           unit = Native.number_get_unit(native_value)
-          argument = Sass::Script::Value::Number.new(value, unit)
+          argument = SassC::Script::Value::Number.new(value, unit)
 
           argument
         when :sass_color
           red, green, blue, alpha = Native.color_get_r(native_value), Native.color_get_g(native_value), Native.color_get_b(native_value), Native.color_get_a(native_value)
 
-          argument = Script::Color.new([red, green, blue, alpha])
+          argument = SassC::Script::Value::Color.new([red, green, blue, alpha])
           argument.options = options
 
           argument
@@ -39,7 +39,7 @@ module SassC
             values[from_native(key, options)] = from_native(value, options)
           end
 
-          argument = Sass::Script::Value::Map.new values
+          argument = SassC::Script::Value::Map.new values
           argument
         when :sass_list
           length = Native::list_get_length(native_value)
@@ -48,11 +48,8 @@ module SassC
             from_native(native_item, options)
           end
 
-          if Gem.loaded_specs['sass'].version < Gem::Version.create('3.5')
-            Sass::Script::Value::List.new(items, :space)
-          else
-            Sass::Script::Value::List.new(items, separator: :space)
-          end
+          SassC::Script::Value::List.new(items, separator: :space)
+
         else
           raise UnsupportedValue.new("Sass argument of type #{value_tag} unsupported")
         end

@@ -1,4 +1,4 @@
-Copyright (c) 2015 Ryan Boland
+Copyright (c) Ryan Boland & Contributors
 
 MIT License
 

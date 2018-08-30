@@ -57,10 +57,6 @@ module SassC
         refute_equal 0, status
       end
 
-      def test_failed_compile_gives_error_message
-        skip
-      end
-
       def test_custom_function
         data_context = Native.make_data_context("foo { margin: foo(); }")
         context = Native.data_context_get_context(data_context)

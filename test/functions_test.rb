@@ -1,6 +1,5 @@
 require_relative "test_helper"
 require "stringio"
-require "sass/script"
 
 module SassC
   class FunctionsTest < MiniTest::Test
@@ -197,8 +196,13 @@ module SassC
     end
 
     module Script::Functions
+
       def javascript_path(path)
-        Script::String.new("/js/#{path.value}", :string)
+        SassC::Script::Value::String.new("/js/#{path.value}", :string)
+      end
+
+      def stylesheet_path(path)
+        SassC::Script::Value::String.new("/css/#{path.value}", :identifier)
       end
 
       def no_return_path(path)
@@ -206,12 +210,12 @@ module SassC
       end
 
       def sass_return_path(path)
-        Script::String.new("#{path.value}", :string)
+        SassC::Script::Value::String.new("#{path.value}", :string)
       end
 
       def optional_arguments(path, optional = nil)
-        optional ||= Script::String.new("bar")
-        Script::String.new("#{path.value}/#{optional.value}", :string)
+        optional ||= SassC::Script::Value::String.new("bar")
+        SassC::Script::Value::String.new("#{path.value}/#{optional.value}", :string)
       end
 
       def function_that_raises_errors
@@ -222,44 +226,44 @@ module SassC
       end
 
       def nice_color_argument(color)
-        return Script::String.new(color.to_s, :string)
+        return SassC::Script::Value::String.new(color.to_s, :string)
       end
 
       def returns_a_color
-        return Script::Color.new(red: 0, green: 0, blue: 0)
+        return SassC::Script::Value::Color.new(red: 0, green: 0, blue: 0)
       end
 
       def returns_a_number
-        return Sass::Script::Value::Number.new(-312,'rem')
+        return SassC::Script::Value::Number.new(-312,'rem')
       end
 
       def returns_a_bool
-        return Sass::Script::Value::Bool.new(true)
+        return SassC::Script::Value::Bool.new(true)
       end
 
       def inspect_bool ( argument )
-        raise StandardError.new "passed value is not a Sass::Script::Value::Bool" unless argument.is_a? Sass::Script::Value::Bool
+        raise StandardError.new "passed value is not a Sass::Script::Value::Bool" unless argument.is_a? SassC::Script::Value::Bool
         return argument
       end
 
       def inspect_number ( argument )
-        raise StandardError.new "passed value is not a Sass::Script::Value::Number" unless argument.is_a? Sass::Script::Value::Number
+        raise StandardError.new "passed value is not a Sass::Script::Value::Number" unless argument.is_a? SassC::Script::Value::Number
         return argument
       end
 
       def inspect_map ( argument )
         argument.to_h.each_pair do |key, value|
-          raise StandardError.new "key #{key.inspect} is not a string" unless key.is_a? Sass::Script::Value::String
+          raise StandardError.new "key #{key.inspect} is not a string" unless key.is_a? SassC::Script::Value::String
 
           valueClass = case key.value
                          when 'string'
-                           Sass::Script::Value::String
+                           SassC::Script::Value::String
                          when 'number'
-                           Sass::Script::Value::Number
+                           SassC::Script::Value::Number
                          when 'color'
-                           Sass::Script::Value::Color
+                           SassC::Script::Value::Color
                          when 'map'
-                           Sass::Script::Value::Map
+                           SassC::Script::Value::Map
                        end
 
           raise StandardError.new "unknown key #{key.inspect}" unless valueClass
@@ -269,41 +273,29 @@ module SassC
       end
 
       def inspect_list(argument)
-        raise StandardError.new "passed value is not a Sass::Script::Value::List" unless argument.is_a? Sass::Script::Value::List
+        raise StandardError.new "passed value is not a Sass::Script::Value::List" unless argument.is_a? SassC::Script::Value::List
         return argument
       end
 
       def returns_sass_value
-        return Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
+        return SassC::Script::Value::Color.new(red: 0, green: 0, blue: 0)
       end
 
       def returns_sass_map
-        key = Script::String.new("color", "string")
-        value = Sass::Script::Value::Color.new(red: 0, green: 0, blue: 0)
+        key = SassC::Script::Value::String.new("color", "string")
+        value = SassC::Script::Value::Color.new(red: 0, green: 0, blue: 0)
         values = {}
         values[key] = value
-        map = Sass::Script::Value::Map.new values
+        map = SassC::Script::Value::Map.new values
         return map
       end
 
       def returns_sass_list
-        numbers = [10, 20, 30].map do |n|
-          Sass::Script::Value::Number.new(n, '')
-        end
-
-        if Gem.loaded_specs['sass'].version < Gem::Version.create('3.5')
-          Sass::Script::Value::List.new(numbers, :space)
-        else
-          Sass::Script::Value::List.new(numbers, separator: :space)
-        end
+        numbers = [10, 20, 30].map { |n| SassC::Script::Value::Number.new(n, '') }
+        SassC::Script::Value::List.new(numbers, separator: :space)
       end
 
-      module Compass
-        def stylesheet_path(path)
-          Script::String.new("/css/#{path.value}", :identifier)
-        end
-      end
-      include Compass
     end
+
   end
 end
