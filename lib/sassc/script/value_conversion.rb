@@ -47,7 +47,12 @@ module SassC
             native_item = Native::list_get_value(native_value, index)
             from_native(native_item, options)
           end
-          Sass::Script::Value::List.new(items, :space)
+
+          if Gem.loaded_specs['sass'].version < Gem::Version.create('3.5')
+            Sass::Script::Value::List.new(items, :space)
+          else
+            Sass::Script::Value::List.new(items, separator: :space)
+          end
         else
           raise UnsupportedValue.new("Sass argument of type #{value_tag} unsupported")
         end

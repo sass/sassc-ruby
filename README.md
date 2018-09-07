@@ -2,11 +2,11 @@
 
 Use `libsass` with Ruby!
 
-This gem combines the speed of `libsass`, the [Sass C implementation](https://github.com/sass/libsass), with the ease of use of the original [Ruby Sass](https://github.com/sass/sass) library.
+This gem combines the speed of `libsass`, the [Sass C implementation](https://github.com/sass/libsass), with the ease of use of the original [Ruby Sass](https://github.com/sass/ruby-sass) library.
 
 ### libsass Version
 
-[3.4.1](https://github.com/sass/libsass/releases/tag/3.4.1)
+[3.5.2](https://github.com/sass/libsass/releases/tag/3.5.2)
 
 ## Installation
 
@@ -48,7 +48,17 @@ This gem is maintained by [Ryan Boland](https://ryanboland.com)
 and [awesome contributors](https://github.com/bolandrm/sassc-ruby/graphs/contributors).
 
 ## Changelog
-
+- **1.12.1**
+  - [Downgrade to libsass 3.5.2 to fix css imports](https://github.com/sass/sassc-ruby/pull/81)
+- **1.12.0**
+  - [Update Libsass to 3.5.4](https://github.com/sass/sassc-ruby/pull/78)
+  - [bundler is a development dependency](https://github.com/sass/sassc-ruby/pull/51)
+- **1.11.4**
+  - Fix `Value::List` related issue with sass 3.5.0
+- **1.11.3**
+  - [Require Sass::Deprecation module](https://github.com/sass/sassc-ruby/pull/68)
+- **1.11.2**
+  - [Update to libsass 3.4.3](https://github.com/sass/sassc-ruby/pull/65)
 - **1.11.1**
   - [Update to libsass 3.4.1](https://github.com/sass/sassc-ruby/pull/61)
 - **1.11.0**

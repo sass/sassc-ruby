@@ -3,8 +3,8 @@ language: ruby
 bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
 script: "bundle exec rake test"
 rvm:
-  - 2.2.0
   - 2.3.3
-  - 2.4.0
+  - 2.4.4
+  - 2.5.1
 notifications:
   email: false
