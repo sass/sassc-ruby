@@ -2,7 +2,7 @@
 
 Use `libsass` with Ruby!
 
-This gem combines the speed of `libsass`, the [Sass C implementation](https://github.com/sass/libsass), with the ease of use of the original [Ruby Sass](https://github.com/sass/sass) library.
+This gem combines the speed of `libsass`, the [Sass C implementation](https://github.com/sass/libsass), with the ease of use of the original [Ruby Sass](https://github.com/sass/ruby-sass) library.
 
 ### libsass Version
 
