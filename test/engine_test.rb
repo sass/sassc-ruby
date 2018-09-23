@@ -160,6 +160,57 @@ SCSS
 MAP
     end
 
+    def test_source_map_filenames
+      temp_dir('admin')
+
+      temp_file('admin/text-color.scss', <<SCSS)
+p {
+  color: red;
+}
+SCSS
+      temp_file('style.scss', <<SCSS)
+@import 'admin/text-color';
+
+p {
+  padding: 20px;
+}
+SCSS
+      engine = Engine.new(File.read('style.scss'), {
+          source_map_file: "output-style.css.map",
+          filename: "input-style.scss",
+          output_path: "output-style.css",
+          source_map_contents: true
+      })
+
+      assert_equal <<CSS.strip, engine.render
+p {
+  color: red; }
+
+p {
+  padding: 20px; }
+
+/*# sourceMappingURL=output-style.css.map */
+CSS
+
+
+      assert_equal <<MAP.strip, engine.source_map
+{
+\t"version": 3,
+\t"file": "output-style.css",
+\t"sources": [
+\t\t"input-style.scss",
+\t\t"admin/text-color.scss"
+\t],
+\t"sourcesContent": [
+\t\t"@import 'admin/text-color';\\n\\np {\\n  padding: 20px;\\n}\\n",
+\t\t"p {\\n  color: red;\\n}\\n"
+\t],
+\t"names": [],
+\t"mappings": "ACAA,AAAA,CAAC,CAAC;EACA,KAAK,EAAE,GAAG,GACX;;ADAD,AAAA,CAAC,CAAC;EACA,OAAO,EAAE,IAAI,GACd"
+}
+MAP
+    end
+
     def test_no_source_map
       engine = Engine.new("$size: 30px;")
       engine.render
