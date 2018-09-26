@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SassC
   class ImportHandler
     def initialize(options)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "test_helper"
 
 module SassC
@@ -55,10 +57,6 @@ module SassC
 
         status = Native.compile_data_context(@data_context)
         refute_equal 0, status
-      end
-
-      def test_failed_compile_gives_error_message
-        skip
       end
 
       def test_custom_function

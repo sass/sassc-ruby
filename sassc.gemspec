@@ -1,9 +1,11 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+# frozen_string_literal: true
+
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'sassc/version'
+require "sassc/version"
 
 Gem::Specification.new do |spec|
+
   spec.name          = "sassc"
   spec.version       = SassC::VERSION
   spec.authors       = ["Ryan Boland"]
@@ -17,6 +19,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
 
+  spec.required_ruby_version = ">= 2.3.3"
+
   spec.require_paths = ["lib"]
 
   spec.extensions    = ["ext/Rakefile"]
@@ -29,7 +33,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rake"
   spec.add_dependency "ffi", "~> 1.9.6"
-  spec.add_dependency "sass", ">= 3.3.0"
 
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
   `git submodule --quiet foreach pwd`.split($\).each do |submodule_path|
@@ -42,4 +45,5 @@ Gem::Specification.new do |spec|
       end
     end
   end
+
 end

@@ -1,7 +1,9 @@
-require 'pathname'
-require 'sass/error'
+# frozen_string_literal: true
+
+require "pathname"
 
 module SassC
+
   class BaseError < StandardError; end
   class NotRenderedError < BaseError; end
   class InvalidStyleError < BaseError; end
@@ -9,8 +11,10 @@ module SassC
 
   # When dealing with SyntaxErrors,
   # it's important to provide filename and line number information.
-  # This will be used in various error reports to users, including backtraces;
+  # This will be used in various error reports to users, including backtraces.
+
   class SyntaxError < BaseError
+
     def initialize(message, filename: nil, line: nil)
       @filename = filename
       @line = line
@@ -27,5 +31,7 @@ module SassC
       return [] unless @filename && @line
       ["#{@filename}:#{@line}"]
     end
+
   end
+
 end
