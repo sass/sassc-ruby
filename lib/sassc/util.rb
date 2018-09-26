@@ -24,13 +24,6 @@ module SassC::Util
   # @api public
   RUBY_ENGINE = defined?(::RUBY_ENGINE) ? ::RUBY_ENGINE : "ruby"
 
-  # Returns the path of a file relative to the Sass root directory.
-  # @param file [String] The filename relative to the Sass root
-  # @return [String] The filename relative to the the working directory
-  def scope(file)
-    File.join(SassC::ROOT_DIR, file)
-  end
-
   # Maps the keys in a hash according to a block.
   # @example
   #   map_keys({:foo => "bar", :baz => "bang"}) {|k| k.to_s}

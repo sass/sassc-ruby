@@ -1,9 +1,11 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+# frozen_string_literal: true
+
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'sassc/version'
+require "sassc/version"
 
 Gem::Specification.new do |spec|
+
   spec.name          = "sassc"
   spec.version       = SassC::VERSION
   spec.authors       = ["Ryan Boland"]
@@ -43,4 +45,5 @@ Gem::Specification.new do |spec|
       end
     end
   end
+
 end

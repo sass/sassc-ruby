@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "test_helper"
 
 module SassC
@@ -224,7 +226,7 @@ CSS
     end
 
     def test_encoding_matches_input
-      input = "$size: 30px;"
+      input = String.new("$size: 30px;")
       input.force_encoding("UTF-8")
       output = Engine.new(input).render
       assert_equal input.encoding, output.encoding
@@ -257,13 +259,13 @@ CSS
     end
 
     def test_empty_template_returns_a_new_object
-      input = ''
+      input = String.new
       output = Engine.new(input).render
       assert input.object_id != output.object_id, 'empty template must return a new object'
     end
 
     def test_empty_template_encoding_matches_input
-      input = ''.force_encoding("ISO-8859-1")
+      input = String.new.force_encoding("ISO-8859-1")
       output = Engine.new(input).render
       assert_equal input.encoding, output.encoding
     end

@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 module SassC
 end
 
 require_relative "sassc/version"
-require_relative "sassc/root"
 require_relative "sassc/native"
 require_relative "sassc/import_handler"
 require_relative "sassc/importer"

@@ -77,6 +77,15 @@ class SassC::Script::Value::Color < SassC::Script::Value
     ].compact
   end
 
+  # True if this Color is equal to `other_color`
+  def eql?(other_color)
+    unless other_color.is_a?(self.class)
+      raise ArgumentError, "No implicit conversion of #{other_color.class} to #{self.class}"
+    end
+    self.value == other_color.value
+  end
+  alias_method :==, :eql?
+
   # Returns a numeric value for comparing two Color objects
   # This method is used internally by the Hash class and is not the same as `.to_h`
   def hash
