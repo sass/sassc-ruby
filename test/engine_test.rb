@@ -270,6 +270,11 @@ CSS
       assert_equal input.encoding, output.encoding
     end
 
+    def test_handling_of_frozen_strings
+      output = Engine.new("body { background-color: red; }".freeze).render
+      assert_equal output, "body {\n  background-color: red; }\n"
+    end
+
     def test_import_plain_css
       temp_file("test.css", ".something{color: red}")
       expected_output = <<-CSS
