@@ -94,15 +94,12 @@ module SassC::Util
     rv
   end
 
-  # Restricts a number to falling within a given range.
-  # Returns the number if it falls within the range,
-  # or the closest value in the range if it doesn't.
-  #
-  # @param value [Numeric]
-  # @param range [Range<Numeric>]
-  # @return [Numeric]
-  def restrict(value, range)
-    [[value, range.first].max, range.last].min
+  # Restricts the numeric `value` to be within `min` and `max`, inclusive.
+  # If the value is lower than `min`
+  def clamp(value, min, max)
+    return min if value < min
+    return max if value > max
+    return value
   end
 
   # Like [Fixnum.round], but leaves rooms for slight floating-point

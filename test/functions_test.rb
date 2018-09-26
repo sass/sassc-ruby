@@ -113,7 +113,7 @@ module SassC
       assert_sass <<-SCSS, <<-EXPECTED_CSS
         div { color: nice_color_argument(red); }
       SCSS
-        div { color: "red"; }
+        div { color: rgb(255, 0, 0); }
       EXPECTED_CSS
     end
 
@@ -226,7 +226,7 @@ module SassC
       end
 
       def nice_color_argument(color)
-        return SassC::Script::Value::String.new(color.to_s, :string)
+        return SassC::Script::Value::String.new(color.to_s, :identifier)
       end
 
       def returns_a_color
