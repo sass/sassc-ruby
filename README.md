@@ -115,7 +115,7 @@ Available options are:
   When set to _true_ no reference to the _source-map_ file will be emitted into the CSS-file. 
   
 * **`:line_comments`**
-  When set to _true_ causes the line number and filename of the source be emitted into the compiled CSS-file. 
+  When set to _true_ causes the line number and filename of the source to be emitted into the compiled CSS-file. 
   Useful for debugging when the _source-map_ is not available. 
     
 * **`:quiet`**
