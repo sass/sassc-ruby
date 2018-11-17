@@ -133,7 +133,7 @@ module SassC
 
     def load_paths
       paths = (@options[:load_paths] || []) + SassC.load_paths
-      paths.join(":") if paths.any?
+      paths.join(File::PATH_SEPARATOR) unless paths.empty?
     end
   end
 end

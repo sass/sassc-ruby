@@ -88,7 +88,7 @@ $var: 1;
 SCSS
       expected_output = <<-CSS
 .foo {
-  baz: 0.33333; }
+  baz: 0.3333333333; }
 CSS
       output = Engine.new(template).render
       assert_equal expected_output, output
@@ -218,7 +218,7 @@ SCSS
     def test_env_load_paths
       expected_load_paths = [ "included_1", "included_2" ]
       ::SassC.instance_eval { @load_paths = nil }
-      ENV['SASS_PATH'] = expected_load_paths.join(':')
+      ENV['SASS_PATH'] = expected_load_paths.join(File::PATH_SEPARATOR)
       assert_equal expected_load_paths, ::SassC.load_paths
       ::SassC.load_paths.clear
     end

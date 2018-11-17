@@ -8,7 +8,7 @@ module SassC
 
     spec = Gem.loaded_specs["sassc"]
     gem_root = spec.gem_dir
-    ffi_lib "#{gem_root}/ext/libsass/lib/libsass.so"
+    ffi_lib "#{gem_root}/lib/sassc/libsass.so"
 
     require_relative "native/sass_value"
 
