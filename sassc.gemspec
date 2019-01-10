@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler"
 
   spec.add_dependency "rake"
-  spec.add_dependency "ffi", "~> 1.10.0"
+  spec.add_dependency "ffi", ">= 1.9"
 
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
   `git submodule --quiet foreach pwd`.split($\).each do |submodule_path|
