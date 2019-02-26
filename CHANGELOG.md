@@ -1,3 +1,5 @@
+- **2.0.1**
+  - [Relax FFI dependency](https://github.com/sass/sassc-ruby/pull/102)
 - **2.0.0**
   - [Remove dependency on Ruby Sass](https://github.com/sass/sassc-ruby/pull/85)
   - [frozen_string_literal all files](https://github.com/sass/sassc-ruby/pull/85)
