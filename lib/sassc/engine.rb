@@ -132,8 +132,8 @@ module SassC
     end
 
     def load_paths
-      paths = @options[:load_paths]
-      paths.join(":") if paths
+      paths = (@options[:load_paths] || []) + SassC.load_paths
+      paths.join(":") if paths.any?
     end
   end
 end

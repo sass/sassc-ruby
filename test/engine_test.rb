@@ -198,6 +198,31 @@ SCSS
       ).render
     end
 
+    def test_global_load_paths
+      temp_dir("included_1")
+      temp_dir("included_2")
+
+      temp_file("included_1/import_parent.scss", "$s: 30px;")
+      temp_file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
+      temp_file("styles.scss", "@import 'import.scss'; .hi { width: $size; }")
+
+      ::SassC.load_paths << "included_1"
+      ::SassC.load_paths << "included_2"
+
+      assert_equal ".hi {\n  width: 30px; }\n", Engine.new(
+        File.read("styles.scss"),
+      ).render
+      ::SassC.load_paths.clear
+    end
+
+    def test_env_load_paths
+      expected_load_paths = [ "included_1", "included_2" ]
+      ::SassC.instance_eval { @load_paths = nil }
+      ENV['SASS_PATH'] = expected_load_paths.join(':')
+      assert_equal expected_load_paths, ::SassC.load_paths
+      ::SassC.load_paths.clear
+    end
+
     def test_load_paths_not_configured
       temp_file("included_1/import_parent.scss", "$s: 30px;")
       temp_file("included_2/import.scss", "@import 'import_parent'; $size: $s;")
