@@ -8,7 +8,13 @@ module SassC
 
     spec = Gem.loaded_specs["sassc"]
     gem_root = spec.gem_dir
-    ffi_lib "#{gem_root}/ext/libsass/lib/libsass.so"
+
+    ruby_version_so_path = "#{gem_root}/lib/sassc/#{RUBY_VERSION[/\d+.\d+/]}/libsass.so"
+    if File.exist?(ruby_version_so_path)
+      ffi_lib ruby_version_so_path
+    else
+      ffi_lib "#{gem_root}/lib/sassc/libsass.so"
+    end
 
     require_relative "native/sass_value"
 

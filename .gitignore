@@ -12,5 +12,6 @@
 *.so
 *.o
 *.a
+*.gem
 mkmf.log
 vendor/bundle

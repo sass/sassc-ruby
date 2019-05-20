@@ -23,26 +23,34 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
-  spec.extensions    = ["ext/Rakefile"]
+  spec.platform      = Gem::Platform::RUBY
+  spec.extensions    = ["ext/extconf.rb"]
 
   spec.add_development_dependency "minitest", "~> 5.5.1"
   spec.add_development_dependency "minitest-around"
   spec.add_development_dependency "test_construct"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "bundler"
+  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rake-compiler"
+  spec.add_development_dependency "rake-compiler-dock"
 
-  spec.add_dependency "rake"
   spec.add_dependency "ffi", "~> 1.9"
 
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
-  `git submodule --quiet foreach pwd`.split($\).each do |submodule_path|
-    Dir.chdir(submodule_path) do
-      submodule_relative_path = submodule_path.sub gem_dir, ""
-      # issue git ls-files in submodule's directory and
-      # prepend the submodule path to create absolute file paths
-      `git ls-files`.split($\).each do |filename|
-        spec.files << "#{submodule_relative_path}/#{filename}"
-      end
+
+  libsass_dir = File.join(gem_dir, 'ext', 'libsass')
+  if !File.directory?(libsass_dir)
+    $stderr.puts "Error: ext/libsass not checked out. Please run:\n\n"\
+                 "  git submodule update --init"
+    exit 1
+  end
+
+  Dir.chdir(libsass_dir) do
+    submodule_relative_path = File.join('ext', 'libsass')
+    `git ls-files`.split($\).each do |filename|
+      next if filename =~ %r{(^("?test|docs|script)/)|\.md$|\.yml$}
+      spec.files << File.join(submodule_relative_path, filename)
     end
   end
 
