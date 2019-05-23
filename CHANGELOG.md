@@ -1,3 +1,6 @@
+- **2.1.0.pre1**
+  - [Update Libsass to 3.6.0](https://github.com/sass/sassc-ruby/pull/96/files)
+  - [Support old Ruby versions](https://github.com/sass/sassc-ruby/pull/117/files)
 - **2.0.1**
   - [Relax FFI dependency](https://github.com/sass/sassc-ruby/pull/102)
 - **2.0.0**
