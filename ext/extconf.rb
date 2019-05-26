@@ -10,30 +10,63 @@ if !File.directory?(libsass_dir) ||
     fail 'Could not fetch libsass'
 end
 
-# Only needed because rake-compiler expects `.bundle` on macOS:
-# https://github.com/rake-compiler/rake-compiler/blob/9f15620e7db145d11ae2fc4ba032367903f625e3/features/support/platform_extension_helpers.rb#L5
-dl_ext = (RUBY_PLATFORM =~ /darwin/ ? 'bundle' : 'so')
+require 'mkmf'
 
-File.write 'Makefile', <<-MAKEFILE
-ifndef DESTDIR
-	LIBSASS_OUT = #{gem_root}/lib/sassc/libsass.#{dl_ext}
-else
-	LIBSASS_OUT = $(DESTDIR)$(PREFIX)/libsass.#{dl_ext}
-endif
+$CXXFLAGS << ' -std=c++11'
 
-SUB_DIR := #{libsass_dir}
+# Link stdlib statically when building binary gems.
+if enable_config('static-stdlib')
+  $LDFLAGS << ' -static-libgcc -static-libstdc++'
+end
 
-libsass.#{dl_ext}:#{' clean' if ENV['CLEAN']}
-	$(MAKE) -C '$(SUB_DIR)' lib/libsass.so
-	cp '$(SUB_DIR)/lib/libsass.so' libsass.#{dl_ext}
-	strip -x libsass.#{dl_ext}
+# Disable noisy compilation warnings.
+$warnflags = ''
+$CFLAGS.gsub!(/[\s+](-ansi|-std=[^\s]+)/, '')
 
-install: libsass.#{dl_ext}
-	cp libsass.#{dl_ext} '$(LIBSASS_OUT)'
+dir_config 'libsass'
 
-clean:
-	$(MAKE) -C '$(SUB_DIR)' clean
-	rm -f '$(LIBSASS_OUT)' libsass.#{dl_ext}
+libsass_version = Dir.chdir(libsass_dir) do
+  if File.exist?('VERSION')
+    File.read('VERSION').chomp
+  elsif File.exist?('.git')
+    ver = %x[git describe --abbrev=4 --dirty --always --tags].chomp
+    File.write('VERSION', ver)
+    ver
+  end
+end
 
-.PHONY: clean install
-MAKEFILE
+if libsass_version
+  libsass_version_def = %Q{ -DLIBSASS_VERSION='"#{libsass_version}"'}
+  $CFLAGS << libsass_version_def
+  $CXXFLAGS << libsass_version_def
+end
+
+$INCFLAGS << " -I$(srcdir)/libsass/include"
+$VPATH << "$(srcdir)/libsass/src"
+Dir.chdir(__dir__) do
+  $VPATH += Dir['libsass/src/*/'].map { |p| "$(srcdir)/#{p}" }
+  $srcs = Dir['libsass/src/**/*.{c,cpp}']
+end
+
+MakeMakefile::LINK_SO << "\nstrip -x $@"
+
+# Don't link libruby.
+$LIBRUBYARG = nil
+
+# Disable .def file generation for mingw, as it defines an
+# `Init_libsass` export which we don't have.
+MakeMakefile.send(:remove_const, :EXPORT_PREFIX)
+MakeMakefile::EXPORT_PREFIX = nil
+
+if RUBY_PLATFORM == 'java'
+  # COUTFLAG is not set correctly on jruby
+  # See https://github.com/jruby/jruby/issues/5749
+  MakeMakefile.send(:remove_const, :COUTFLAG)
+  MakeMakefile::COUTFLAG = '-o $(empty)'
+
+  # CCDLFLAGS is not set correctly on jruby
+  # See https://github.com/jruby/jruby/issues/5751
+  $CXXFLAGS << ' -fPIC'
+end
+
+create_makefile 'sassc/libsass'

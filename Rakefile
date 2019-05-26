@@ -10,18 +10,35 @@ Rake::ExtensionTask.new('libsass', gem_spec) do |ext|
   ext.lib_dir = 'lib/sassc'
   ext.cross_compile = true
   ext.cross_platform = %w[x86-mingw32 x64-mingw32 x86-linux x86_64-linux]
+
+  # Link C++ stdlib statically when building binary gems.
+  ext.cross_config_options << '--enable-static-stdlib'
+
   ext.cross_compiling do |spec|
     spec.files.reject! { |path| File.fnmatch?('ext/*', path) }
+
+
+    # Reset the required ruby version requirements.
+    # This is set by rake-compiler, but the shared library here is Ruby-agnostic.
+    spec.required_ruby_version = gem_spec.required_ruby_version
   end
 end
 
 desc 'Compile all native gems via rake-compiler-dock (Docker)'
 task 'gem:native' do
   require 'rake_compiler_dock'
-  RakeCompilerDock.sh "bundle && gem i rake --no-document && "\
-                      "rake cross native gem MAKE='nice make -j`nproc`' "\
-                      "RUBY_CC_VERSION=2.6.0:2.5.0:2.4.0:2.3.0"
+
+  # The RUBY_CC_VERSION here doesn't matter for the final package.
+  # Only one version should be specified, as the shared library is Ruby-agnostic.
+  #
+  # g++-multilib is installed for 64->32-bit cross-compilation.
+  RakeCompilerDock.sh "sudo apt-get install -y g++-multilib && bundle && gem i rake --no-document && "\
+                      "rake clean && rake cross native gem MAKE='nice make -j`nproc`' "\
+                      "RUBY_CC_VERSION=2.6.0 CLEAN=1"
 end
+
+CLEAN.include 'tmp', 'pkg', 'lib/sassc/libsass.so', 'ext/libsass/VERSION',
+              'ext/*.{o,so,bundle}', 'ext/Makefile'
 
 desc "Run all tests"
 task test: 'compile:libsass' do
