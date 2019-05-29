@@ -4,6 +4,15 @@ task default: :test
 
 require 'rake/extensiontask'
 gem_spec = Gem::Specification.load("sassc.gemspec")
+
+# HACK: Prevent rake-compiler from overriding required_ruby_version,
+# because the shared library here is Ruby-agnostic.
+# See https://github.com/rake-compiler/rake-compiler/issues/153
+module FixRequiredRubyVersion
+  def required_ruby_version=(*); end
+end
+Gem::Specification.send(:prepend, FixRequiredRubyVersion)
+
 Rake::ExtensionTask.new('libsass', gem_spec) do |ext|
   ext.name = 'libsass'
   ext.ext_dir = 'ext'
@@ -18,11 +27,6 @@ Rake::ExtensionTask.new('libsass', gem_spec) do |ext|
 
   ext.cross_compiling do |spec|
     spec.files.reject! { |path| File.fnmatch?('ext/*', path) }
-
-
-    # Reset the required ruby version requirements.
-    # This is set by rake-compiler, but the shared library here is Ruby-agnostic.
-    spec.required_ruby_version = gem_spec.required_ruby_version
   end
 end
 
