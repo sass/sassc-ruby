@@ -14,9 +14,21 @@ require 'mkmf'
 
 $CXXFLAGS << ' -std=c++11'
 
-# Link stdlib statically when building binary gems.
-if enable_config('static-stdlib')
+# Set to true when building binary gems
+if enable_config('static-stdlib', false)
   $LDFLAGS << ' -static-libgcc -static-libstdc++'
+end
+
+# Set to false when building binary gems
+if enable_config('march-native', true)
+  $CFLAGS << ' -march=native'
+  $CXXFLAGS << ' -march=native'
+end
+
+if enable_config('lto', true)
+  $CFLAGS << ' -flto'
+  $CXXFLAGS << ' -flto'
+  $LDFLAGS << ' -flto'
 end
 
 # Disable noisy compilation warnings.
