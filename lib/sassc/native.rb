@@ -9,7 +9,7 @@ module SassC
     spec = Gem.loaded_specs["sassc"]
     gem_root = spec.gem_dir
 
-    dl_ext = (RUBY_PLATFORM =~ /darwin/ ? 'bundle' : 'so')
+    dl_ext = (RbConfig::CONFIG['host_os'] =~ /darwin/ ? 'bundle' : 'so')
     ffi_lib "#{gem_root}/lib/sassc/libsass.#{dl_ext}"
 
     require_relative "native/sass_value"
