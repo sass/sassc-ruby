@@ -70,13 +70,14 @@ $LIBRUBYARG = nil
 MakeMakefile.send(:remove_const, :EXPORT_PREFIX)
 MakeMakefile::EXPORT_PREFIX = nil
 
-if RUBY_PLATFORM == 'java'
-  # COUTFLAG is not set correctly on jruby
+if RUBY_ENGINE == 'jruby' &&
+   Gem::Version.new(RUBY_ENGINE_VERSION) < Gem::Version.new('9.2.8.0')
+  # COUTFLAG is not set correctly on jruby<9.2.8.0
   # See https://github.com/jruby/jruby/issues/5749
   MakeMakefile.send(:remove_const, :COUTFLAG)
   MakeMakefile::COUTFLAG = '-o $(empty)'
 
-  # CCDLFLAGS is not set correctly on jruby
+  # CCDLFLAGS is not set correctly on jruby<9.2.8.0
   # See https://github.com/jruby/jruby/issues/5751
   $CXXFLAGS << ' -fPIC'
 end
