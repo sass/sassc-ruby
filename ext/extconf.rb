@@ -20,9 +20,9 @@ if enable_config('static-stdlib', false)
 end
 
 # Set to false when building binary gems
-if enable_config('march-native', true)
-  $CFLAGS << ' -march=native'
-  $CXXFLAGS << ' -march=native'
+if enable_config('march-tune-native', true)
+  $CFLAGS << ' -march=native -mtune=native'
+  $CXXFLAGS << ' -march=native -mtune=native'
 end
 
 if enable_config('lto', true)

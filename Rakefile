@@ -23,7 +23,7 @@ Rake::ExtensionTask.new('libsass', gem_spec) do |ext|
   # Link C++ stdlib statically when building binary gems.
   ext.cross_config_options << '--enable-static-stdlib'
 
-  ext.cross_config_options << '--disable-march-native'
+  ext.cross_config_options << '--disable-march-tune-native'
 
   ext.cross_compiling do |spec|
     spec.files.reject! { |path| File.fnmatch?('ext/*', path) }
