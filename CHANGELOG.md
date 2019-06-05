@@ -1,3 +1,7 @@
+- **2.1.0.pre2**
+  - [Reduce Ruby warnings](https://github.com/sass/sassc-ruby/pull/124)
+  - [prefer equal? to determine object identity](https://github.com/sass/sassc-ruby/pull/122)
+  - [Link C/C++ stdlib statically for binary gems](https://github.com/sass/sassc-ruby/pull/127)
 - **2.1.0.pre1**
   - [Update Libsass to 3.6.0](https://github.com/sass/sassc-ruby/pull/96/files)
   - [Support old Ruby versions](https://github.com/sass/sassc-ruby/pull/117/files)
