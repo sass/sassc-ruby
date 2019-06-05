@@ -42,7 +42,7 @@ module SassC
 
     # Remove the redundant "sass_" from the beginning of every method name
     def self.attach_function(*args)
-      super if args.size != 3
+      return super if args.size != 3
 
       if args[0] =~ /^sass_/
         args.unshift args[0].to_s.sub(/^sass_/, "")
