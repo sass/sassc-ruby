@@ -286,7 +286,7 @@ CSS
     def test_empty_template_returns_a_new_object
       input = String.new
       output = Engine.new(input).render
-      assert input.object_id != output.object_id, 'empty template must return a new object'
+      assert !input.equal?(output), 'empty template must return a new object'
     end
 
     def test_empty_template_encoding_matches_input
