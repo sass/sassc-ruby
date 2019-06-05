@@ -40,18 +40,30 @@ Gem::Specification.new do |spec|
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
 
   libsass_dir = File.join(gem_dir, 'ext', 'libsass')
-  if !File.directory?(libsass_dir)
-    $stderr.puts "Error: ext/libsass not checked out. Please run:\n\n"\
-                 "  git submodule update --init"
-    exit 1
+  if !File.directory?(libsass_dir) ||
+      # '.', '..', and possibly '.git' from a failed checkout:
+      Dir.entries(libsass_dir).size <= 3
+    Dir.chdir(__dir__) { system('git submodule update --init') } or
+        fail 'Could not fetch libsass'
+  end
+
+  # Write a VERSION file for non-binary gems (for `SassC::Native.version`).
+  if !File.exist?(File.join(libsass_dir, 'VERSION'))
+    libsass_version = Dir.chdir(libsass_dir) do
+      %x[git describe --abbrev=4 --dirty --always --tags].chomp
+    end
+    File.write(File.join(libsass_dir, 'VERSION'), libsass_version)
   end
 
   Dir.chdir(libsass_dir) do
     submodule_relative_path = File.join('ext', 'libsass')
+    skip_re = %r{(^("?test|docs|script)/)|\.md$|\.yml$}
+    only_re = %r{\.[ch](pp)?$}
     `git ls-files`.split($\).each do |filename|
-      next if filename =~ %r{(^("?test|docs|script)/)|\.md$|\.yml$}
+      next if filename =~ skip_re || filename !~ only_re
       spec.files << File.join(submodule_relative_path, filename)
     end
+    spec.files << File.join(submodule_relative_path, 'VERSION')
   end
 
 end

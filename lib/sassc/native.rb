@@ -6,16 +6,8 @@ module SassC
   module Native
     extend FFI::Library
 
-    spec = Gem.loaded_specs["sassc"]
-    gem_root = spec.gem_dir
-
-    dl_ext = (RUBY_PLATFORM =~ /darwin/ ? 'bundle' : 'so')
-    ruby_version_so_path = "#{gem_root}/lib/sassc/#{RUBY_VERSION[/\d+.\d+/]}/libsass.#{dl_ext}"
-    if File.exist?(ruby_version_so_path)
-      ffi_lib ruby_version_so_path
-    else
-      ffi_lib "#{gem_root}/lib/sassc/libsass.#{dl_ext}"
-    end
+    dl_ext = (RbConfig::CONFIG['host_os'] =~ /darwin/ ? 'bundle' : 'so')
+    ffi_lib File.expand_path("libsass.#{dl_ext}", __dir__)
 
     require_relative "native/sass_value"
 

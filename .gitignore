@@ -15,3 +15,4 @@
 *.gem
 mkmf.log
 vendor/bundle
+/ext/Makefile
