@@ -60,7 +60,10 @@ Dir.chdir(__dir__) do
   $srcs = Dir['libsass/src/**/*.{c,cpp}']
 end
 
-MakeMakefile::LINK_SO << "\nstrip -x $@"
+# Strip debugging symbols:
+# Commented out to help investigate crashes,
+# such as https://github.com/sass/sassc-ruby/issues/128
+# MakeMakefile::LINK_SO << "\nstrip -x $@"
 
 # Don't link libruby.
 $LIBRUBYARG = nil
