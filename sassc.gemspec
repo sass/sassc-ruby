@@ -48,7 +48,7 @@ Gem::Specification.new do |spec|
   end
 
   # Write a VERSION file for non-binary gems (for `SassC::Native.version`).
-  if !File.exist?(File.join(libsass_dir, 'VERSION'))
+  if File.exist?(File.join(libsass_dir, '.git'))
     libsass_version = Dir.chdir(libsass_dir) do
       %x[git describe --abbrev=4 --dirty --always --tags].chomp
     end
