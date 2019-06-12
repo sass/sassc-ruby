@@ -6,7 +6,7 @@ This gem combines the speed of `libsass`, the [Sass C implementation](https://gi
 
 ### libsass Version
 
-[3.6.0](https://github.com/sass/libsass/releases/3.6.0)
+[3.6.1](https://github.com/sass/libsass/releases/3.6.1)
 
 ## Installation
 
