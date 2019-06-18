@@ -1,3 +1,6 @@
+- **2.1.0.pre3**
+  - [extconf.rb: Always write VERSION if we have .git](https://github.com/sass/sassc-ruby/pull/131)
+  - [Update libsass to 3.6.1](https://github.com/sass/sassc-ruby/pull/130)
 - **2.1.0.pre2**
   - [Reduce Ruby warnings](https://github.com/sass/sassc-ruby/pull/124)
   - [prefer equal? to determine object identity](https://github.com/sass/sassc-ruby/pull/122)

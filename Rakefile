@@ -43,7 +43,7 @@ task 'gem:native' do
                       "RUBY_CC_VERSION=2.6.0 CLEAN=1"
 end
 
-CLEAN.include 'tmp', 'pkg', 'lib/sassc/libsass.so', 'ext/libsass/VERSION',
+CLEAN.include 'tmp', 'pkg', 'lib/sassc/libsass.{so,bundle}', 'ext/libsass/VERSION',
               'ext/*.{o,so,bundle}', 'ext/Makefile'
 
 desc "Run all tests"
