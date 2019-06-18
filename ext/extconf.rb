@@ -38,13 +38,12 @@ $CFLAGS.gsub!(/[\s+](-ansi|-std=[^\s]+)/, '')
 dir_config 'libsass'
 
 libsass_version = Dir.chdir(libsass_dir) do
-  if File.exist?('VERSION')
-    File.read('VERSION').chomp
-  elsif File.exist?('.git')
+  if File.exist?('.git')
     ver = %x[git describe --abbrev=4 --dirty --always --tags].chomp
     File.write('VERSION', ver)
     ver
   end
+  File.read('VERSION').chomp if File.exist?('VERSION')
 end
 
 if libsass_version
