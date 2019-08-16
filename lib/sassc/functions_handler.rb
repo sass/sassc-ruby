@@ -12,7 +12,11 @@ module SassC
 
       list = Native.make_function_list(Script.custom_functions.count)
 
-      functions = FunctionWrapper.extend(Script::Functions)
+      # use an anonymous class wrapper to avoid mutations in a threaded environment
+      functions = Class.new do
+        attr_accessor :options
+        include Script::Functions
+      end.new
       functions.options = @options
 
       Script.custom_functions.each_with_index do |custom_function, i|
@@ -64,12 +68,6 @@ module SassC
     def error(message)
       $stderr.puts "[SassC::FunctionsHandler] #{message}"
       Native.make_error(message)
-    end
-
-    class FunctionWrapper
-      class << self
-        attr_accessor :options
-      end
     end
   end
 end
