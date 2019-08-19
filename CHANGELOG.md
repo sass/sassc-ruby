@@ -1,3 +1,5 @@
+- **2.1.0**
+  - Equivalent to 2.1.0.pre3
 - **2.1.0.pre3**
   - [extconf.rb: Always write VERSION if we have .git](https://github.com/sass/sassc-ruby/pull/131)
   - [Update libsass to 3.6.1](https://github.com/sass/sassc-ruby/pull/130)
