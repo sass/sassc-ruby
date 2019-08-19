@@ -185,6 +185,22 @@ module SassC
       CSS
     end
 
+    def test_concurrency
+      10.times do
+        threads = []
+        10.times do |i|
+          threads << Thread.new(i) do |id|
+            out = Engine.new("div { url: inspect_options(); }", {test_key1: 'test_value', test_key2: id}).render
+            assert_match /test_key1/, out
+            assert_match /test_key2/, out
+            assert_match /test_value/, out
+            assert_match /#{id}/, out
+          end
+        end
+        threads.each(&:join)
+      end
+    end
+
     private
 
     def assert_sass(sass, expected_css)
@@ -277,6 +293,10 @@ module SassC
       def inspect_list(argument)
         raise StandardError.new "passed value is not a Sass::Script::Value::List" unless argument.is_a? SassC::Script::Value::List
         return argument
+      end
+
+      def inspect_options
+        SassC::Script::Value::String.new(self.options.inspect, :string)
       end
 
       def returns_sass_value
