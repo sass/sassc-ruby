@@ -4,9 +4,7 @@ module SassC
   module Script
 
     def self.custom_functions
-      Functions.instance_methods.select do |function|
-        Functions.public_method_defined?(function)
-      end
+      Functions.public_instance_methods
     end
 
     def self.formatted_function_name(function_name)
