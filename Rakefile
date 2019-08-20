@@ -25,6 +25,11 @@ Rake::ExtensionTask.new('libsass', gem_spec) do |ext|
 
   ext.cross_config_options << '--disable-march-tune-native'
 
+  # LTO does not play well with static standard libs with older binutils.
+  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53730
+  # https://github.com/sass/sassc-ruby/issues/136#issuecomment-522820053
+  ext.cross_config_options << '--disable-lto'
+
   ext.cross_compiling do |spec|
     spec.files.reject! { |path| File.fnmatch?('ext/*', path) }
   end
