@@ -1,3 +1,5 @@
+- **2.2.0**
+  - [Do not build precompiled gems for Linux](https://github.com/sass/sassc-ruby/pull/145)
 - **2.1.0**
   - Equivalent to 2.1.0.pre3
 - **2.1.0.pre3**
