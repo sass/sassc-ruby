@@ -57,6 +57,7 @@ module SassC
       Native.delete_data_context(data_context)
 
       css.force_encoding(@template.encoding)
+      @source_map.force_encoding(@template.encoding)
 
       return css unless quiet?
     end
