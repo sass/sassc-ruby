@@ -6,7 +6,14 @@ module SassC
   module Native
     extend FFI::Library
 
-    dl_ext = (RbConfig::CONFIG['host_os'] =~ /darwin/ ? 'bundle' : 'so')
+    dl_ext = case RbConfig::CONFIG['host_os']
+    when /darwin/
+      'bundle'
+    when /mingw|mswin/
+      File.exist?(File.expand_path("libsass.so", __dir__)) ? 'so' : 'dll'
+    else
+      'so'
+    end
     ffi_lib File.expand_path("libsass.#{dl_ext}", __dir__)
 
     require_relative "native/sass_value"
