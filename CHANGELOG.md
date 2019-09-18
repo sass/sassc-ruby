@@ -1,3 +1,5 @@
+- **2.2.1**
+  - [Fix LoadError on some non-rvm environments](https://github.com/sass/sassc-ruby/pull/156)
 - **2.2.0**
   - [Do not build precompiled gems for Linux](https://github.com/sass/sassc-ruby/pull/145)
 - **2.1.0**
