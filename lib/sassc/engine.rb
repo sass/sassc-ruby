@@ -54,11 +54,11 @@ module SassC
       @dependencies = Native.context_get_included_files(context)
       @source_map   = Native.context_get_source_map_string(context)
 
-      Native.delete_data_context(data_context)
-
       css.force_encoding(@template.encoding)
 
       return css unless quiet?
+    ensure
+      Native.delete_data_context(data_context) if data_context
     end
 
     def dependencies
