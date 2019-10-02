@@ -6,24 +6,24 @@ module SassC
       @options = options
     end
 
-    def setup(native_options)
+    def setup(native_options, functions: Script::Functions)
       @callbacks = {}
       @function_names = {}
 
-      list = Native.make_function_list(Script.custom_functions.count)
+      list = Native.make_function_list(Script.custom_functions(functions: functions).count)
 
       # use an anonymous class wrapper to avoid mutations in a threaded environment
-      functions = Class.new do
+      functions_wrapper = Class.new do
         attr_accessor :options
-        include Script::Functions
+        include functions
       end.new
-      functions.options = @options
+      functions_wrapper.options = @options
 
-      Script.custom_functions.each_with_index do |custom_function, i|
+      Script.custom_functions(functions: functions).each_with_index do |custom_function, i|
         @callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |native_argument_list, cookie|
           begin
             function_arguments = arguments_from_native_list(native_argument_list)
-            result = functions.send(custom_function, *function_arguments)
+            result = functions_wrapper.send(custom_function, *function_arguments)
             to_native_value(result)
           rescue StandardError => exception
             # This rescues any exceptions that occur either in value conversion
@@ -32,7 +32,7 @@ module SassC
           end
         end
 
-        @function_names[custom_function] = Script.formatted_function_name(custom_function)
+        @function_names[custom_function] = Script.formatted_function_name(custom_function, functions: functions)
 
         callback = Native.make_function(
           @function_names[custom_function],

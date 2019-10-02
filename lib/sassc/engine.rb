@@ -16,6 +16,7 @@ module SassC
     def initialize(template, options = {})
       @template = template
       @options = options
+      @functions = options.fetch(:functions, Script::Functions)
     end
 
     def render
@@ -37,7 +38,7 @@ module SassC
       Native.option_set_omit_source_map_url(native_options, true) if omit_source_map_url?
 
       import_handler.setup(native_options)
-      functions_handler.setup(native_options)
+      functions_handler.setup(native_options, functions: @functions)
 
       status = Native.compile_data_context(data_context)
 
