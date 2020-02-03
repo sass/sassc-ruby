@@ -19,8 +19,7 @@ if enable_config('static-stdlib', false)
   $LDFLAGS << ' -static-libgcc -static-libstdc++'
 end
 
-# Set to false when building binary gems
-if enable_config('march-tune-native', true)
+if enable_config('march-tune-native', false)
   $CFLAGS << ' -march=native -mtune=native'
   $CXXFLAGS << ' -march=native -mtune=native'
 end
