@@ -10,6 +10,12 @@ rvm:
   - 2.4.6
   - 2.5.5
   - 2.6.3
+  - 2.7.0
   - truffleruby
+matrix:
+  include:
+    - name: osx
+      os: osx
+      rvm: 2.7.0
 notifications:
   email: false

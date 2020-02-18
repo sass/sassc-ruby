@@ -58,9 +58,9 @@ Dir.chdir(__dir__) do
   $srcs = Dir['libsass/src/**/*.{c,cpp}']
 end
 
-if enable_config('strip', RbConfig::CONFIG['host_os'].downcase !~ /darwin/)
+#if enable_config('strip', RbConfig::CONFIG['host_os'].downcase !~ /darwin/)
   MakeMakefile::LINK_SO << "\nstrip -x $@"
-end
+#end
 
 # Don't link libruby.
 $LIBRUBYARG = nil
