@@ -2,20 +2,33 @@ language: ruby
 
 bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
 script: "bundle exec rake test"
-rvm:
-  - 2.0.0
-  - 2.1.10
-  - 2.2.10
-  - 2.3.8
-  - 2.4.6
-  - 2.5.5
-  - 2.6.3
-  - 2.7.0
-  - truffleruby
+#rvm:
+#  - 2.0.0
+#  - 2.1.10
+#  - 2.2.10
+#  - 2.3.8
+#  - 2.4.6
+#  - 2.5.5
+#  - 2.6.3
+#  - 2.7.0
+#  - truffleruby
 matrix:
   include:
-    - name: osx
+    - name: Ruby 2.7.0 (Mac OS X 9.4.1 (default))
       os: osx
       rvm: 2.7.0
+    - name: Ruby 2.7.0 (Mac OS X 8.3)
+      os: osx
+      osx_image: xcode8.3
+      rvm: 2.7.0
+    - name: Ruby 2.7.0 (Mac OS X 10.3)
+      os: osx
+      osx_image: xcode10.3
+      rvm: 2.7.0
+    - name: Ruby 2.7.0 (Mac OS X 11.3)
+      os: osx
+      osx_image: xcode11.3
+      rvm: 2.7.0
+
 notifications:
   email: false
