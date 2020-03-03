@@ -58,6 +58,12 @@ Dir.chdir(__dir__) do
   $srcs = Dir['libsass/src/**/*.{c,cpp}']
 end
 
+# libsass.bundle malformed object (unknown load command 7) on Mac OS X
+# See https://github.com/sass/sassc-ruby/pull/174
+if enable_config('strip', RbConfig::CONFIG['host_os'].downcase !~ /darwin/)
+  MakeMakefile::LINK_SO << "\nstrip -x $@"
+end
+
 # Don't link libruby.
 $LIBRUBYARG = nil
 
