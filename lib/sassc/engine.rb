@@ -56,6 +56,7 @@ module SassC
       @source_map   = Native.context_get_source_map_string(context)
 
       css.force_encoding(@template.encoding)
+      @source_map.force_encoding(@template.encoding) if @source_map.is_a?(String)
 
       return css unless quiet?
     ensure
