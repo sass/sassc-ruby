@@ -201,6 +201,17 @@ module SassC
       end
     end
 
+    def test_pass_custom_functions_as_a_parameter
+      out = Engine.new("div { url: test-function(); }", {functions: ExternalFunctions}).render
+      assert_match /custom_function/, out
+    end
+
+    def test_pass_incompatible_type_to_custom_functions
+      assert_raises(TypeError) do
+        Engine.new("div { url: test-function(); }", {functions: Class.new}).render
+      end
+    end
+
     private
 
     def assert_sass(sass, expected_css)
@@ -317,6 +328,12 @@ module SassC
         SassC::Script::Value::List.new(numbers, separator: :space)
       end
 
+    end
+
+    module ExternalFunctions
+      def test_function
+        SassC::Script::Value::String.new("custom_function", :string)
+      end
     end
 
   end
