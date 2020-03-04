@@ -1,3 +1,15 @@
+- **2.3.0**
+  - [disable lto flag for darwin + nix](https://github.com/sass/sassc-ruby/pull/166)
+  - [Sort input file list](https://github.com/sass/sassc-ruby/pull/178)
+  - [Set appropriate encoding for source_map](https://github.com/sass/sassc-ruby/pull/152)
+  - [allow passing functions directly](https://github.com/sass/sassc-ruby/pull/162)
+  - [always dispose data context](https://github.com/sass/sassc-ruby/pull/161)
+  - [Update libsass to 3.6.3](https://github.com/sass/sassc-ruby/pull/164)
+  - [Restore strip symbols](https://github.com/sass/sassc-ruby/pull/184)
+  - [Default --march-tune-native to false](https://github.com/sass/sassc-ruby/pull/158)
+  - [Fix compile issue on Mac OS X](https://github.com/sass/sassc-ruby/pull/174)
+  - [Test on TruffleRuby in TravisCI](https://github.com/sass/sassc-ruby/pull/171)
+  - [Use RbConfig::MAKEFILE_CONFIG['DLEXT'] instead of hardcoding extensions](https://github.com/sass/sassc-ruby/pull/173)
 - **2.2.1**
   - [Fix LoadError on some non-rvm environments](https://github.com/sass/sassc-ruby/pull/156)
 - **2.2.0**
