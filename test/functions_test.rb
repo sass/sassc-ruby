@@ -140,7 +140,7 @@ module SassC
 
       assert_match /Error: error in C function function_that_raises_errors/, exception.message
       assert_match /Intentional wrong thing happened somewhere inside the custom function/, exception.message
-      assert_equal "[SassC::FunctionsHandler] Intentional wrong thing happened somewhere inside the custom function", stderr_output
+      assert_match /\[SassC::FunctionsHandler\] Intentional wrong thing happened somewhere inside the custom function/, stderr_output
     end
 
     def test_function_that_returns_a_sass_value
