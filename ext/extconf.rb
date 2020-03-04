@@ -55,7 +55,7 @@ $INCFLAGS << " -I$(srcdir)/libsass/include"
 $VPATH << "$(srcdir)/libsass/src"
 Dir.chdir(__dir__) do
   $VPATH += Dir['libsass/src/*/'].map { |p| "$(srcdir)/#{p}" }
-  $srcs = Dir['libsass/src/**/*.{c,cpp}']
+  $srcs = Dir['libsass/src/**/*.{c,cpp}'].sort
 end
 
 # libsass.bundle malformed object (unknown load command 7) on Mac OS X
