@@ -36,9 +36,7 @@ task 'gem:native' do
 
   # The RUBY_CC_VERSION here doesn't matter for the final package.
   # Only one version should be specified, as the shared library is Ruby-agnostic.
-  #
-  # g++-multilib is installed for 64->32-bit cross-compilation.
-  RakeCompilerDock.sh "sudo apt-get install -y g++-multilib && gem i rake bundler --no-document && bundle && "\
+  RakeCompilerDock.sh "gem i rake bundler --no-document && bundle && "\
                       "rake clean && rake cross native gem MAKE='nice make -j`nproc`' "\
                       "RUBY_CC_VERSION=2.6.0 CLEAN=1"
 end
