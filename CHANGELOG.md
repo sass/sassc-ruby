@@ -1,4 +1,5 @@
 - **2.3.0**
+  - [Fix rake gem:native task](https://github.com/sass/sassc-ruby/pull/196)
   - [disable lto flag for darwin + nix](https://github.com/sass/sassc-ruby/pull/166)
   - [Sort input file list](https://github.com/sass/sassc-ruby/pull/178)
   - [Set appropriate encoding for source_map](https://github.com/sass/sassc-ruby/pull/152)
