@@ -34,7 +34,6 @@ module SassC
     require_relative "native/sass_input_style"
     require_relative "native/sass_output_style"
     require_relative "native/string_list"
-    require_relative "native/lib_c"
 
     # Remove the redundant "sass_" from the beginning of every method name
     def self.attach_function(*args)
@@ -53,10 +52,9 @@ module SassC
     end
 
     def self.native_string(string)
-      string = "#{string}\0"
-      data = Native::LibC.malloc(string.bytesize)
-      data.write_string(string)
-      data
+      m = FFI::MemoryPointer.from_string(string)
+      m.autorelease = false
+      m
     end
 
     require_relative "native/native_context_api"
