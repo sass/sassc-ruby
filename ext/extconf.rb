@@ -42,11 +42,14 @@ $CFLAGS.gsub!(/[\s+](-ansi|-std=[^\s]+)/, '')
 dir_config 'libsass'
 
 libsass_version = Dir.chdir(libsass_dir) do
+  ver = nil
   if File.exist?('.git')
     ver = %x[git describe --abbrev=4 --dirty --always --tags].chomp
-    File.write('VERSION', ver)
-    ver
+  elsif
+    spec = ::Gem::Specification.load(File.join(gem_root, "sassc.gemspec"))
+    ver = spec.version
   end
+  File.write('VERSION', ver)
   File.read('VERSION').chomp if File.exist?('VERSION')
 end
 
