@@ -310,5 +310,14 @@ CSS
       output = Engine.new("@import 'test'").render
       assert_equal expected_output, output
     end
+
+    def test_color_functions
+      expected_output = <<-CSS
+a {
+  color: #aabbcc; }
+  CSS
+      output = Engine.new('a { color: lighten(#abc, 0%); }').render
+      assert_equal expected_output, output
+    end
   end
 end
