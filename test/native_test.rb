@@ -185,9 +185,9 @@ module SassC
         funct = FFI::Function.new(:pointer, [:pointer, :pointer, :pointer]) do |url, prev, cookie|
           list = Native.make_import_list(2)
 
-          str = "$var: 5px;\0"
-          data = Native::LibC.malloc(str.size)
-          data.write_string(str)
+          str = "$var: 5px;"
+          data = FFI::MemoryPointer.from_string(str)
+          data.autorelease = false
 
           entry0 = Native.make_import_entry("fake_includ.scss", data, nil)
           entry1 = Native.make_import_entry("not_included.scss", nil, nil)
