@@ -12,7 +12,7 @@ end
 
 require 'mkmf'
 
-$CXXFLAGS << ' -std=c++11'
+$CXXFLAGS << ' -std=c++11 -g0'
 
 # Set to true when building binary gems
 if enable_config('static-stdlib', false)
