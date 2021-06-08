@@ -19,7 +19,9 @@ if enable_config('static-stdlib', false)
   $LDFLAGS << ' -static-libgcc -static-libstdc++'
 end
 
-if enable_config('march-tune-native', false)
+# darwin arm doesn't support native
+# see: https://github.com/sass/sassc-ruby/issues/222
+if enable_config('march-tune-native', false) && Gem::Platform.local.cpu != 'arm64'
   $CFLAGS << ' -march=native -mtune=native'
   $CXXFLAGS << ' -march=native -mtune=native'
 end
