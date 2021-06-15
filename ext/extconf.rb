@@ -16,7 +16,7 @@ $CXXFLAGS << ' -std=c++11'
 
 # Set to true when building binary gems
 if enable_config('static-stdlib', false)
-  $LDFLAGS << ' -static-libgcc -static-libstdc++'
+  $LDFLAGS << ' -static'
 end
 
 if enable_config('march-tune-native', false)
