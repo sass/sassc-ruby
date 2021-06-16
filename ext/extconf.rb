@@ -14,8 +14,12 @@ require 'mkmf'
 
 $CXXFLAGS << ' -std=c++11'
 
+# devkit tools aren't usually available on Windows
+# use a static build so we won't need a compiler available at runtime
+# see: https://github.com/sass/sassc-ruby/issues/182
+enable_static_by_default = RUBY_ENGINE == "jruby" && (RbConfig::CONFIG['host_os'] =~ /mswin|windows|mingw/i)
 # Set to true when building binary gems
-if enable_config('static-stdlib', false)
+if enable_config('static-stdlib', enable_static_by_default)
   $LDFLAGS << ' -static'
 end
 
