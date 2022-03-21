@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.platform      = Gem::Platform::RUBY
-  spec.extensions    = ["ext/extconf.rb"]
+  # spec.extensions    = ["ext/extconf.rb"]
 
   spec.add_development_dependency "minitest", "~> 5.5.1"
   spec.add_development_dependency "minitest-around"
@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "rake-compiler-dock"
 
+=begin
   spec.add_dependency "ffi", "~> 1.9"
 
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
@@ -65,5 +66,6 @@ Gem::Specification.new do |spec|
     end
     spec.files << File.join(submodule_relative_path, 'VERSION')
   end
+=end
 
 end

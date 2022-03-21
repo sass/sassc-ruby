@@ -1,31 +1,24 @@
 # SassC [![Build Status](https://travis-ci.org/sass/sassc-ruby.svg?branch=master)](https://travis-ci.org/sass/sassc-ruby) [![Gem Version](https://badge.fury.io/rb/sassc.svg)](http://badge.fury.io/rb/sassc)
 
-Use `libsass` with Ruby!
+Use `sassc-embedded` with SassC Ruby!
 
-This gem combines the speed of `libsass`, the [Sass C implementation](https://github.com/sass/libsass), with the ease of use of the original [Ruby Sass](https://github.com/sass/ruby-sass) library.
+This fork removes the deprecated [`libsass`](https://github.com/sass/libsass) and replace it with [`sassc-embedded`](https://github.com/ntkme/sassc-embedded-polyfill-ruby), providing latest sass features and fast gem installation.
 
-### libsass Version
-
-[3.6.1](https://github.com/sass/libsass/releases/3.6.1)
+This should essentially be a drop in alternative to [sass/sassc-ruby](https://github.com/sass/sassc-ruby).
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add these lines to your application's Gemfile:
 
 ```ruby
-gem 'sassc'
+gem 'sassc', github: 'sass/sassc-ruby', ref: "refs/pull/233/head"
+gem 'sassc-embedded'
 ```
 
 And then execute:
 
 ```bash
 bundle
-```
-
-Or install it yourself as:
-
-```bash
-gem install sassc
 ```
 
 ## Usage
@@ -39,8 +32,6 @@ SassC::Engine.new(sass, style: :compressed).render
 
 **Note**:  If you want to use this library with Rails/Sprockets, check out
 [sassc-rails](https://github.com/bolandrm/sassc-rails).
-
-Additionally, you can use `SassC::Sass2Scss` to convert Sass syntax to Scss syntax.
 
 ## Credits
 
