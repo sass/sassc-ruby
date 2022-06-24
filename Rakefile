@@ -18,7 +18,7 @@ Rake::ExtensionTask.new('libsass', gem_spec) do |ext|
   ext.ext_dir = 'ext'
   ext.lib_dir = 'lib/sassc'
   ext.cross_compile = true
-  ext.cross_platform = %w[x86-mingw32 x64-mingw32]
+  ext.cross_platform = %w[x86-mingw32 x64-mingw32 x64-mingw-ucrt]
 
   # Link C++ stdlib statically when building binary gems.
   ext.cross_config_options << '--enable-static-stdlib'
