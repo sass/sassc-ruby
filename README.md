@@ -78,7 +78,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ### Code Changes
 
-1. Fork it ( https://github.com/sass/sassc-ruby/fork )
+1. Fork it ([https://github.com/sass/sassc-ruby/fork](https://github.com/sass/sassc-ruby/fork))
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`) - try to include tests
 4. Push to the branch (`git push origin my-new-feature`)
