@@ -52,6 +52,12 @@ SCSS or SASS syntax to CSS. To compile, use a `SassC::Engine`, e.g.:
 SassC::Engine.new(".klass1, .klass2 { color: :red; }", style: :compressed).render
 ```
 
+## Alternatives
+
+* [dartsass-rails](https://github.com/rails/dartsass-rails): Rails organization
+maintains its own wrapper for dart-sass. Unlike this gem, dartsass-rails does
+not support Sprockets.
+
 ## Credits
 
 * This gem is maintained by [Ryan Boland](https://ryanboland.com)
