@@ -27,11 +27,16 @@ module SassC
   end
 end
 
+require 'sass-embedded'
+require 'base64'
+require 'json'
+require 'uri'
+require 'set'
+
 require_relative "sassc/version"
 require_relative "sassc/import_handler"
 require_relative "sassc/importer"
 require_relative "sassc/util"
-# require_relative "sassc/util/normalized_map"
 require_relative "sassc/script"
 require_relative "sassc/script/value"
 require_relative "sassc/script/value/bool"
@@ -48,16 +53,3 @@ require_relative "sassc/error"
 require_relative "sassc/url"
 require_relative "sassc/protocol"
 require_relative "sassc/engine"
-
-# #######
-# require 'sassc'
-require 'sass-embedded'
-
-require 'base64'
-require 'json'
-require 'uri'
-
-# require_relative 'embedded/version'
-# require_relative 'sassc/embedded'
-#############
-
