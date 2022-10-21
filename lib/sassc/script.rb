@@ -12,6 +12,5 @@ module SassC
       params = params.map { |param_type, name| "$#{name}#{': null' if param_type == :opt}" }.join(", ")
       return "#{function_name}(#{params})"
     end
-
   end
 end

@@ -1,41 +1,44 @@
 # frozen_string_literal: true
 
-require_relative "test_helper"
+require_relative 'test_helper'
 
 module SassC
   class OutputStyleTest < MiniTest::Test
     def input_scss
-      input_scss = <<-CSS
-$color: #fff;
+      <<~CSS
+        $color: #fff;
 
-#main {
-  color: $color;
-  background-color: #000;
-  p {
-    width: 10em;
-  }
-}
+        #main {
+          color: $color;
+          background-color: #000;
+          p {
+            width: 10em;
+          }
+        }
 
-.huge {
-  font-size: 10em;
-  font-weight: bold;
-  text-decoration: underline;
-}
-CSS
+        .huge {
+          font-size: 10em;
+          font-weight: bold;
+          text-decoration: underline;
+        }
+      CSS
     end
 
     def expected_nested_output
-      <<-CSS
-#main {
-  color: #fff;
-  background-color: #000; }
-  #main p {
-    width: 10em; }
+      <<~CSS
+        #main {
+          color: #fff;
+          background-color: #000;
+        }
+        #main p {
+          width: 10em;
+        }
 
-.huge {
-  font-size: 10em;
-  font-weight: bold;
-  text-decoration: underline; }
+        .huge {
+          font-size: 10em;
+          font-weight: bold;
+          text-decoration: underline;
+        }
       CSS
     end
 
@@ -61,46 +64,53 @@ CSS
 
     def test_expanded_output
       engine = Engine.new(input_scss, style: :sass_style_expanded)
-      assert_equal <<-CSS, engine.render
-#main {
-  color: #fff;
-  background-color: #000;
-}
+      assert_equal <<~CSS, engine.render
+        #main {
+          color: #fff;
+          background-color: #000;
+        }
+        #main p {
+          width: 10em;
+        }
 
-#main p {
-  width: 10em;
-}
-
-.huge {
-  font-size: 10em;
-  font-weight: bold;
-  text-decoration: underline;
-}
+        .huge {
+          font-size: 10em;
+          font-weight: bold;
+          text-decoration: underline;
+        }
       CSS
     end
 
     def test_compact_output
       engine = Engine.new(input_scss, style: :sass_style_compact)
-      assert_equal <<-CSS, engine.render
-#main { color: #fff; background-color: #000; }
+      assert_equal <<~CSS, engine.render
+        #main {
+          color: #fff;
+          background-color: #000;
+        }
+        #main p {
+          width: 10em;
+        }
 
-#main p { width: 10em; }
-
-.huge { font-size: 10em; font-weight: bold; text-decoration: underline; }
+        .huge {
+          font-size: 10em;
+          font-weight: bold;
+          text-decoration: underline;
+        }
       CSS
     end
 
     def test_compressed_output
       engine = Engine.new(input_scss, style: :sass_style_compressed)
-      assert_equal <<-CSS, engine.render
-#main{color:#fff;background-color:#000}#main p{width:10em}.huge{font-size:10em;font-weight:bold;text-decoration:underline}
+      assert_equal <<~CSS, engine.render
+        #main{color:#fff;background-color:#000}#main p{width:10em}.huge{font-size:10em;font-weight:bold;text-decoration:underline}
       CSS
     end
 
     def test_short_output_style_names
       engine = Engine.new(input_scss, style: :compressed)
-      assert_equal <<-CSS, engine.render
-#main{color:#fff;background-color:#000}#main p{width:10em}.huge{font-size:10em;font-weight:bold;text-decoration:underline}
+      assert_equal <<~CSS, engine.render
+        #main{color:#fff;background-color:#000}#main p{width:10em}.huge{font-size:10em;font-weight:bold;text-decoration:underline}
       CSS
     end
   end
