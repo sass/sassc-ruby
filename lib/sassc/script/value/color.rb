@@ -22,16 +22,16 @@ class SassC::Script::Value::Color < SassC::Script::Value
   def initialize(red:nil, green:nil, blue:nil, hue:nil, saturation:nil, lightness:nil, alpha:1.0)
     if red && green && blue && alpha
       @mode = :rgba
-      @red = SassC::Util.clamp(red.to_i, 0, 255)
-      @green = SassC::Util.clamp(green.to_i, 0, 255)
-      @blue = SassC::Util.clamp(blue.to_i, 0, 255)
-      @alpha = SassC::Util.clamp(alpha.to_f, 0.0, 1.0)
+      @red = red.to_i.clamp(0, 255)
+      @green = green.to_i.clamp(0, 255)
+      @blue = blue.to_i.clamp(0, 255)
+      @alpha = alpha.to_f.clamp(0.0, 1.0)
     elsif hue && saturation && lightness && alpha
       @mode = :hsla
-      @hue = SassC::Util.clamp(hue.to_i, 0, 360)
-      @saturation = SassC::Util.clamp(saturation.to_i, 0, 100)
-      @lightness = SassC::Util.clamp(lightness.to_i, 0, 100)
-      @alpha = SassC::Util.clamp(alpha.to_f, 0.0, 1.0)
+      @hue = hue.to_i.clamp(0, 360)
+      @saturation = saturation.to_i.clamp(0, 100)
+      @lightness = lightness.to_i.clamp(0, 100)
+      @alpha = alpha.to_f.clamp(0.0, 1.0)
     else
       raise SassC::UnsupportedValue, "Unable to determine color configuration for "
     end

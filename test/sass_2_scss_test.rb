@@ -5,7 +5,9 @@ require_relative "test_helper"
 module SassC
   class Sass2ScssTest < MiniTest::Test
     def test_compact_output
-      assert_equal ".blat { color: red; }", Sass2Scss.convert(<<SASS)
+      exp = { contents: ".blat\n  color: red\n",
+              syntax: :indented }
+      assert_equal exp, Sass2Scss.convert(<<SASS)
 .blat
   color: red
 SASS

@@ -1,3 +1,9 @@
+- **3.0.0**
+  - [Replace libsass with sass-embedded gem](https://github.com/sass/sassc-ruby/pull/240)
+  - [Require minimum Ruby version to 2.6](https://github.com/sass/sassc-ruby/pull/240)
+  - [Replace Travis CI with Github Actions](https://github.com/sass/sassc-ruby/pull/240)
+  - [Replace Travis CI with Github Actions](https://github.com/sass/sassc-ruby/pull/240)
+
 - **2.4.0**
   - [Update libsass to 3.6.4](https://github.com/sass/sassc-ruby/pull/199)
   - [Use FFI::MemoryPointer instead of libc's malloc()](https://github.com/sass/sassc-ruby/pull/205)

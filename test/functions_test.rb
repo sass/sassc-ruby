@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require "stringio"
+require_relative 'test_helper'
+require 'stringio'
 
 module SassC
   class FunctionsTest < MiniTest::Test
     include FixtureHelper
 
     def setup
-      @real_stderr, $stderr = $stderr, StringIO.new
+      @real_stderr = $stderr
+      $stderr = StringIO.new
     end
 
     def teardown
@@ -119,28 +120,17 @@ module SassC
       EXPECTED_CSS
     end
 
-    def test_function_with_unsupported_tag
-      skip('What are other unsupported tags?')
-      engine = Engine.new("div {url: function_with_unsupported_tag(());}")
-
-      exception = assert_raises(SassC::SyntaxError) do
-        engine.render
-      end
-
-      assert_match /Sass argument of type sass_list unsupported/, exception.message
-      assert_equal "[SassC::FunctionsHandler] Sass argument of type sass_list unsupported", stderr_output
-    end
-
     def test_function_with_error
-      engine = Engine.new("div {url: function_that_raises_errors();}")
+      engine = Engine.new('div {url: function_that_raises_errors();}')
 
       exception = assert_raises(SassC::SyntaxError) do
         engine.render
       end
 
-      assert_match /Error: error in C function function_that_raises_errors/, exception.message
-      assert_match /Intentional wrong thing happened somewhere inside the custom function/, exception.message
-      assert_match /\[SassC::FunctionsHandler\] Intentional wrong thing happened somewhere inside the custom function/, stderr_output
+      assert_match(/Error: error in C function function_that_raises_errors/, exception.message)
+      assert_match(/Intentional wrong thing happened somewhere inside the custom function/, exception.message)
+      assert_match(/\[SassC::FunctionsHandler\] Intentional wrong thing happened somewhere inside the custom function/,
+                   stderr_output)
     end
 
     def test_function_that_returns_a_sass_value
@@ -190,11 +180,11 @@ module SassC
         threads = []
         10.times do |i|
           threads << Thread.new(i) do |id|
-            out = Engine.new("div { url: inspect_options(); }", {test_key1: 'test_value', test_key2: id}).render
-            assert_match /test_key1/, out
-            assert_match /test_key2/, out
-            assert_match /test_value/, out
-            assert_match /#{id}/, out
+            out = Engine.new('div { url: inspect_options(); }', { test_key1: 'test_value', test_key2: id }).render
+            assert_match(/test_key1/, out)
+            assert_match(/test_key2/, out)
+            assert_match(/test_value/, out)
+            assert_match(/#{id}/, out)
           end
         end
         threads.each(&:join)
@@ -202,13 +192,13 @@ module SassC
     end
 
     def test_pass_custom_functions_as_a_parameter
-      out = Engine.new("div { url: test-function(); }", {functions: ExternalFunctions}).render
-      assert_match /custom_function/, out
+      out = Engine.new('div { url: test-function(); }', { functions: ExternalFunctions }).render
+      assert_match(/custom_function/, out)
     end
 
     def test_pass_incompatible_type_to_custom_functions
       assert_raises(TypeError) do
-        Engine.new("div { url: test-function(); }", {functions: Class.new}).render
+        Engine.new('div { url: test-function(); }', { functions: Class.new }).render
       end
     end
 
@@ -216,16 +206,15 @@ module SassC
 
     def assert_sass(sass, expected_css)
       engine = Engine.new(sass)
-      assert_equal expected_css.strip.gsub!(/\s+/, " "), # poor man's String#squish
-                   engine.render.strip.gsub!(/\s+/, " ")
+      assert_equal expected_css.strip.gsub!(/\s+/, ' '), # poor man's String#squish
+                   engine.render.strip.gsub!(/\s+/, ' ')
     end
 
     def stderr_output
       $stderr.string.gsub("\u0000\n", '').chomp
     end
 
-    module Script::Functions
-
+    module Script::Functions # rubocop:disable Style/ClassAndModuleChildren
       def javascript_path(path)
         SassC::Script::Value::String.new("/js/#{path.value}", :string)
       end
@@ -234,107 +223,110 @@ module SassC
         SassC::Script::Value::String.new("/css/#{path.value}", :identifier)
       end
 
-      def no_return_path(path)
+      def no_return_path(_path)
         nil
       end
 
       def sass_return_path(path)
-        SassC::Script::Value::String.new("#{path.value}", :string)
+        SassC::Script::Value::String.new(path.value.to_s, :string)
       end
 
       def optional_arguments(path, optional = nil)
-        optional ||= SassC::Script::Value::String.new("bar")
+        optional ||= SassC::Script::Value::String.new('bar')
         SassC::Script::Value::String.new("#{path.value}/#{optional.value}", :string)
       end
 
       def function_that_raises_errors
-        raise StandardError, "Intentional wrong thing happened somewhere inside the custom function"
-      end
-
-      def function_with_unsupported_tag(value)
+        raise StandardError, 'Intentional wrong thing happened somewhere inside the custom function'
       end
 
       def nice_color_argument(color)
-        return SassC::Script::Value::String.new(color.to_s, :identifier)
+        SassC::Script::Value::String.new(color.to_s, :identifier)
       end
 
       def returns_a_color
-        return SassC::Script::Value::Color.new(red: 0, green: 0, blue: 0)
+        SassC::Script::Value::Color.new(red: 0, green: 0, blue: 0)
       end
 
       def returns_a_number
-        return SassC::Script::Value::Number.new(-312,'rem')
+        SassC::Script::Value::Number.new(-312, 'rem')
       end
 
       def returns_a_bool
-        return SassC::Script::Value::Bool.new(true)
+        SassC::Script::Value::Bool.new(true)
       end
 
-      def inspect_bool ( argument )
-        raise StandardError.new "passed value is not a Sass::Script::Value::Bool" unless argument.is_a? SassC::Script::Value::Bool
-        return argument
-      end
-
-      def inspect_number ( argument )
-        raise StandardError.new "passed value is not a Sass::Script::Value::Number" unless argument.is_a? SassC::Script::Value::Number
-        return argument
-      end
-
-      def inspect_map ( argument )
-        argument.to_h.each_pair do |key, value|
-          raise StandardError.new "key #{key.inspect} is not a string" unless key.is_a? SassC::Script::Value::String
-
-          valueClass = case key.value
-                         when 'string'
-                           SassC::Script::Value::String
-                         when 'number'
-                           SassC::Script::Value::Number
-                         when 'color'
-                           SassC::Script::Value::Color
-                         when 'map'
-                           SassC::Script::Value::Map
-                       end
-
-          raise StandardError.new "unknown key #{key.inspect}" unless valueClass
-          raise StandardError.new "value for #{key.inspect} is not a #{valueClass}" unless value.is_a? valueClass
+      def inspect_bool(argument)
+        unless argument.is_a? SassC::Script::Value::Bool
+          raise StandardError, 'passed value is not a Sass::Script::Value::Bool'
         end
-        return argument
+
+        argument
+      end
+
+      def inspect_number(argument)
+        unless argument.is_a? SassC::Script::Value::Number
+          raise StandardError, 'passed value is not a Sass::Script::Value::Number'
+        end
+
+        argument
+      end
+
+      def inspect_map(argument)
+        argument.to_h.each_pair do |key, value|
+          raise StandardError, "key #{key.inspect} is not a string" unless key.is_a? SassC::Script::Value::String
+
+          value_class = case key.value
+                        when 'string'
+                          SassC::Script::Value::String
+                        when 'number'
+                          SassC::Script::Value::Number
+                        when 'color'
+                          SassC::Script::Value::Color
+                        when 'map'
+                          SassC::Script::Value::Map
+                        end
+
+          raise StandardError, "unknown key #{key.inspect}" unless value_class
+          raise StandardError, "value for #{key.inspect} is not a #{value_class}" unless value.is_a? value_class
+        end
+        argument
       end
 
       def inspect_list(argument)
-        raise StandardError.new "passed value is not a Sass::Script::Value::List" unless argument.is_a? SassC::Script::Value::List
-        return argument
+        unless argument.is_a? SassC::Script::Value::List
+          raise StandardError, 'passed value is not a Sass::Script::Value::List'
+        end
+
+        argument
       end
 
       def inspect_options
-        SassC::Script::Value::String.new(self.options.inspect, :string)
+        SassC::Script::Value::String.new(options.inspect, :string)
       end
 
       def returns_sass_value
-        return SassC::Script::Value::Color.new(red: 0, green: 0, blue: 0)
+        SassC::Script::Value::Color.new(red: 0, green: 0, blue: 0)
       end
 
       def returns_sass_map
-        key = SassC::Script::Value::String.new("color", "string")
+        key = SassC::Script::Value::String.new('color', 'string')
         value = SassC::Script::Value::Color.new(red: 0, green: 0, blue: 0)
         values = {}
         values[key] = value
-        map = SassC::Script::Value::Map.new values
-        return map
+        SassC::Script::Value::Map.new values
       end
 
       def returns_sass_list
         numbers = [10, 20, 30].map { |n| SassC::Script::Value::Number.new(n, '') }
         SassC::Script::Value::List.new(numbers, separator: :space)
       end
-
     end
 
     module ExternalFunctions
       def test_function
-        SassC::Script::Value::String.new("custom_function", :string)
+        SassC::Script::Value::String.new('custom_function', :string)
       end
     end
-
   end
 end

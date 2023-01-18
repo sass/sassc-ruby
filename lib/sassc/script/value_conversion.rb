@@ -2,68 +2,116 @@
 
 module SassC::Script::ValueConversion
 
-  def self.from_native(native_value, options)
-    case value_tag = SassC::Native.value_get_tag(native_value)
-    when :sass_null
-      # no-op
-    when :sass_string
-      value = SassC::Native.string_get_value(native_value)
-      type = SassC::Native.string_get_type(native_value)
-      argument = SassC::Script::Value::String.new(value, type)
-      argument
-    when :sass_boolean
-      value = SassC::Native.boolean_get_value(native_value)
-      argument = SassC::Script::Value::Bool.new(value)
-      argument
-    when :sass_number
-      value = SassC::Native.number_get_value(native_value)
-      unit = SassC::Native.number_get_unit(native_value)
-      argument = SassC::Script::Value::Number.new(value, unit)
-      argument
-    when :sass_color
-      red, green, blue, alpha = SassC::Native.color_get_r(native_value), SassC::Native.color_get_g(native_value), SassC::Native.color_get_b(native_value), SassC::Native.color_get_a(native_value)
-      argument = SassC::Script::Value::Color.new(red:red, green:green, blue:blue, alpha:alpha)
-      argument.options = options
-      argument
-    when :sass_map
-      values = {}
-      length = SassC::Native::map_get_length native_value
-      (0..length-1).each do |index|
-        key = SassC::Native::map_get_key(native_value, index)
-        value = SassC::Native::map_get_value(native_value, index)
-        values[from_native(key, options)] = from_native(value, options)
+  def self.from_native(value, options)
+    case value
+    when ::Sass::Value::Null::NULL
+      nil
+    when ::Sass::Value::Boolean
+      ::SassC::Script::Value::Bool.new(value.to_bool)
+    when ::Sass::Value::Color
+      if value.instance_eval { defined? @hue }
+        ::SassC::Script::Value::Color.new(
+          hue: value.hue,
+          saturation: value.saturation,
+          lightness: value.lightness,
+          alpha: value.alpha
+        )
+      else
+        ::SassC::Script::Value::Color.new(
+          red: value.red,
+          green: value.green,
+          blue: value.blue,
+          alpha: value.alpha
+        )
       end
-      argument = SassC::Script::Value::Map.new values
-      argument
-    when :sass_list
-      length = SassC::Native::list_get_length(native_value)
-      items = (0...length).map do |index|
-        native_item = SassC::Native::list_get_value(native_value, index)
-        from_native(native_item, options)
-      end
-      SassC::Script::Value::List.new(items, separator: :space)
+    when ::Sass::Value::List
+      ::SassC::Script::Value::List.new(
+        value.to_a.map { |element| from_native(element, options) },
+        separator: case value.separator
+                   when ','
+                     :comma
+                   when ' '
+                     :space
+                   else
+                     raise UnsupportedValue, "Sass list separator #{value.separator} unsupported"
+                   end,
+        bracketed: value.bracketed?
+      )
+    when ::Sass::Value::Map
+      ::SassC::Script::Value::Map.new(
+        value.contents.to_a.to_h { |k, v| [from_native(k, options), from_native(v, options)] }
+      )
+    when ::Sass::Value::Number
+      ::SassC::Script::Value::Number.new(
+        value.value,
+        value.numerator_units,
+        value.denominator_units
+      )
+    when ::Sass::Value::String
+      ::SassC::Script::Value::String.new(
+        value.text,
+        value.quoted? ? :string : :identifier
+      )
     else
-      raise UnsupportedValue.new("Sass argument of type #{value_tag} unsupported")
+      raise UnsupportedValue, "Sass argument of type #{value.class.name.split('::').last} unsupported"
     end
   end
 
   def self.to_native(value)
-    case value_name = value.class.name.split("::").last
-    when "String"
-      SassC::Script::ValueConversion::String.new(value).to_native
-    when "Color"
-      SassC::Script::ValueConversion::Color.new(value).to_native
-    when "Number"
-      SassC::Script::ValueConversion::Number.new(value).to_native
-    when "Map"
-      SassC::Script::ValueConversion::Map.new(value).to_native
-    when "List"
-      SassC::Script::ValueConversion::List.new(value).to_native
-    when "Bool"
-      SassC::Script::ValueConversion::Bool.new(value).to_native
+    case value
+    when nil
+      ::Sass::Value::Null::NULL
+    when ::SassC::Script::Value::Bool
+      ::Sass::Value::Boolean.new(value.to_bool)
+    when ::SassC::Script::Value::Color
+      if value.rgba?
+        ::Sass::Value::Color.new(
+          red: value.red,
+          green: value.green,
+          blue: value.blue,
+          alpha: value.alpha
+        )
+      elsif value.hlsa?
+        ::Sass::Value::Color.new(
+          hue: value.hue,
+          saturation: value.saturation,
+          lightness: value.lightness,
+          alpha: value.alpha
+        )
+      else
+        raise UnsupportedValue, "Sass color mode #{value.instance_eval { @mode }} unsupported"
+      end
+    when ::SassC::Script::Value::List
+      ::Sass::Value::List.new(
+        value.to_a.map { |element| to_native(element) },
+        separator: case value.separator
+                   when :comma
+                     ','
+                   when :space
+                     ' '
+                   else
+                     raise UnsupportedValue, "Sass list separator #{value.separator} unsupported"
+                   end,
+        bracketed: value.bracketed
+      )
+    when ::SassC::Script::Value::Map
+      ::Sass::Value::Map.new(
+        value.value.to_a.to_h { |k, v| [to_native(k), to_native(v)] }
+      )
+    when ::SassC::Script::Value::Number
+      ::Sass::Value::Number.new(
+        value.value, {
+          numerator_units: value.numerator_units,
+          denominator_units: value.denominator_units
+        }
+      )
+    when ::SassC::Script::Value::String
+      ::Sass::Value::String.new(
+        value.value,
+        quoted: value.type != :identifier
+      )
     else
-      raise SassC::UnsupportedValue.new("Sass return type #{value_name} unsupported")
+      raise UnsupportedValue, "Sass return type #{value.class.name.split('::').last} unsupported"
     end
   end
-
 end

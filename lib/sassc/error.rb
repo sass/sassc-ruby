@@ -31,7 +31,5 @@ module SassC
       return [] unless @filename && @line
       ["#{@filename}:#{@line}"]
     end
-
   end
-
 end

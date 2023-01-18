@@ -22,45 +22,40 @@ module SassC
     def render
       return @template.dup if @template.empty?
 
-      data_context = Native.make_data_context(@template)
-      context = Native.data_context_get_context(data_context)
-      native_options = Native.context_get_options(context)
+      result = ::Sass.compile_string(
+        @template,
+        importer: import_handler.setup(nil),
+        load_paths: load_paths,
+        syntax: syntax,
+        url: file_url,
 
-      Native.option_set_is_indented_syntax_src(native_options, true) if sass?
-      Native.option_set_input_path(native_options, filename) if filename
-      Native.option_set_precision(native_options, precision) if precision
-      Native.option_set_include_path(native_options, load_paths)
-      Native.option_set_output_style(native_options, output_style_enum)
-      Native.option_set_source_comments(native_options, true) if line_comments?
-      Native.option_set_source_map_file(native_options, source_map_file) if source_map_file
-      Native.option_set_source_map_embed(native_options, true) if source_map_embed?
-      Native.option_set_source_map_contents(native_options, true) if source_map_contents?
-      Native.option_set_omit_source_map_url(native_options, true) if omit_source_map_url?
+        charset: @options.fetch(:charset, true),
+        source_map: source_map_embed? || !source_map_file.nil?,
+        source_map_include_sources: source_map_contents?,
+        style: output_style,
 
-      import_handler.setup(native_options)
-      functions_handler.setup(native_options, functions: @functions)
+        functions: functions_handler.setup(nil, functions: @functions),
+        importers: @options.fetch(:importers, []),
 
-      status = Native.compile_data_context(data_context)
+        alert_ascii: @options.fetch(:alert_ascii, false),
+        alert_color: @options.fetch(:alert_color, nil),
+        logger: @options.fetch(:logger, nil),
+        quiet_deps: @options.fetch(:quiet_deps, false),
+        verbose: @options.fetch(:verbose, false)
+      )
 
-      if status != 0
-        message = Native.context_get_error_message(context)
-        filename = Native.context_get_error_file(context)
-        line = Native.context_get_error_line(context)
+      @dependencies = result.loaded_urls
+                            .filter { |url| url.start_with?(Protocol::FILE) && url != file_url }
+                            .map { |url| URL.file_url_to_path(url) }
+      @source_map = post_process_source_map(result.source_map)
 
-        raise SyntaxError.new(message, filename: filename, line: line)
-      end
-
-      css = Native.context_get_output_string(context)
-
-      @dependencies = Native.context_get_included_files(context)
-      @source_map   = Native.context_get_source_map_string(context)
-
-      css.force_encoding(@template.encoding)
-      @source_map.force_encoding(@template.encoding) if @source_map.is_a?(String)
-
-      return css unless quiet?
-    ensure
-      Native.delete_data_context(data_context) if data_context
+      return post_process_css(result.css) unless quiet?
+    rescue ::Sass::CompileError => e
+      line = e.span&.start&.line
+      line += 1 unless line.nil?
+      url = e.span&.url
+      path = (URL.parse(url).route_from(URL.path_to_file_url("#{Dir.pwd}/")) if url&.start_with?(Protocol::FILE))
+      raise SyntaxError.new(e.full_message, filename: path, line: line)
     end
 
     def dependencies
@@ -111,6 +106,10 @@ module SassC
       @options[:source_map_file]
     end
 
+    def validate_source_map_path?
+      @options.fetch(:validate_source_map_path, true)
+    end
+
     def import_handler
       @import_handler ||= ImportHandler.new(@options)
     end
@@ -119,23 +118,103 @@ module SassC
       @functions_handler = FunctionsHandler.new(@options)
     end
 
+    def file_url
+      @file_url ||= URL.path_to_file_url(File.absolute_path(filename || 'stdin'))
+    end
+
+    def output_path
+      @output_path ||= @options.fetch(
+        :output_path,
+        ("#{filename.delete_suffix(File.extname(filename))}.css" if filename)
+      )
+    end
+
+    def output_url
+      @output_url ||= (URL.path_to_file_url(File.absolute_path(output_path)) if output_path)
+    end
+
+    def source_map_file_url
+      return unless source_map_file
+      @source_map_file_url ||=
+        if validate_source_map_path?
+          URL.path_to_file_url(File.absolute_path(source_map_file))
+        else
+          source_map_file
+        end
+    end
+
     def output_style_enum
       @output_style_enum ||= Native::SassOutputStyle[output_style]
     end
 
     def output_style
       @output_style ||= begin
-        style = @options.fetch(:style, :sass_style_nested).to_s
-        style = "sass_style_#{style}" unless style.include?("sass_style_")
-        style = style.to_sym
-        raise InvalidStyleError unless Native::SassOutputStyle.symbols.include?(style)
-        style
-      end
+                          style = @options.fetch(:style, :sass_style_nested).to_s
+                          style = "sass_style_#{style}" unless style.include?('sass_style_')
+                          raise InvalidStyleError unless OUTPUT_STYLES.include?(style.to_sym)
+
+                          style = style.delete_prefix('sass_style_').to_sym
+                          case style
+                          when :nested, :compact
+                            :expanded
+                          else
+                            style
+                          end
+                        end
+    end
+
+    def syntax
+      syntax = @options.fetch(:syntax, :scss)
+      syntax = :indented if syntax.to_sym == :sass
+      syntax
     end
 
     def load_paths
-      paths = (@options[:load_paths] || []) + SassC.load_paths
-      paths.join(File::PATH_SEPARATOR) unless paths.empty?
+      @load_paths ||= if @options[:importer].nil?
+                        (@options[:load_paths] || []) + SassC.load_paths
+                      else
+                        []
+                      end
+    end
+
+    def post_process_source_map(source_map)
+      return unless source_map
+
+      url = URL.parse(source_map_file_url || file_url)
+      data = JSON.parse(source_map)
+      data["file"] = if validate_source_map_path?
+        URL.parse(output_url).route_from(url).to_s
+      else
+        output_url
+      end
+      data["sources"].map! do |source|
+        if source.start_with?(Protocol::FILE) && validate_source_map_path?
+          URL.parse(source).route_from(url).to_s
+        else
+          source
+        end
+      end
+
+      JSON.generate(data)
+    end
+
+    def post_process_css(css)
+      css += "\n" unless css.empty?
+      unless @source_map.nil? || omit_source_map_url?
+        url = URL.parse(output_url || file_url)
+        source_mapping_url =
+          if source_map_embed?
+            "data:application/json;base64,#{Base64.strict_encode64(@source_map)}"
+          else
+            if validate_source_map_path?
+              URL.parse(source_map_file_url).route_from(url).to_s
+            else
+              source_map_file_url
+            end
+          end
+        css += "\n/*# sourceMappingURL=#{source_mapping_url} */"
+      end
+      css
     end
   end
 end

@@ -6,53 +6,40 @@ module SassC
       @options = options
     end
 
-    def setup(native_options, functions: Script::Functions)
+    def setup(_native_options, functions: Script::Functions)
       @callbacks = {}
-      @function_names = {}
 
-      list = Native.make_function_list(Script.custom_functions(functions: functions).count)
-
-      # use an anonymous class wrapper to avoid mutations in a threaded environment
       functions_wrapper = Class.new do
         attr_accessor :options
+
         include functions
       end.new
       functions_wrapper.options = @options
 
-      Script.custom_functions(functions: functions).each_with_index do |custom_function, i|
-        @callbacks[custom_function] = FFI::Function.new(:pointer, [:pointer, :pointer]) do |native_argument_list, cookie|
+      Script.custom_functions(functions: functions).each do |custom_function|
+        callback = lambda do |native_argument_list|
+          function_arguments = arguments_from_native_list(native_argument_list)
           begin
-            function_arguments = arguments_from_native_list(native_argument_list)
             result = functions_wrapper.send(custom_function, *function_arguments)
-            to_native_value(result)
-          rescue StandardError => exception
-            # This rescues any exceptions that occur either in value conversion
-            # or during the execution of a custom function.
-            error(exception.message)
+          rescue StandardError
+            raise ::Sass::ScriptError, "Error: error in C function #{custom_function}"
           end
+          to_native_value(result)
+        rescue StandardError => e
+          warn "[SassC::FunctionsHandler] #{e.cause.message}"
+          raise e
         end
 
-        @function_names[custom_function] = Script.formatted_function_name(custom_function, functions: functions)
-
-        callback = Native.make_function(
-          @function_names[custom_function],
-          @callbacks[custom_function],
-          nil
-        )
-
-        Native::function_set_list_entry(list, i, callback)
+        @callbacks[Script.formatted_function_name(custom_function, functions: functions)] = callback
       end
 
-      Native::option_set_c_functions(native_options, list)
+      @callbacks
     end
 
     private
 
     def arguments_from_native_list(native_argument_list)
-      native_argument_list_length = Native.list_get_length(native_argument_list)
-
-      (0...native_argument_list_length).map do |i|
-        native_value = Native.list_get_value(native_argument_list, i)
+      native_argument_list.map do |native_value|
         Script::ValueConversion.from_native(native_value, @options)
       end.compact
     end
@@ -68,6 +55,27 @@ module SassC
     def error(message)
       $stderr.puts "[SassC::FunctionsHandler] #{message}"
       Native.make_error(message)
+    end
+
+    begin
+      begin
+        raise RuntimeError
+      rescue StandardError
+        raise ::Sass::ScriptError
+      end
+    rescue StandardError => e
+      unless e.full_message.include?(e.cause.full_message)
+        ::Sass::ScriptError.class_eval do
+          def full_message(*args, **kwargs)
+            full_message = super(*args, **kwargs)
+            if cause
+              "#{full_message}\n#{cause.full_message(*args, **kwargs)}"
+            else
+              full_message
+            end
+          end
+        end
+      end
     end
   end
 end

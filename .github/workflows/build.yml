@@ -1,0 +1,100 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ruby
+        bundler-cache: true
+
+    - name: Lint
+      run: bundle exec rake rubocop
+
+  test:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        ruby-version: ['2.6', '2.7', '3.0', 'ruby', 'jruby']
+        exclude:
+          - os: windows-latest
+            ruby-version: jruby
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+
+    - name: Test
+      run: bundle exec rake test
+
+  test-vendor:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        ruby-version: ['2.6', '2.7', '3.0', 'ruby', 'jruby']
+        submodule:
+          - vendor/github.com/sass/sassc-rails
+          - vendor/github.com/twbs/bootstrap
+        exclude:
+          - os: windows-latest
+            ruby-version: jruby
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+
+    - name: Test
+      run: bundle exec rake git:submodule:test[${{matrix.submodule}}]
+
+  release:
+
+    if: github.event.repository.fork == false && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+
+    needs: [lint, test, test-vendor]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ruby
+
+    - name: Release
+      run: |
+        git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+        git config user.name github-actions[bot]
+        rake -f -r bundler/gem_tasks release gem_push=no

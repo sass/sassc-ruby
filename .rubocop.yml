@@ -1,0 +1,23 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
+
+AllCops:
+  Exclude:
+    - 'vendor/**/*'
+
+  TargetRubyVersion: 2.6
+
+  NewCops: enable
+
+Metrics:
+  Enabled: false
+
+Minitest/MultipleAssertions:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false

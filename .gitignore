@@ -9,10 +9,6 @@
 /spec/reports/
 /tmp/
 *.bundle
-*.so
-*.o
-*.a
 *.gem
-mkmf.log
 vendor/bundle
 /ext/Makefile
