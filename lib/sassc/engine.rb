@@ -211,6 +211,7 @@ module SassC
             else
               source_map_file_url
             end
+          end
         css += "\n/*# sourceMappingURL=#{source_mapping_url} */"
       end
       css
