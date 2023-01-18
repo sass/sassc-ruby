@@ -1,5 +1,5 @@
 - **3.0.0**
-  - [Replace libass with sass-embedded gem](https://github.com/sass/sassc-ruby/pull/240)
+  - [Replace libsass with sass-embedded gem](https://github.com/sass/sassc-ruby/pull/240)
   - [Require minimum Ruby version to 2.6](https://github.com/sass/sassc-ruby/pull/240)
   - [Replace Travis CI with Github Actions](https://github.com/sass/sassc-ruby/pull/240)
   - [Replace Travis CI with Github Actions](https://github.com/sass/sassc-ruby/pull/240)
