@@ -106,6 +106,10 @@ module SassC
       @options[:source_map_file]
     end
 
+    def validate_source_map_path?
+      @options.fetch(:validate_source_map_path, true)
+    end
+
     def import_handler
       @import_handler ||= ImportHandler.new(@options)
     end
@@ -130,7 +134,13 @@ module SassC
     end
 
     def source_map_file_url
-      @source_map_file_url ||= (URL.path_to_file_url(File.absolute_path(source_map_file)) if source_map_file)
+      return unless source_map_file
+      @source_map_file_url ||=
+        if validate_source_map_path?
+          URL.path_to_file_url(File.absolute_path(source_map_file))
+        else
+          source_map_file
+        end
     end
 
     def output_style_enum
@@ -172,9 +182,13 @@ module SassC
 
       url = URL.parse(source_map_file_url || file_url)
       data = JSON.parse(source_map)
-      data['file'] = URL.parse(output_url).route_from(url).to_s if output_url
-      data['sources'].map! do |source|
-        if source.start_with?(Protocol::FILE)
+      data["file"] = if validate_source_map_path?
+        URL.parse(output_url).route_from(url).to_s
+      else
+        output_url
+      end
+      data["sources"].map! do |source|
+        if source.start_with?(Protocol::FILE) && validate_source_map_path?
           URL.parse(source).route_from(url).to_s
         else
           source
@@ -188,11 +202,15 @@ module SassC
       css += "\n" unless css.empty?
       unless @source_map.nil? || omit_source_map_url?
         url = URL.parse(output_url || file_url)
-        source_mapping_url = if source_map_embed?
-                               "data:application/json;base64,#{Base64.strict_encode64(@source_map)}"
-                             else
-                               URL.parse(source_map_file_url).route_from(url).to_s
-                             end
+        source_mapping_url =
+          if source_map_embed?
+            "data:application/json;base64,#{Base64.strict_encode64(@source_map)}"
+          else
+            if validate_source_map_path?
+              URL.parse(source_map_file_url).route_from(url).to_s
+            else
+              source_map_file_url
+            end
         css += "\n/*# sourceMappingURL=#{source_mapping_url} */"
       end
       css
