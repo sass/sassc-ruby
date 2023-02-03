@@ -57,7 +57,7 @@ not support Sprockets.
 
 ## Credits
 
-* This gem is maintained by [TableCheck](https://www.tablecheck.com/en/join). We'd be very glad if the Sass organization could take over maintainership in the future!
+* This gem is maintained and used in production by [TableCheck](https://www.tablecheck.com/en/join). (We'd be very glad if the Sass organization could take over maintainership in the future!)
 * Kudos to [@ntkme](https://github.com/ntkme) for dart-sass support.
 * Credit to [Ryan Boland](https://ryanboland.com) and the authors of the original sassc-rails gem.
 * See our [awesome contributors](https://github.com/tablecheck/sassc-ruby/graphs/contributors).
