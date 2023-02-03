@@ -5,13 +5,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'sassc/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'sassc'
+  spec.name          = 'dartsass-ruby'
   spec.version       = SassC::VERSION
-  spec.authors       = ['Ryan Boland', 'なつき']
+  spec.authors       = ['Ryan Boland', 'なつき', 'Johnny Shields']
   spec.email         = ['ryan@tanookilabs.com', 'i@ntk.me']
-  spec.summary       = 'Use dart-sass with Ruby!'
-  spec.description   = 'Use dart-sass with Ruby!'
-  spec.homepage      = 'https://github.com/sass/sassc-ruby'
+  spec.summary       = 'Use Dart Sass with Ruby and Sprockets'
+  spec.description   = 'Use Dart Sass with Ruby and Sprockets'
+  spec.homepage      = 'https://github.com/tablecheck/dartsass-ruby'
   spec.license       = 'MIT'
   spec.metadata      = {
     'documentation_uri' => "https://rubydoc.info/gems/#{spec.name}/#{spec.version}",

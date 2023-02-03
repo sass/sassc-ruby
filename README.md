@@ -12,7 +12,7 @@ which provides native binaries for Dart Sass (instead of the libsass
 C implmentation.)
 
 For ease of upgrading, the root namespace `::SassC` is still used by this gem,
-although it is now a bit of a misnomer. This is planned to be migrated in a future
+although it is now a misnomer. This is planned to be migrated in a future
 major version.
 
 ### Upgrading to Dart Sass
