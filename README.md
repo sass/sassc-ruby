@@ -1,26 +1,23 @@
-# SassC
+# Dart Sass for Ruby
 
-[![build](https://github.com/sass/sassc-ruby/actions/workflows/build.yml/badge.svg)](https://github.com/sass/sassc-ruby/actions/workflows/build.yml)
-[![gem](https://badge.fury.io/rb/sassc-ruby.svg)](https://rubygems.org/gems/sassc-ruby)
+[![build](https://github.com/tablecheck/dartsass-ruby/actions/workflows/build.yml/badge.svg)](https://github.com/tablecheck/dartsass-ruby/actions/workflows/build.yml)
+[![gem](https://badge.fury.io/rb/dartsass-ruby.svg)](https://rubygems.org/gems/dartsass-ruby)
 
-Use [dart-sass](https://sass-lang.com/dart-sass) with Ruby!
+Use [dart-sass](https://sass-lang.com/dart-sass) with Ruby and Sprockets.
 
-## Version 3.0 - Now using Dart Sass
-
-As of version 3.0, this gem (SassC) delegates to the
+This gem is a fork of [sass/sassc-ruby](https://github.com/sass/sassc-ruby)
+which maintains API compatibility but delegates to the
 [sass-embedded gem](https://github.com/ntkme/sass-embedded-host-ruby)
-which provides native binaries for Dart Sass.
-
-Version 2.x and prior of this gem contained a native binaries
-of the now-deprecated [libsass C implementation](https://github.com/sass/libsass).
-These binaries have been *removed* as of version 3.0.
+which provides native binaries for Dart Sass (instead of the libsass
+C implmentation.)
 
 For ease of upgrading, the root namespace `::SassC` is still used by this gem,
-although it is now a bit of a misnomer.
+although it is now a bit of a misnomer. This is planned to be migrated in a future
+major version.
 
 ### Upgrading to Dart Sass
 
-The interface between versions 3.0 and 2.x is largely unchanged, however:
+The interface of [sassc-ruby](https://github.com/sass/sassc-ruby) is largely unchanged, however:
 
 1. Option `style: :nested` and `style: :compact` behave as `style: :expanded`. Use `style: :compressed` for minification.
 2. Option `:precision` is ignored.
@@ -34,7 +31,7 @@ See [the dart-sass documentation](https://github.com/sass/dart-sass#behavioral-d
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sassc'
+gem 'dartsass-ruby'
 ```
 
 Rails/Sprockets users should additionally add [sassc-rails](https://github.com/sass/sassc-rails):
@@ -55,14 +52,15 @@ SassC::Engine.new(".klass1, .klass2 { color: :red; }", style: :compressed).rende
 ## Alternatives
 
 * [dartsass-rails](https://github.com/rails/dartsass-rails): Rails organization
-maintains its own wrapper for dart-sass. Unlike this gem, dartsass-rails does
+maintains its own wrapper for Dart Sass. Unlike this gem, dartsass-rails does
 not support Sprockets.
 
 ## Credits
 
-* This gem is maintained by [Ryan Boland](https://ryanboland.com)
+* This gem is maintained by [TableCheck](https://www.tablecheck.com/en/join). We'd be very glad if the Sass organization could take over maintainership in the future!
 * Kudos to [@ntkme](https://github.com/ntkme) for dart-sass support.
-* See our [awesome contributors](https://github.com/sassc/sassc-ruby/graphs/contributors).
+* Credit to [Ryan Boland](https://ryanboland.com) and the authors of the original sassc-rails gem.
+* See our [awesome contributors](https://github.com/tablecheck/sassc-ruby/graphs/contributors).
 
 ## Changelog
 
