@@ -3,7 +3,7 @@
 require_relative "test_helper"
 
 module SassC
-  class Sass2ScssTest < MiniTest::Test
+  class Sass2ScssTest < Minitest::Test
     def test_compact_output
       assert_equal ".blat { color: red; }", Sass2Scss.convert(<<SASS)
 .blat

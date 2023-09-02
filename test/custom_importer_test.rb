@@ -3,7 +3,7 @@
 require_relative "test_helper"
 
 module SassC
-  class CustomImporterTest < MiniTest::Test
+  class CustomImporterTest < Minitest::Test
     include TempFileTest
 
     class CustomImporter < Importer
