@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.platform      = Gem::Platform::RUBY
   spec.extensions    = ["ext/extconf.rb"]
 
-  spec.add_development_dependency "minitest", "~> 5.5.1"
+  spec.add_development_dependency "minitest", ">= 5.5.1", "< 5.20"
   spec.add_development_dependency "minitest-around"
   spec.add_development_dependency "test_construct"
   spec.add_development_dependency "pry"

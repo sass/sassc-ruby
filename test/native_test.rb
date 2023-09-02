@@ -9,13 +9,13 @@ module SassC
     SAMPLE_CSS_OUTPUT = ".hi {\n  width: 30px; }\n"
     BAD_SASS_STRING = "$size = 30px;"
 
-    class General < MiniTest::Test
+    class General < Minitest::Test
       def test_it_reports_the_libsass_version
         assert_equal "3.6.4", Native.version
       end
     end
 
-    class DataContext < MiniTest::Test
+    class DataContext < Minitest::Test
       def teardown
         Native.delete_data_context(@data_context) if @data_context
       end
@@ -105,7 +105,7 @@ module SassC
       end
     end
 
-    class FileContext < MiniTest::Test
+    class FileContext < Minitest::Test
       include TempFileTest
 
       def teardown

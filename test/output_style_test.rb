@@ -3,7 +3,7 @@
 require_relative "test_helper"
 
 module SassC
-  class OutputStyleTest < MiniTest::Test
+  class OutputStyleTest < Minitest::Test
     def input_scss
       input_scss = <<-CSS
 $color: #fff;

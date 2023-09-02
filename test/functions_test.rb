@@ -4,7 +4,7 @@ require_relative "test_helper"
 require "stringio"
 
 module SassC
-  class FunctionsTest < MiniTest::Test
+  class FunctionsTest < Minitest::Test
     include FixtureHelper
 
     def setup

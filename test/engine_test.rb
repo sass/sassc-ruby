@@ -3,7 +3,7 @@
 require_relative "test_helper"
 
 module SassC
-  class EngineTest < MiniTest::Test
+  class EngineTest < Minitest::Test
     include TempFileTest
 
     def render(data)
