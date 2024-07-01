@@ -25,7 +25,7 @@ module SassC
             function_arguments = arguments_from_native_list(native_argument_list)
             result = functions_wrapper.send(custom_function, *function_arguments)
             to_native_value(result)
-          rescue StandardError => exception
+          rescue Exception => exception
             # This rescues any exceptions that occur either in value conversion
             # or during the execution of a custom function.
             error(exception.message)
