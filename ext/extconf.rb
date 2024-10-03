@@ -24,12 +24,7 @@ if enable_config('march-tune-native', false)
   $CXXFLAGS << ' -march=native -mtune=native'
 end
 
-# darwin nix clang doesn't support lto
-# disable -lto flag for darwin + nix
-# see: https://github.com/sass/sassc-ruby/issues/148
-enable_lto_by_default = (Gem::Platform.local.os == "darwin" && ENV['NIX_CC'].nil?)
-
-if enable_config('lto', enable_lto_by_default)
+if enable_config('lto', true)
   $CFLAGS << ' -flto'
   $CXXFLAGS << ' -flto'
   $LDFLAGS << ' -flto'
