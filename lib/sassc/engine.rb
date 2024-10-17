@@ -28,6 +28,7 @@ module SassC
 
       Native.option_set_is_indented_syntax_src(native_options, true) if sass?
       Native.option_set_input_path(native_options, filename) if filename
+      Native.option_set_output_path(native_options, output_path) if output_path
       Native.option_set_precision(native_options, precision) if precision
       Native.option_set_include_path(native_options, load_paths)
       Native.option_set_output_style(native_options, output_style_enum)
@@ -75,6 +76,10 @@ module SassC
 
     def filename
       @options[:filename]
+    end
+
+    def output_path
+      @options[:output_path]
     end
 
     private
