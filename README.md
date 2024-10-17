@@ -1,3 +1,15 @@
+## SassC Has Reached End-of-Life
+
+The `sassc` gem should no longer be used, and will no longer be receiving any updates.
+
+The [`sass-embedded`](https://rubygems.org/gems/sass-embedded) gem is the recommended way to move away from `sassc`. It bundles the [Dart Sass](https://sass-lang.com/dart-sass/) command-line executable, and uses the [Embedded Sass Protocol](https://github.com/sass/sass/blob/HEAD/spec/embedded-protocol.md) to provide a [Modern Ruby API](https://rubydoc.info/gems/sass-embedded/Sass) for compiling Sass and defining custom importers and functions.
+
+If you find it difficult migrating to the Modern Ruby API, the [`sassc-embedded`](https://rubygems.org/gems/sassc-embedded) gem is a drop-in replacement for the `sassc` gem. It provides the same [Legacy Ruby API](https://github.com/sass-contrib/sassc-embedded-shim-ruby/blob/HEAD/README.md#usage), but internally runs `sass-embedded` instead of `libsass`.
+
+You can also use the [`dartsass-rails`](https://rubygems.org/gems/dartsass-rails) gem, a basic command-line integration with the Dart Sass executable from the `sass-embedded` gem; or [`dartsass-sprockets`](https://rubygems.org/gems/dartsass-sprockets) gem, an advanced sprockets integration with the Legacy Ruby API from the `sassc-embedded` gem, to plug smoothly into Ruby on Rails.
+
+Alternately, you can explore using a JS build system with Dart Sass as a [JavaScript library](https://sass-lang.com/dart-sass/#java-script-library).
+
 # SassC [![Build Status](https://travis-ci.org/sass/sassc-ruby.svg?branch=master)](https://travis-ci.org/sass/sassc-ruby) [![Gem Version](https://badge.fury.io/rb/sassc.svg)](http://badge.fury.io/rb/sassc)
 
 Use `libsass` with Ruby!
